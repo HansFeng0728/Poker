@@ -9,5 +9,9 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/game/WEB-INF/lib/httpclient-4.3.6.jar"/>
+	<classpathentry kind="lib" path="/common/lib/gson-2.3.1.jar"/>
+	<classpathentry kind="lib" path="/game/WEB-INF/lib/logback-classic-1.0.13.jar"/>
+	<classpathentry kind="lib" path="/game/WEB-INF/lib/httpcore-4.3.3.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

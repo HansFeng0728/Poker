@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /***
  * 
- * @author swinglife
+ * @author 
  *
  */
 @Controller
@@ -25,19 +25,6 @@ public class HomeController {
 		return mav;
 	}
 	
-//	@RequestMapping("login")
-//	public String login(HttpServletRequest request, HttpServletResponse response){
-//		
-//		
-//		return null;
-//		
-//	}
-//	
-//	@RequestMapping("startGame")
-//	public JSONObject startGame(){
-//		
-//		return null;
-//	}
 	
 	
 }
