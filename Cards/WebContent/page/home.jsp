@@ -7,7 +7,7 @@
 <title>home</title>
 </head>
 <body>
-<h2>spring mvc 实例</h2>
+<h2>mvc login</h2>
 
 <form action="login.html" method="post">
 	username:<input type="text" name="username" />

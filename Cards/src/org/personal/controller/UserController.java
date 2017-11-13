@@ -1,4 +1,4 @@
-package org.swinglife.controller;
+package org.personal.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,27 +8,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 /***
- * 用户控制器
+ * 锟矫伙拷锟斤拷锟斤拷锟斤拷
  * @author swinglife
  *
  */
 @Controller
 public class UserController {
 
-	/***
-	 * 用户登陆
-	 * <p>注解配置，只允许POST提交到该方法
-	 * @param username
-	 * @param password
-	 * @return
-	 */
 	@RequestMapping(value="login",method=RequestMethod.POST)
 	public ModelAndView login(String username,String password){
-		//验证传递过来的参数是否正确，否则返回到登陆页面。
 		if(this.checkParams(new String[]{username,password})){
-			//指定要返回的页面为succ.jsp
 			ModelAndView mav = new ModelAndView("succ");
-			//将参数返回给页面
 			mav.addObject("username",username);
 			mav.addObject("password", password);
 			return mav;
@@ -37,8 +27,6 @@ public class UserController {
 	}
 
 //	/***
-//	 * 另一种参数传递的形式
-//	 * 通过request来处理请求过来的参数。
 //	 * @param username
 //	 * @param password
 //	 * @param request
@@ -51,11 +39,6 @@ public class UserController {
 //		return new ModelAndView("succ");
 //	}
 	
-	/***
-	 * 验证参数
-	 * @param params
-	 * @return
-	 */
 	private boolean checkParams(String[] params){
 		for(String param:params){
 			if(param==""||param==null||param.isEmpty()){
