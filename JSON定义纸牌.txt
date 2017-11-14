@@ -1,7 +1,7 @@
 Json 协议
 
 {
-    "users": [   
+    "user": [   
 		{
 		"userId": "",  
 		"score": "",     		//用户分数
