@@ -1,15 +1,9 @@
 package org.personal.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.servlet.ModelAndView;
-
-import net.sf.json.JSONObject;
-
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 /***
  * 
@@ -17,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  */
 @Controller
+@RequestMapping("/index")
 public class HomeController {
 	
 	@RequestMapping("index")
@@ -25,6 +20,13 @@ public class HomeController {
 		return mav;
 	}
 	
+	@RequestMapping(value="other",method=RequestMethod.POST)
+	public ModelAndView other(){
+		ModelAndView mav = new ModelAndView("succ");
+		mav.addObject("username","test");
+		mav.addObject("password", "test");
+		return mav;
+	}
 	
 	
 }
