@@ -9,9 +9,14 @@ import java.util.TreeSet;
 
 import org.personal.util.JsonUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.json.JSONArray;
 
 public class CardService extends BaseService{
+	
+	private static final Logger logger = LoggerFactory.getLogger(CardService.class);
 	
 	private static final int POKER_SHUFFLE = 24;
 	public  String sendPoker(){
@@ -22,7 +27,7 @@ public class CardService extends BaseService{
 	      //定义数组存储牌的花色  
 	      String[] colors = {"0","1","2","3"};   
 	      //定义数组存储牌值  
-	      String[] numbers = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
+	      String[] numbers = {"1","2","3","4","5","6","7","8","9","10","11","12","13"};
 	      //定义扑克牌的状态
 	      String[] state = {"front","opposite"};
 	      
@@ -59,7 +64,7 @@ public class CardService extends BaseService{
 	      //分出手牌区里面的7张朝上的牌和21张朝下的牌
 	      for( int i = POKER_SHUFFLE; i < array.size(); i++){
 	    	  if( i >= array.size() - 7){
-	    		  pokerHandler.add(hm.get(array.get(i)).concat("-").concat("front"));
+	    		  pokerHandler.add(hm.get(array.get(i)).concat("-"));
 	    	  }else{
 	    		  pokerHandler.add(hm.get(array.get(i)).concat("-").concat("opposite"));
 	    	  }
@@ -144,6 +149,45 @@ public class CardService extends BaseService{
 	          //打印  
 	          }  
 	      System.out.println();  
-	      } 
+	      }
 	  
+	  //移动卡牌到手牌区
+	  public String moveCards(String cardList1,String cardList2){
+		  String[] cardlist2 = cardList2.split("-");
+		  String list2_color = cardlist2[0];
+		  String list2_num = cardlist2[1];
+		  
+		  String[] cardlist1 = cardList1.split(",");
+		  String cardlist_first = cardlist1[0];
+		  String[] list1_color_num = cardlist_first.split("-");
+		  String list1_color = list1_color_num[0];
+		  String list1_num = list1_color_num[1];
+		  
+		  int listcolor1 = Integer.valueOf(list1_color);
+		  int listcolor2 = Integer.valueOf(list2_color);
+		  if((listcolor1%2) == (listcolor2%2) ){
+			 logger.error("error,the color is same, move_color = {},target_color = {}",listcolor1,listcolor2);
+		  }
+		  
+		  int listnum1 = Integer.valueOf(list1_num);
+		  int listnum2 = Integer.valueOf(list2_num);
+		  if(listnum1+1 == listnum2){
+			  logger.error("error,only can be moved when the target card is the next num of current card,move_num = {},target_num={}",listnum1,listnum2);
+		  }
+		  cardList2 = cardList2 + cardList1;
+		  return cardList2;
+	  }
+	  
+	  //移动卡牌到四个存牌区之一
+	  public String moveToCardHome(String card,String cardHome){
+		  
+		  
+		  
+		  return null;
+	  }
+	  
+	  public boolean isCorrenctCardHome(String pokerHomeList){
+		  
+		  return false;
+	  }
 }

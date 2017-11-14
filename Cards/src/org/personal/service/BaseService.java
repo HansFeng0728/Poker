@@ -1,6 +1,7 @@
 package org.personal.service;
 
 public class BaseService {
+	
 	protected UserService userService;
 	
 	protected CardService cardService;
