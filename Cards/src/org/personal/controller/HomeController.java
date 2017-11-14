@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -46,8 +48,8 @@ public class HomeController {
 	}
 	
 	
-	@RequestMapping("/loginAndSend")
-	public void sendCards(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException{
+	@RequestMapping("/initCards")
+	public void initCards(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException{
 		
 		// 读取请求内容  
         BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"utf-8"));  
@@ -55,12 +57,14 @@ public class HomeController {
         StringBuilder sb = new StringBuilder(); 
         
         while ((line = br.readLine()) == null) {  
-           logger.error("json data is null, json = {}",line);  
+           logger.error("initCards json data is null, json = {}",line);  
         } 
         
         JsonParser parse = new JsonParser();
-        JsonObject json = (JsonObject) parse.parse(line);
-        String userid = json.get("userId").getAsString();
+        JsonObject json = (JsonObject)parse.parse(line);
+        JsonArray trans = (JsonArray)json.get("user");
+        JsonObject trans_result = (JsonObject)trans.get(0);
+        String userid = trans_result.get("userId").getAsString();
         
 		if(userService.isNull(userid)){
 			return;
@@ -72,26 +76,38 @@ public class HomeController {
 		Map<String, String> userJsonParam = new HashMap<String,String>();
 		userJsonParam.put("userId", userid);//内容字符串
 		userJsonParam.put("score", "0");
-		userJsonParam.put("daojishiTime", "0");
+		userJsonParam.put("daojishiTime", new Date().toString());
 		String userJson = JsonUtil.encodeJson(userJsonParam);
 		
 		Map<String, String> pokerJsonParam = new HashMap<String,String>();
 		pokerJsonParam.put("userId", userid);
-		pokerJsonParam.put("shufflePokerList", "0");
-		pokerJsonParam.put("userpokerFront", "0");
-		pokerJsonParam.put("userpokerOpposite", "0");
-		pokerJsonParam.put("completeCardList", "0");
+//		发牌在cardService里面
+//		pokerJsonParam.put("shufflePokerList", "0");
+//		pokerJsonParam.put("handPokerList", "0");
+		pokerJsonParam.put("completeCardList", "0,0,0,0");
 		String pokerJson = JsonUtil.encodeJson(pokerJsonParam);
 		
 		Map<String, String> body = new HashMap<String, String>();
 		body.put("user", userJson);
-		body.put("pokers", pokerJson);
+		body.put("pokers", pokerJson + cardService.sendPoker());
 		String jsoncontent = JsonUtil.encodeJson(body);
 		
 		PrintWriter pw = response.getWriter();
 		pw.println(jsoncontent);
-		pw.flush();
-
+//		pw.flush();
+	}
+	
+	@RequestMapping("/moveCards")
+	public void moveCards(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"utf-8"));
+		String line = null;
+		
+		while ((line = br.readLine()) == null) {  
+	           logger.error("moveCards json data is null, json = {}",line);  
+	    }
+		
+		
+	        
 		
 	}
 	

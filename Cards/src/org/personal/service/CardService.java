@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import org.personal.util.JsonUtil;
+
 import net.sf.json.JSONArray;
 
 public class CardService extends BaseService{
 	
+	private static final int POKER_SHUFFLE = 24;
 	public  String sendPoker(){
 		  //定义HashMap变量用于存储每张牌的编号以及牌型  
 	      HashMap<Integer,String> hm = new HashMap<Integer,String>();   
@@ -19,7 +22,9 @@ public class CardService extends BaseService{
 	      //定义数组存储牌的花色  
 	      String[] colors = {"0","1","2","3"};   
 	      //定义数组存储牌值  
-	      String[] numbers = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};  
+	      String[] numbers = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
+	      //定义扑克牌的状态
+	      String[] state = {"front","opposite"};
 	      
 	      int index = 0;    
 	      //定义编号  
@@ -27,7 +32,7 @@ public class CardService extends BaseService{
 	          //遍历排值数组  
 	          for(String color : colors){   
 	              //遍历花色  
-	              hm.put(index, color.concat(":").concat(number));  
+	              hm.put(index, color.concat("-").concat(number));  
 	              //将花色与牌值拼接，并将编号与拼接后的结果存储到hm中  
 	              array.add(index);   
 	              //将编号存储到array中  
@@ -40,33 +45,56 @@ public class CardService extends BaseService{
 //	      index++;  
 //	      hm.put(index, "4".concat(":").concat("BJoker"));  
 //	      array.add(index);  
-	      Collections.shuffle(array);    
+	      Collections.shuffle(array);   
 	      
-	      List<String> playerOne = new ArrayList<String>();
-	      List<String> playerTwo = new ArrayList<String>();
-	      List<String> dipai = new ArrayList<String>();
-	      for(int x = 0; x < array.size(); x++){
-	        if(x >= array.size() - 7){  
-	        dipai.add(hm.get(array.get(x)));  
-	        }else if( x % 2 == 0){  
-	            playerOne.add(hm.get(array.get(x)));  
-	            }else if(x % 2 == 1){  
-	                playerTwo.add(hm.get(array.get(x)));  
-	                }
+	      List<String> pokerShuffle = new ArrayList<String>();
+	      List<String> pokerHandler = new ArrayList<String>();
+	      
+	      //先留出在洗牌区的24张牌
+	      for( int i =0; i < POKER_SHUFFLE; i++){
+	    	  pokerShuffle.add(hm.get(array.get(i)));
 	      }
+	      String jsonPokerShuffle = JSONArray.fromObject(pokerShuffle).toString();  
 	      
-	      //list转成json
-	      String json1 =JSONArray.fromObject(playerOne).toString();
-	  
-	      String json2 = JSONArray.fromObject(playerTwo).toString();
+	      //分出手牌区里面的7张朝上的牌和21张朝下的牌
+	      for( int i = POKER_SHUFFLE; i < array.size(); i++){
+	    	  if( i >= array.size() - 7){
+	    		  pokerHandler.add(hm.get(array.get(i)).concat("-").concat("front"));
+	    	  }else{
+	    		  pokerHandler.add(hm.get(array.get(i)).concat("-").concat("opposite"));
+	    	  }
+	      }
+	      String jsonPokerHandler = JSONArray.fromObject(pokerHandler).toString();
+
+	      Map<String, String> pokerJsonParam = new HashMap<String, String>();
+		  pokerJsonParam.put("shufflePokerList", jsonPokerShuffle);
+		  pokerJsonParam.put("handPokerList", jsonPokerHandler);
+		  String pokerJson = JsonUtil.encodeJson(pokerJsonParam);    
 	      
-	      String json3 = JSONArray.fromObject(dipai).toString();
-	      
-	      String str = json1 + json2 + json3;
-	      
-//	      Map<String, String> msgJsonParam = new HashMap<>();
-	      
-	      return str;
+	      return pokerJson;
+//	      //二人斗地主的发牌  弃用
+//	      List<String> playerOne = new ArrayList<String>();
+//	      List<String> playerTwo = new ArrayList<String>();
+//	      List<String> dipai = new ArrayList<String>();
+//	      for(int x = 0; x < array.size(); x++){
+//	        if(x >= array.size() - 7){  
+//	        dipai.add(hm.get(array.get(x)));  
+//	        }else if( x % 2 == 0){  
+//	            playerOne.add(hm.get(array.get(x)));  
+//	            }else if(x % 2 == 1){  
+//	                playerTwo.add(hm.get(array.get(x)));  
+//	                }
+//	      }
+//	      
+//	      //list转成json
+//	      String json1 =JSONArray.fromObject(playerOne).toString();
+//	  
+//	      String json2 = JSONArray.fromObject(playerTwo).toString();
+//	      
+//	      String json3 = JSONArray.fromObject(dipai).toString();
+//	      
+//	      String str = json1 + json2 + json3;
+//	      return str;
 	      
 	      
 	  //之前的socket 时传byte[]的方法  弃用    
