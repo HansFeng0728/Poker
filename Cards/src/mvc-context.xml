@@ -19,7 +19,7 @@
 	<beans:bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:prefix="/page/" p:suffix=".jsp">
-		</beans:bean>
+	</beans:bean>
 
 
 </beans:beans>

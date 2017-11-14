@@ -1,5 +1,10 @@
 package org.personal.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,9 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import org.personal.service.BaseService;
-
-import net.sf.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 
 /***
@@ -36,18 +40,7 @@ public class UserController {
 		}
 		return new ModelAndView("home");
 	}
-	
-	@RequestMapping("loginAndSend")
-	public void sendCards(HttpServletRequest request, HttpServletResponse response){
-		String userid = request.getParameter("userId");
-		if(userService.isNull(userid)){
-			return;
-		}
-		if(userService.isExist(userid)){
-		
-		}
-		
-	}
+
 	private boolean checkParams(String[] params){
 		for(String param:params){
 			if(param==""||param==null||param.isEmpty()){
