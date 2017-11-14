@@ -25,7 +25,7 @@ Json 协议
 
 	"sendPokers":[
 		{
-		"movepokerList":"",    //用户想要组合的两队牌
+		"movepokerList":"",    //用户想要移动的牌
 		"targetpoker":"",	   //移动的卡牌要放置在哪张卡牌上，或哪个位置上
 		"pokerHome":"",		   //四个存牌区的list
         "submit_time": "",	   //打出牌的时间
