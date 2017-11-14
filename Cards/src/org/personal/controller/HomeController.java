@@ -3,6 +3,7 @@ package org.personal.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.personal.service.CardService;
 import org.personal.service.UserService;
+import org.personal.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -67,20 +69,29 @@ public class HomeController {
 			logger.info("login success,username = {}",userid);
 		}
 		
-		Map<String, String> msgJsonParam = new HashMap<String,String>();
-		msgJsonParam.put("content", content);//内容字符串
-		msgJsonParam.put("userId", "0");
-		msgJsonParam.put("userLevel", "0");
-		msgJsonParam.put("userName", "");
-		msgJsonParam.put("vipLevel", "0");
-		msgJsonParam.put("allFightingNum", "0");
-		msgJsonParam.put("guildId", "0");
-		msgJsonParam.put("guildName", "");
-		msgJsonParam.put("zoneId", String.valueOf(ConfigurationUtil.ZONE_ID));
-		msgJsonParam.put("icon", "");
-		msgJsonParam.put("iconKuang", "");
+		Map<String, String> userJsonParam = new HashMap<String,String>();
+		userJsonParam.put("userId", userid);//内容字符串
+		userJsonParam.put("score", "0");
+		userJsonParam.put("daojishiTime", "0");
+		String userJson = JsonUtil.encodeJson(userJsonParam);
 		
+		Map<String, String> pokerJsonParam = new HashMap<String,String>();
+		pokerJsonParam.put("userId", userid);
+		pokerJsonParam.put("shufflePokerList", "0");
+		pokerJsonParam.put("userpokerFront", "0");
+		pokerJsonParam.put("userpokerOpposite", "0");
+		pokerJsonParam.put("completeCardList", "0");
+		String pokerJson = JsonUtil.encodeJson(pokerJsonParam);
 		
+		Map<String, String> body = new HashMap<String, String>();
+		body.put("user", userJson);
+		body.put("pokers", pokerJson);
+		String jsoncontent = JsonUtil.encodeJson(body);
+		
+		PrintWriter pw = response.getWriter();
+		pw.println(jsoncontent);
+		pw.flush();
+
 		
 	}
 	
