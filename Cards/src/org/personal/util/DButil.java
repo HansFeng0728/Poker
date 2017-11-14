@@ -7,8 +7,9 @@ import com.mysql.jdbc.Connection;
 
 public class DButil {
 	//table
-	public static final String TABLE_USER = "User";
+	public static final String TABLE_USER = "user";
 	public static final String TABLE_USER_INFO = "user_info";
+	public static final String TABLE_POKER = "poker";
 	
 	public static Connection getConnect() throws SQLException{
 		String url = "jdbc:mysql://localhost:3306/fightlandlords";
