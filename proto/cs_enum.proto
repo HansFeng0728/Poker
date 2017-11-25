@@ -1,0 +1,7 @@
+package cs;
+
+enum EnmCmdID
+{
+	CS_LOGIN_REQ = 10001;
+	CS_LOGIN_RES = 10002;
+}

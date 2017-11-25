@@ -1,0 +1,19 @@
+package cs;
+
+message CsInfo
+{
+	required string name = 1; //账号
+	required string id = 1; //ID
+}
+
+//发送登录请求
+message CSLoginRequest
+{
+	required CSInfo LoginInfo = 1;
+}
+
+//登录请求回包数据
+message CSLoginRes
+{
+	required uint32 result_code =1;
+}
