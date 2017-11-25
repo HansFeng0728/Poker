@@ -1,0 +1,7 @@
+4.7.2f1:2.3.0.0
+StandaloneWindows
+E:/work/Unity/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/Managed/UnityEngine.dll
+E:/work/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.7.2/Standalone/UnityEngine.UI.dll
+E:/work/Unity/Editor/Data/Managed/UnityEditor.dll
+E:/work/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.7.2/Editor/UnityEditor.UI.dll
+E:/work/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll
