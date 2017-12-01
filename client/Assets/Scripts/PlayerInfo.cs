@@ -3,17 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class PlayerInfo 
-{
-    private int state = 0;
+{    
     private string name = "";
-    private Texture icon;
-    private string path = "";
+    private int state = 0;
     private string score = "";
-    private bool isLandLord;
-    private int playerPosition;          
-    private IList<Card> userpokerList;
     private int daojishiTime;
-    private int sendCardInfo;
+    private Cards shufflePokerList;
+    private Cards handPokerList;
+    private Cards completeCardList;
 
 
     public string Name
@@ -21,19 +18,7 @@ public class PlayerInfo
         get { return name; }
         set { name = value; }
     }
-
-    public Texture Icon
-    {
-        get { return icon; }
-        set { icon = value; }
-    }
-
-    public int PlayerPosition
-    {
-        get { return playerPosition; }
-        set { playerPosition = value; }
-    }
-
+   
     public int State
     {
         get { return state; }
@@ -46,17 +31,45 @@ public class PlayerInfo
         set { daojishiTime = value; }
     }
 
-    public bool IsLandLord
+    public Cards ShufflePokerList
     {
-        get { return isLandLord; }
-        set { isLandLord = value; }
+        get
+        {
+            return shufflePokerList;
+        }
+        set
+        {
+            shufflePokerList = value;
+        }
+    }
+
+    public Cards HandPokerList
+    {
+        get
+        {
+            return handPokerList;
+        }
+        set
+        {
+            handPokerList = value;
+        }
+    }
+
+    public Cards CompleteCardList
+    {
+        get
+        {
+            return completeCardList;
+        }
+        set
+        {
+            completeCardList = value;
+        }
     }
 
     public PlayerInfo(string name)
     {
         Name = name;
-        int num = Random.Range(0, 4);
-        path = string.Format("Art/Icon/p{0}", num);
-        Icon = Resources.Load<Texture>(path);
+        int state = 0;
     }
 }

@@ -15,14 +15,13 @@ public class SocketClient : MonoBehaviour
 
     void Awake()
     {
-        Manager.socketClient = this;
     }
 
-    public SocketClient()
-    {
-        socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        socket.ReceiveTimeout = 500;
-    }
+    //public SocketClient()
+    //{
+    //    socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+    //    socket.ReceiveTimeout = 500;
+    //}
 
     public void ConnectServer(string ip, int port)
     {
