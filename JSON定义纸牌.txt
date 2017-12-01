@@ -1,32 +1,32 @@
 Json 协议
-
 {
     "user": [   
 		{
 		"userId": "",  
 		"score": "",     		//用户分数
 		"daojishiTime":"",	  	//倒计时准备时间
+		"userState":"",			//用户登录状态
 		}
 	],
 	
 	"pokers": [
 		{
-		"userId":"",
 		//"pokerId": "0/1",  		//卡牌Id 共54个
 		//"pokerColor": "",  																				//颜色  四个
 		//"pokerNum":""3","4","5","6","7","8","9","10","J","Q","K","A","2","SJoker","BJoker"",     			//卡牌的牌面大小
-		//"state":"front","opposite",	//卡牌的状态  正面or反面
-		"shufflePokerList":"",  //洗牌牌堆里面的牌
-		"handPokerList":"",		//手牌里面的牌
-		"completeCardList":"",	//四个存牌区域的卡牌
+		//"state":"front---0","opposite---1",	//卡牌的状态  正面or反面	
 		
+		"userId":"",
+		"shufflePokerList":"",  //洗牌牌堆里面的牌
+		"handPokerList":"",		//六个手牌区里面的牌
+		"completeCardList":"",	//四个存牌区域的卡牌
 		}
 	],  
 
 	"sendPokers":[
 		{
 		"movepokerList":"",    //用户想要移动的牌
-		"targetpoker":"",	   //移动的卡牌要放置在哪张卡牌上，或哪个位置上
+		"targetpoker":"",	   //移动的卡牌要放置在哪张卡牌上
 		"pokerHome":"",		   //四个存牌区的list
         "submit_time": "",	   //打出牌的时间
 		"canSendPokers":"0/1", //能不能出牌

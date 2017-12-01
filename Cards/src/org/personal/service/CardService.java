@@ -64,7 +64,7 @@ public class CardService extends BaseService{
 	      //分出手牌区里面的7张朝上的牌和21张朝下的牌
 	      for( int i = POKER_SHUFFLE; i < array.size(); i++){
 	    	  if( i >= array.size() - 7){
-	    		  pokerHandler.add(hm.get(array.get(i)).concat("-"));
+	    		  pokerHandler.add(hm.get(array.get(i)));
 	    	  }else{
 	    		  pokerHandler.add(hm.get(array.get(i)).concat("-").concat("opposite"));
 	    	  }
@@ -180,13 +180,36 @@ public class CardService extends BaseService{
 	  
 	  //移动卡牌到四个存牌区之一
 	  public String moveToCardHome(String card,String cardHome){
+		  String[] cardlist = card.split("-");
+		  String cardnum = cardlist[1];
+		  int num = Integer.valueOf(cardnum);
 		  
+		  String[] cardHomeList = cardHome.split(",");
+		  if( cardHomeList.length <= 1){
+			  if( num != 1){
+				  logger.error("can't put card which is not A in the empty cardHome");
+			  }
+			  cardHome = cardHome.concat(",").concat(card);
+			  return cardHome;
+		  }
+		  String currentCard = cardHomeList[cardHomeList.length-1];
+		  String[] currentCardList =  currentCard.split("-");
+		  String currentCardN = currentCardList[1];
+		  int currentCardnum = Integer.valueOf(currentCardN);
 		  
-		  
-		  return null;
+		  if( num != currentCardnum+1){
+			  logger.error("must put the card into the cardHome in order of num, the movecardnum:{}",num);
+		  }
+		  cardHome = cardHome.concat(",").concat(card);
+		  return cardHome;
 	  }
 	  
 	  public boolean isCorrenctCardHome(String pokerHomeList){
+		  
+		  return false;
+	  }
+	  
+	  public boolean isWon(String cardHome){
 		  
 		  return false;
 	  }
