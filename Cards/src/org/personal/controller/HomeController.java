@@ -161,7 +161,7 @@ public class HomeController {
 		return mav;
 	}
 	
-	@RequestMapping(value = "/loginTest", method = RequestMethod.POST)  
+	@RequestMapping(value="/loginTest", method = RequestMethod.POST)  
 	public void recieveRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// 读取请求内容
 		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
