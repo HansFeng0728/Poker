@@ -7,15 +7,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.personal.util.ConfigurationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.personal.util.ConfigurationUtil;
+import org.personal.util.JsonUtil;
+import org.personal.util.StringUtil;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisUtil {
+	
 	static Logger logger = LoggerFactory.getLogger(RedisUtil.class.getName());
 
 	private JedisPool pool = null;
@@ -31,7 +33,6 @@ public class RedisUtil {
 		try
 		{
 			String pwd = (ConfigurationUtil.CHAT_REDIS_PWD_OPEN ? ConfigurationUtil.CHAT_REDIS_PWD : null);
-			
 			JedisPoolConfig config = new JedisPoolConfig();
 			config.setMaxTotal(250);
 			config.setMaxIdle(21600000);
@@ -49,6 +50,7 @@ public class RedisUtil {
 		{
 			logger.error("", e);
 		}
+		
 	}
 	
 	public String get(String key) {

@@ -1,45 +1,78 @@
 package org.personal.util;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 public class JsonUtil {
-	public static String encodeJson(Object obj){
-		Gson gson = new Gson();
-		String str = gson.toJson(obj);
-		return str;
+	
+	/**
+	 * 将java对象转换成json格式的字符串
+	 * @param src
+	 * @return
+	 */
+	public static String toJson(Object src) {
+		return new Gson().toJson(src);
 	}
 	
-	public static <T> T decodeObj(String jsonStr, Class<T> clazz){
-		Gson gson = new Gson();
-		return gson.fromJson(jsonStr, clazz);
+	public static String toJson(Object src,Type typeOfSrc){
+		return new Gson().toJson(src, typeOfSrc);
 	}
 	
-	/** 
-     * 将json转换成bean对象 
-     * @author fuyzh 
-     * @param jsonStr 
-     * @return 
-     */  
-    public static Object jsonToBean(String jsonStr, Class<?> cl) {  
-        Object obj = null; 
-        Gson gson = new Gson();
-        if (gson != null) {  
-            obj = gson.fromJson(jsonStr, cl);  
-        }  
-        return obj;  
-    }  
-    /** 
-     * 将对象转换成json格式 
-     * @author fuyzh
-     * @param ts 
-     * @return 
-     */  
-    public static String objectToJson(Object ts) {  
-        String jsonStr = null;  
-        Gson gson = new Gson();
-        if (gson != null) {  
-            jsonStr = gson.toJson(ts);  
-        }  
-        return jsonStr;  
-    }
+	
+	public static String toJsonWithExpose(Object src) {
+		GsonBuilder bulider = new GsonBuilder();
+		bulider.excludeFieldsWithoutExposeAnnotation();
+		Gson gson = bulider.create();
+		return gson.toJson(src);
+	}
+	
+	
+	public static String toJsonWithExpose(Object src,Type typeOfSrc) {
+		GsonBuilder bulider = new GsonBuilder();
+		bulider.excludeFieldsWithoutExposeAnnotation();
+		Gson gson = bulider.create();
+		return gson.toJson(src,typeOfSrc);
+	}
+	/**
+	 * 将json格式的字符串转换成java对象
+	 * @param json
+	 * @param classOfT
+	 * @return
+	 */
+	public static <T> T fromJson(String json, Class<T> classOfT) {
+		try {
+			return new Gson().fromJson(json, classOfT);
+		} catch (JsonSyntaxException e) {
+			//e.printStackTrace();
+			////System.out.println(e.getMessage());
+		}
+		return null;
+	}
+	
+	/**
+	 * 将json格式的字符串转换成java对象
+	 * @param json
+	 * @param typeOfT
+	 * @return
+	 */
+	public static <T> T fromJson(String json, Type typeOfT) {
+		try {
+			Gson gson = new Gson();
+			return gson.fromJson(json, typeOfT);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static String encodeJson(Map<String, String> userJsonParam) {
+		 Gson gson = new Gson();
+		 String jsonStr = gson.toJson(userJsonParam);
+		 return jsonStr;
+	}
+
 }
