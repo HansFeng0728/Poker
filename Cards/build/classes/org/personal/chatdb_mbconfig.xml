@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+		<typeAlias alias="USER" type="org.personal.db.dao.UserMapper" />
+	</typeAliases>
+
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://localhost:3306/fightlandlords?useUnicode=true&amp;characterEncoding=utf-8" />
+				<property name="username" value="root" />
+				<property name="password" value="" />
+				<property name="poolPingQuery" value="SELECT id FROM USER WHERE id = 1" />
+                <property name="poolPingEnabled" value="true" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<mapper resource="org/personal/db/dao/GameMapper.xml" />
+		<mapper resource="org/personal/db/dao/PokerListMapper.xml" />
+		<mapper resource="org/personal/db/dao/UserMapper.xml" />
+	</mappers>
+</configuration>

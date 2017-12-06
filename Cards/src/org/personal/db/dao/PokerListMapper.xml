@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nkm.db.dao.PokerListMapper" >
+  <resultMap id="BaseResultMap" type="com.nkm.db.dao.PokerList" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="shortestCompleteTime" property="shortestcompletetime" jdbcType="DATE" />
+    <result column="successRate" property="successrate" jdbcType="TINYINT" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.nkm.db.dao.PokerListWithBLOBs" extends="BaseResultMap" >
+    <result column="pokersId" property="pokersid" jdbcType="LONGVARCHAR" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="type" property="type" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, shortestCompleteTime, successRate
+  </sql>
+  <sql id="Blob_Column_List" >
+    pokersId, content, type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pokerlist
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pokerlist
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.nkm.db.dao.PokerListWithBLOBs" >
+    insert into pokerlist (Id, shortestCompleteTime, successRate, 
+      pokersId, content, type
+      )
+    values (#{id,jdbcType=INTEGER}, #{shortestcompletetime,jdbcType=DATE}, #{successrate,jdbcType=TINYINT}, 
+      #{pokersid,jdbcType=LONGVARCHAR}, #{content,jdbcType=LONGVARCHAR}, #{type,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.nkm.db.dao.PokerListWithBLOBs" >
+    insert into pokerlist
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="shortestcompletetime != null" >
+        shortestCompleteTime,
+      </if>
+      <if test="successrate != null" >
+        successRate,
+      </if>
+      <if test="pokersid != null" >
+        pokersId,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="shortestcompletetime != null" >
+        #{shortestcompletetime,jdbcType=DATE},
+      </if>
+      <if test="successrate != null" >
+        #{successrate,jdbcType=TINYINT},
+      </if>
+      <if test="pokersid != null" >
+        #{pokersid,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nkm.db.dao.PokerListWithBLOBs" >
+    update pokerlist
+    <set >
+      <if test="shortestcompletetime != null" >
+        shortestCompleteTime = #{shortestcompletetime,jdbcType=DATE},
+      </if>
+      <if test="successrate != null" >
+        successRate = #{successrate,jdbcType=TINYINT},
+      </if>
+      <if test="pokersid != null" >
+        pokersId = #{pokersid,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.nkm.db.dao.PokerListWithBLOBs" >
+    update pokerlist
+    set shortestCompleteTime = #{shortestcompletetime,jdbcType=DATE},
+      successRate = #{successrate,jdbcType=TINYINT},
+      pokersId = #{pokersid,jdbcType=LONGVARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR},
+      type = #{type,jdbcType=LONGVARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nkm.db.dao.PokerList" >
+    update pokerlist
+    set shortestCompleteTime = #{shortestcompletetime,jdbcType=DATE},
+      successRate = #{successrate,jdbcType=TINYINT}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

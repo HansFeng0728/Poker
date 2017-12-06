@@ -5,16 +5,20 @@ import java.sql.SQLException;
 
 import com.mysql.jdbc.Connection;
 
+/**
+ * @author hans
+ *  之前的版本  连接数据库 登录
+ */
 public class DButil {
 	//table
 	public static final String TABLE_USER = "User";
 	public static final String TABLE_USER_INFO = "user_info";
 	
 	public static Connection getConnect() throws SQLException{
-		String url = "jdbc:mysql://localhost:3306/fightlandlords";//��ݿ��url
+		String url = "jdbc:mysql://localhost:3306/fightlandlords";
 		Connection conn = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");//java����  �̶�д��
+			Class.forName("com.mysql.jdbc.Driver");
 			conn = (Connection) DriverManager.getConnection(url,"root","");
 			
 		} catch (ClassNotFoundException e) {

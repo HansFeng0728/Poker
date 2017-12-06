@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nkm.db.dao.GameMapper" >
+  <resultMap id="BaseResultMap" type="com.nkm.db.dao.Game" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="completeTime" property="completetime" jdbcType="DATE" />
+    <result column="result" property="result" jdbcType="TINYINT" />
+    <result column="moveSteps" property="movesteps" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.nkm.db.dao.GameWithBLOBs" extends="BaseResultMap" >
+    <result column="userId" property="userid" jdbcType="LONGVARCHAR" />
+    <result column="pokersId" property="pokersid" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, completeTime, result, moveSteps
+  </sql>
+  <sql id="Blob_Column_List" >
+    userId, pokersId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from game
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from game
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.nkm.db.dao.GameWithBLOBs" >
+    insert into game (Id, completeTime, result, 
+      moveSteps, userId, pokersId
+      )
+    values (#{id,jdbcType=INTEGER}, #{completetime,jdbcType=DATE}, #{result,jdbcType=TINYINT}, 
+      #{movesteps,jdbcType=INTEGER}, #{userid,jdbcType=LONGVARCHAR}, #{pokersid,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.nkm.db.dao.GameWithBLOBs" >
+    insert into game
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="completetime != null" >
+        completeTime,
+      </if>
+      <if test="result != null" >
+        result,
+      </if>
+      <if test="movesteps != null" >
+        moveSteps,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="pokersid != null" >
+        pokersId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="completetime != null" >
+        #{completetime,jdbcType=DATE},
+      </if>
+      <if test="result != null" >
+        #{result,jdbcType=TINYINT},
+      </if>
+      <if test="movesteps != null" >
+        #{movesteps,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="pokersid != null" >
+        #{pokersid,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nkm.db.dao.GameWithBLOBs" >
+    update game
+    <set >
+      <if test="completetime != null" >
+        completeTime = #{completetime,jdbcType=DATE},
+      </if>
+      <if test="result != null" >
+        result = #{result,jdbcType=TINYINT},
+      </if>
+      <if test="movesteps != null" >
+        moveSteps = #{movesteps,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="pokersid != null" >
+        pokersId = #{pokersid,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.nkm.db.dao.GameWithBLOBs" >
+    update game
+    set completeTime = #{completetime,jdbcType=DATE},
+      result = #{result,jdbcType=TINYINT},
+      moveSteps = #{movesteps,jdbcType=INTEGER},
+      userId = #{userid,jdbcType=LONGVARCHAR},
+      pokersId = #{pokersid,jdbcType=LONGVARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nkm.db.dao.Game" >
+    update game
+    set completeTime = #{completetime,jdbcType=DATE},
+      result = #{result,jdbcType=TINYINT},
+      moveSteps = #{movesteps,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

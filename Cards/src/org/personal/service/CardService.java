@@ -1,5 +1,6 @@
 package org.personal.service;
 
+import java.awt.Container;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import org.personal.db.dao.Poker;
 import org.personal.util.JsonUtil;
 
 import org.slf4j.Logger;
@@ -19,6 +21,12 @@ public class CardService extends BaseService{
 	private static final Logger logger = LoggerFactory.getLogger(CardService.class);
 	
 	private static final int POKER_SHUFFLE = 24;
+	
+	public Container container=null;
+	public static List<Poker> tablelist[] = new ArrayList[7];//装未发的牌堆 7堆
+	public static List<Poker> waitlist = new ArrayList<Poker>();//装未发的牌堆
+	public static List<Poker> dragList=new ArrayList<Poker>();
+	
 	public  String sendPoker(){
 		  //定义HashMap变量用于存储每张牌的编号以及牌型  
 	      HashMap<Integer,String> hm = new HashMap<Integer,String>();   
@@ -140,13 +148,11 @@ public class CardService extends BaseService{
 	  /** * 遍历每个玩家的牌以及底牌 **/  
 	  public static void lookPoker(String name,TreeSet<Integer> ts,HashMap<Integer,String> hm){  
 	      System.out.print(name+":\t");    
-	      //打印玩家名称  
 	      for(Integer key : ts){    
 	          //遍历玩家TreeSet集合，获得玩家的牌的编号  
 	          String value = hm.get(key);  
 	          //根据玩家牌编号获取具体的牌值  
 	          System.out.print(value+"  ");  
-	          //打印  
 	          }  
 	      System.out.println();  
 	      }
@@ -185,7 +191,7 @@ public class CardService extends BaseService{
 		  int num = Integer.valueOf(cardnum);
 		  
 		  String[] cardHomeList = cardHome.split(",");
-		  if( cardHomeList.length <= 1){
+		  if( cardHomeList.length < 1){
 			  if( num != 1){
 				  logger.error("can't put card which is not A in the empty cardHome");
 			  }
@@ -210,7 +216,10 @@ public class CardService extends BaseService{
 	  }
 	  
 	  public boolean isWon(String cardHome){
-		  
-		  return false;
+		for (int i = 0; i < 7; i++) {
+			if(!CardMain.tablelist[i].isEmpty())
+				return false;
+		}
+		return true;
 	  }
 }

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nkm.db.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.nkm.db.dao.User" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="lastLoginTime" property="lastlogintime" jdbcType="DATE" />
+    <result column="lastLogoutTime" property="lastlogouttime" jdbcType="DATE" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.nkm.db.dao.User" extends="BaseResultMap" >
+    <result column="userId" property="userid" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, lastLoginTime, lastLogoutTime, score
+  </sql>
+  <sql id="Blob_Column_List" >
+    userId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from user
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.nkm.db.dao.User" >
+    insert into user (Id, lastLoginTime, lastLogoutTime, 
+      score, userId)
+    values (#{id,jdbcType=INTEGER}, #{lastlogintime,jdbcType=DATE}, #{lastlogouttime,jdbcType=DATE}, 
+      #{score,jdbcType=INTEGER}, #{userid,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nkm.db.dao.User" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="lastlogintime != null" >
+        lastLoginTime,
+      </if>
+      <if test="lastlogouttime != null" >
+        lastLogoutTime,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="lastlogintime != null" >
+        #{lastLogintime,jdbcType=DATE},
+      </if>
+      <if test="lastlogouttime != null" >
+        #{lastLogouttime,jdbcType=DATE},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userId,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nkm.db.dao.User" >
+    update user
+    <set >
+      <if test="lastlogintime != null" >
+        lastLoginTime = #{lastLogintime,jdbcType=DATE},
+      </if>
+      <if test="lastlogouttime != null" >
+        lastLogoutTime = #{lastLogouttime,jdbcType=DATE},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        userId = #{userId,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.nkm.db.dao.User" >
+    update user
+    set lastLoginTime = #{lastLogintime,jdbcType=DATE},
+      lastLogoutTime = #{lastLogouttime,jdbcType=DATE},
+      score = #{score,jdbcType=INTEGER},
+      userId = #{userId,jdbcType=LONGVARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nkm.db.dao.User" >
+    update user
+    set lastLoginTime = #{lastLogintime,jdbcType=DATE},
+      lastLogoutTime = #{lastLogouttime,jdbcType=DATE},
+      score = #{score,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  select 
+  <include refid="Base_Column_List" />
+  from USER
+  where USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>
