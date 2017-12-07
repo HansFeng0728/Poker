@@ -2,10 +2,12 @@ package org.personal.db.dao;
 
 import java.util.List;
 
+//七个移牌区
 public class PokerRoom {
+	//第几套牌
 	private String id;
 	
-	private  String userId;
+	private String userId;
 	
 	private List<Poker> pokerList;
 	

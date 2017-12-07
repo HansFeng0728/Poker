@@ -1,5 +1,7 @@
 package org.personal.db;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.personal.db.dao.Poker;
 import org.personal.db.dao.PokerRoom;
@@ -135,16 +137,16 @@ public class DBUtil {
 //-------------------------------------七个移牌区的牌----------------------------------------------
 	public void addPokerToRoom(final PokerRoom pokerRoom,final Poker poker)
 	{	
-		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME,poker);
+		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME, poker);
 	}
 	
-	public List<> getFriendApplicationList(String userId)
+	public List<Poker> getPokerRoomList(String userId)
 	{
-		return redisUtil.hashGetAll(userId + RedisKeys.FRIENDAPPLICATION, FriendApplication.class);
+		return redisUtil.listGet(userId + RedisKeys.POKERHOME, Poker.class);
 	}
 	
-	public FriendApplication getFriendApplication(String userId,String friendId){
-		return redisUtil.hashGet(userId + RedisKeys.FRIENDAPPLICATION, friendId, FriendApplication.class);
+	public Poker getPoker(String userId){
+		return redisUtil.hashGet(userId + RedisKeys.POKERHOME, friendId, Poker.class);
 	}
 	
 	public void deleteApplication(String userId,String friendId){
