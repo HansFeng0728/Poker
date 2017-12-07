@@ -1,6 +1,8 @@
 package org.personal.db;
 
 import org.apache.ibatis.session.SqlSession;
+import org.personal.db.dao.Poker;
+import org.personal.db.dao.PokerRoom;
 import org.personal.db.dao.User;
 import org.personal.db.dao.UserMapper;
 import org.personal.util.Constant;
@@ -129,6 +131,26 @@ public class DBUtil {
 		}
 		return user;
 	}
+	
+//-------------------------------------七个移牌区的牌----------------------------------------------
+	public void addPokerToRoom(final PokerRoom pokerRoom,final Poker poker)
+	{	
+		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME,poker);
+	}
+	
+	public List<> getFriendApplicationList(String userId)
+	{
+		return redisUtil.hashGetAll(userId + RedisKeys.FRIENDAPPLICATION, FriendApplication.class);
+	}
+	
+	public FriendApplication getFriendApplication(String userId,String friendId){
+		return redisUtil.hashGet(userId + RedisKeys.FRIENDAPPLICATION, friendId, FriendApplication.class);
+	}
+	
+	public void deleteApplication(String userId,String friendId){
+		redisUtil.hashDel(userId + RedisKeys.FRIENDAPPLICATION, friendId);
+	}
+//-----------------------------------------洗牌区的牌------------------------------------------------------
 	
 	
 

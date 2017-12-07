@@ -22,9 +22,6 @@ public class CardService extends BaseService{
 	private static final int POKER_SHUFFLE = 24;
 	
 	public Container container=null;
-	public static List<Poker> tablelist[] = new ArrayList[7];//装未发的牌堆 7堆
-	public static List<Poker> waitlist = new ArrayList<Poker>();//装未发的牌堆
-	public static List<Poker> dragList=new ArrayList<Poker>();
 	
 	public  String sendPoker(){
 		  //定义HashMap变量用于存储每张牌的编号以及牌型  
