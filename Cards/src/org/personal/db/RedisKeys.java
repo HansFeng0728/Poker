@@ -12,5 +12,11 @@ public class RedisKeys {
 	
 	public static final String MOVE = "moveCard";
 	
-	public static final String POKERHOME = "pokerHome";
+	public static final String POKERHOME_1 = "pokerHome_1";
+	
+	public static final String POKERHOME_2 = "pokerHome_2";
+	
+	public static final String POKERHOME_3 = "pokerHome_3";
+	
+	
 }

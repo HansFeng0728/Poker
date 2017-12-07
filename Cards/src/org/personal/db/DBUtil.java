@@ -135,9 +135,9 @@ public class DBUtil {
 	}
 	
 //-------------------------------------七个移牌区的牌----------------------------------------------
-	public void addPokerToRoom(final PokerRoom pokerRoom,final Poker poker)
+	public void addPokerListToRoom(final PokerRoom pokerRoom,final List<Poker> pokerList)
 	{	
-		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME, poker);
+		redisUtil.hashSet(pokerRoom.getUserId() + RedisKeys.POKERHOME, pokerRoom.getId(), pokerList);
 	}
 	
 	public List<Poker> getPokerRoomList(String userId)
