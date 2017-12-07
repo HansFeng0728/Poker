@@ -33,6 +33,7 @@ public class RedisUtil {
 		try
 		{
 			String pwd = (ConfigurationUtil.CHAT_REDIS_PWD_OPEN ? ConfigurationUtil.CHAT_REDIS_PWD : null);
+			
 			JedisPoolConfig config = new JedisPoolConfig();
 			config.setMaxTotal(250);
 			config.setMaxIdle(21600000);

@@ -25,6 +25,7 @@ public class ConfigurationUtil {
 	public static final ExecutorService loggerPool = Executors.newSingleThreadExecutor();
 	static{
 		try {
+			System.out.println("factory----"+factory);
 			config = factory.getConfiguration();
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
@@ -48,5 +49,5 @@ public class ConfigurationUtil {
 	
 	public static final String CHAT_REDIS_PWD = config.getString("app.card.pwd");
 	//redis密码开关
-	public static final boolean CHAT_REDIS_PWD_OPEN = config.getBoolean("chat.redis.pwd.open", false);
+	public static final boolean CHAT_REDIS_PWD_OPEN = config.getBoolean("card.redis.pwd.open", false);
 }

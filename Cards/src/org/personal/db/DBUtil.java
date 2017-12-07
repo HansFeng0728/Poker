@@ -5,16 +5,12 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.personal.db.dao.Poker;
 import org.personal.db.dao.PokerRoom;
-import org.personal.db.dao.ShuffleRoom;
 import org.personal.db.dao.User;
 import org.personal.db.dao.UserMapper;
 import org.personal.util.Constant;
 import org.personal.util.FastConsumeTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DBUtil {
-	static Logger logger = LoggerFactory.getLogger(DBUtil.class.getName());
 	
 	public static enum DBEnvironment 
 	{  
@@ -63,7 +59,7 @@ public class DBUtil {
 //		loadPayer();
 
 		dbwork = new FastConsumeTask();
-		dbwork.start(2);
+		dbwork.start(10);
 	}
 	
 	public int taskCount()
@@ -126,7 +122,7 @@ public class DBUtil {
 			session.commit();
 		}
 		catch (Exception e) {
-			logger.error("DBUtil", e);
+			System.out.println("DBUtil:---"+e);;
 		}
 		finally
 		{
@@ -243,8 +239,8 @@ public class DBUtil {
 
 //-----------------------------------------洗牌区的牌------------------------------------------------------
 	
-	public void addPokerToShuffle(final ShuffleRoom shuffleRoom,final Poker poker){
-		redisUtil.listAdd(shuffleRoom.getUserId() + RedisKeys.SHUFFLE, poker);
+	public void addPokerToShuffle(final String userId,final Poker poker){
+		redisUtil.listAdd(userId + RedisKeys.SHUFFLE, poker);
 	}
 	
 	public List<Poker> getShuffleList(String userId){

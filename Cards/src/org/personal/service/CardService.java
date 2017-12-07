@@ -8,25 +8,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import org.personal.db.DBUtil;
 import org.personal.db.dao.Poker;
 import org.personal.util.JsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import net.sf.json.JSONArray;
+import com.google.gson.Gson;
 
 public class CardService extends BaseService{
-	
-	private static final Logger logger = LoggerFactory.getLogger(CardService.class);
 	
 	private static final int POKER_SHUFFLE = 24;
 	
 	public Container container=null;
 	
+	public static void main(String[] args){
+		CardService cc = new CardService();
+		cc.sendPoker("1001");
+	}
+	
 	public String sendPoker(String userId){
 		  //定义HashMap变量用于存储每张牌的编号以及牌型  
-	      HashMap<Integer,String> hm = new HashMap<Integer,String>();   
-	      //定义ArrayList变量存储牌的编号  
+	      HashMap<Integer,Poker> hm = new HashMap<Integer,Poker>();   
+	      //定义变量存储洗牌区牌的编号  
 	      ArrayList<Integer> array = new ArrayList<Integer>();  
 	      //定义数组存储牌的花色  
 	      String[] colors = {"0","1","2","3"};   
@@ -35,49 +37,53 @@ public class CardService extends BaseService{
 	      //定义扑克牌的状态
 	      String[] state = {"front","opposite"};
 	      
-	      Poker poker = new Poker();
-	      int index = 0;    
+	      int index = 0; 
+	      
 	      //定义编号  
 	      for(String number : numbers){    
 	          //遍历排值数组  
 	          for(String color : colors){   
 	              //遍历花色  
+	        	  Poker poker = new Poker();
+	        	  poker.setUserId(userId);
+	        	  poker.setPokerId(index);
 	        	  poker.setNumber(number);
 	        	  poker.setColor(color);
-	        	  poker.setDirection(null);
-//	              hm.put(index, color.concat("-").concat(number));  
-	              //将花色与牌值拼接，并将编号与拼接后的结果存储到hm中  
+	        	  poker.setDirection("front");
 	        	  
+	        	  hm.put(index, poker);
 	              array.add(index);   
-	              //将编号存储到array中  
-	              index++;}  
-	          }
-	      /* * 将小王和大王存储到hm中 */  
-//	      hm.put(index, "4".concat(":").concat("SJoker"));    
-//	      array.add(index);  
-//	      index++;  
-//	      hm.put(index, "4".concat(":").concat("BJoker"));  
-//	      array.add(index);  
+	              index++;
+	          }  
+	      }
 	      Collections.shuffle(array);   
 	      
-	      List<String> pokerShuffle = new ArrayList<String>();
 	      List<String> pokerHandler = new ArrayList<String>();
+	      List<Poker> pokerShuffle = new ArrayList<>();
 	      
+	      DBUtil.GetInstance().init();
+	   
 	      //先留出在洗牌区的24张牌
-	      for( int i =0; i < POKER_SHUFFLE; i++){
+	      for( int i = 0; i < 52; i++){
 	    	  pokerShuffle.add(hm.get(array.get(i)));
+//	    	  System.out.println("----"+hm.get(array.get(i)).getNumber()+"----"+hm.get(array.get(i)).getColor()+"---"+hm.get(array.get(i)).getDirection()+"----0-0-"+hm.get(array.get(i)).getPokerId());
+	    	  DBUtil.GetInstance().addPokerToShuffle(userId, hm.get(array.get(i)));
 	      }
-	      String jsonPokerShuffle = JSONArray.fromObject(pokerShuffle).toString();  
+	      
+	      Gson gson = new Gson();
+	      //洗牌区的json数据
+	      String jsonPokerShuffle = gson.toJson(pokerShuffle);
 	      
 	      //分出手牌区里面的7张朝上的牌和21张朝下的牌
 	      for( int i = POKER_SHUFFLE; i < array.size(); i++){
 	    	  if( i >= array.size() - 7){
-	    		  pokerHandler.add(hm.get(array.get(i)));
+	    		  continue;
 	    	  }else{
-	    		  pokerHandler.add(hm.get(array.get(i)).concat("-").concat("opposite"));
+	    		  hm.get(array.get(i)).setDirection("opposite");
 	    	  }
 	      }
-	      String jsonPokerHandler = JSONArray.fromObject(pokerHandler).toString();
+	      //七个手牌区的数据
+	      String jsonPokerHandler = gson.toJson(pokerHandler);
 
 	      Map<String, String> pokerJsonParam = new HashMap<String, String>();
 		  pokerJsonParam.put("shufflePokerList", jsonPokerShuffle);
@@ -85,6 +91,7 @@ public class CardService extends BaseService{
 		  String pokerJson = JsonUtil.encodeJson(pokerJsonParam);    
 	      
 	      return pokerJson;
+	      
 //	      //二人斗地主的发牌  弃用
 //	      List<String> playerOne = new ArrayList<String>();
 //	      List<String> playerTwo = new ArrayList<String>();
@@ -172,13 +179,13 @@ public class CardService extends BaseService{
 		  int listcolor1 = Integer.valueOf(list1_color);
 		  int listcolor2 = Integer.valueOf(list2_color);
 		  if((listcolor1%2) == (listcolor2%2) ){
-			 logger.error("error,the color is same, move_color = {},target_color = {}",listcolor1,listcolor2);
+			 System.out.println("error,the color is same, move_color = {},target_color = {}"+listcolor1+listcolor2);
 		  }
 		  
 		  int listnum1 = Integer.valueOf(list1_num);
 		  int listnum2 = Integer.valueOf(list2_num);
 		  if(listnum1+1 == listnum2){
-			  logger.error("error,only can be moved when the target card is the next num of current card,move_num = {},target_num={}",listnum1,listnum2);
+			  System.out.println("error,only can be moved when the target card is the next num of current card,move_num ="+listnum1+"target_num="+listnum2);
 		  }
 		  cardList2 = cardList2 + cardList1;
 		  return cardList2;
@@ -193,7 +200,7 @@ public class CardService extends BaseService{
 		  String[] cardHomeList = cardHome.split(",");
 		  if( cardHomeList.length < 1){
 			  if( num != 1){
-				  logger.error("can't put card which is not A in the empty cardHome");
+				  System.out.println("can't put card which is not A in the empty cardHome");
 			  }
 			  cardHome = cardHome.concat(",").concat(card);
 			  return cardHome;
@@ -204,7 +211,7 @@ public class CardService extends BaseService{
 		  int currentCardnum = Integer.valueOf(currentCardN);
 		  
 		  if( num != currentCardnum+1){
-			  logger.error("must put the card into the cardHome in order of num, the movecardnum:{}",num);
+			  System.out.println("must put the card into the cardHome in order of num, the movecardnum:{}"+num);
 		  }
 		  cardHome = cardHome.concat(",").concat(card);
 		  return cardHome;
@@ -217,8 +224,7 @@ public class CardService extends BaseService{
 	  
 	  public boolean isWon(String cardHome){
 		for (int i = 0; i < 7; i++) {
-			if(tablelist[i].isEmpty())
-				return false;
+		
 		}
 		return true;
 	  }

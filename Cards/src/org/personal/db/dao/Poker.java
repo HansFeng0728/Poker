@@ -3,7 +3,7 @@ package org.personal.db.dao;
 public class Poker {
 	private String userId;
 
-	private String PokerId;
+	private int PokerId;
 
 	private String number;
 	
@@ -19,11 +19,11 @@ public class Poker {
 		this.userId = userId;
 	}
 	
-	public String getPokerId() {
+	public int getPokerId() {
 		return PokerId;
 	}
 
-	public void setPokerId(String pokerId) {
+	public void setPokerId(int pokerId) {
 		PokerId = pokerId;
 	}
 
