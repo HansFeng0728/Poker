@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.personal.db.dao.Poker;
 import org.personal.db.dao.PokerRoom;
+import org.personal.db.dao.ShuffleRoom;
 import org.personal.db.dao.User;
 import org.personal.db.dao.UserMapper;
 import org.personal.util.Constant;
@@ -134,26 +135,123 @@ public class DBUtil {
 		return user;
 	}
 	
-//-------------------------------------七个移牌区的牌----------------------------------------------
-	public void addPokerListToRoom(final PokerRoom pokerRoom,final List<Poker> pokerList)
+//--------------------------------------------七个移牌区的牌----------------------------------------------
+	//--------------------------------------------------------room1
+	public void addPokerToRoom1(final PokerRoom pokerRoom,final Poker poker)
 	{	
-		redisUtil.hashSet(pokerRoom.getUserId() + RedisKeys.POKERHOME, pokerRoom.getId(), pokerList);
+		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_1,poker);
+	}
+	
+	public List<Poker> getPokerRoom1List(String userId)
+	{
+		return redisUtil.listGet(userId + RedisKeys.POKERHOME_1, Poker.class);
+	}
+	
+	public void deletePokerFromRoom1(String userId,Poker poker){
+		redisUtil.listDel(userId + RedisKeys.POKERHOME_1, poker);
+	}
+	
+	//-------------------------------------------------------room2
+	public void addPokerToRoom2(final PokerRoom pokerRoom,final Poker poker)
+	{	
+		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_2,poker);
+	}
+	
+	public List<Poker> getPokerRoom2List(String userId)
+	{
+		return redisUtil.listGet(userId + RedisKeys.POKERHOME_2, Poker.class);
+	}
+	
+	public void deletePokerFromRoom2(String userId,Poker poker){
+		redisUtil.listDel(userId + RedisKeys.POKERHOME_2, poker);
+	}
+	
+	//--------------------------------------------------------room3
+	public void addPokerToRoom3(final PokerRoom pokerRoom,final Poker poker)
+	{	
+		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_3,poker);
+	}
+	
+	public List<Poker> getPokerRoom3List(String userId)
+	{
+		return redisUtil.listGet(userId + RedisKeys.POKERHOME_3, Poker.class);
+	}
+	
+	public void deletePokerFromRoom3(String userId,Poker poker){
+		redisUtil.listDel(userId + RedisKeys.POKERHOME_3, poker);
+	}
+	
+	//--------------------------------------------------------room4
+	public void addPokerToRoom4(final PokerRoom pokerRoom,final Poker poker)
+	{	
+		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_4,poker);
+	}
+	
+	public List<Poker> getPokerRoom4List(String userId)
+	{
+		return redisUtil.listGet(userId + RedisKeys.POKERHOME_4, Poker.class);
+	}
+	
+	public void deletePokerFromRoom4(String userId,Poker poker){
+		redisUtil.listDel(userId + RedisKeys.POKERHOME_4, poker);
+	}
+	
+	//--------------------------------------------------------room5
+	public void addPokerToRoom5(final PokerRoom pokerRoom,final Poker poker)
+	{	
+		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_5,poker);
+	}
+	
+	public List<Poker> getPokerRoom5List(String userId)
+	{
+		return redisUtil.listGet(userId + RedisKeys.POKERHOME_5, Poker.class);
+	}
+	
+	public void deletePokerFromRoom5(String userId,Poker poker){
+		redisUtil.listDel(userId + RedisKeys.POKERHOME_5, poker);
+	}
+	
+	//-------------------------------------------------------room6
+	public void addPokerToRoom6(final PokerRoom pokerRoom,final Poker poker)
+	{	
+		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_6,poker);
+	}
+	
+	public List<Poker> getPokerRoom8List(String userId)
+	{
+		return redisUtil.listGet(userId + RedisKeys.POKERHOME_6, Poker.class);
+	}
+	
+	public void deletePokerFromRoom6(String userId,Poker poker){
+		redisUtil.listDel(userId + RedisKeys.POKERHOME_6, poker);
+	}
+	
+	//-------------------------------------------------------room7
+	public void addPokerToRoom7(final PokerRoom pokerRoom,final Poker poker)
+	{	
+		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_7,poker);
 	}
 	
 	public List<Poker> getPokerRoomList(String userId)
 	{
-		return redisUtil.listGet(userId + RedisKeys.POKERHOME, Poker.class);
+		return redisUtil.listGet(userId + RedisKeys.POKERHOME_7, Poker.class);
 	}
 	
-	public Poker getPoker(String userId){
-		return redisUtil.hashGet(userId + RedisKeys.POKERHOME, friendId, Poker.class);
+	public void deletePokerFromRoom7(String userId,Poker poker){
+		redisUtil.listDel(userId + RedisKeys.POKERHOME_7, poker);
 	}
-	
-	public void deleteApplication(String userId,String friendId){
-		redisUtil.hashDel(userId + RedisKeys.FRIENDAPPLICATION, friendId);
-	}
+
 //-----------------------------------------洗牌区的牌------------------------------------------------------
 	
+	public void addPokerToShuffle(final ShuffleRoom shuffleRoom,final Poker poker){
+		redisUtil.listAdd(shuffleRoom.getUserId() + RedisKeys.SHUFFLE, poker);
+	}
 	
-
+	public List<Poker> getShuffleList(String userId){
+		return redisUtil.listGet(userId + RedisKeys.SHUFFLE, Poker.class);
+	}
+	
+	public void deletePokerFromShuffle(String userId,Poker poker){
+		redisUtil.listDel(userId + RedisKeys.SHUFFLE, poker);
+	}
 }

@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import org.personal.db.dao.Poker;
 import org.personal.util.JsonUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class CardService extends BaseService{
 	
 	public Container container=null;
 	
-	public  String sendPoker(){
+	public String sendPoker(String userId){
 		  //定义HashMap变量用于存储每张牌的编号以及牌型  
 	      HashMap<Integer,String> hm = new HashMap<Integer,String>();   
 	      //定义ArrayList变量存储牌的编号  
@@ -35,19 +35,23 @@ public class CardService extends BaseService{
 	      //定义扑克牌的状态
 	      String[] state = {"front","opposite"};
 	      
+	      Poker poker = new Poker();
 	      int index = 0;    
 	      //定义编号  
 	      for(String number : numbers){    
 	          //遍历排值数组  
 	          for(String color : colors){   
 	              //遍历花色  
-	              hm.put(index, color.concat("-").concat(number));  
+	        	  poker.setNumber(number);
+	        	  poker.setColor(color);
+	        	  poker.setDirection(null);
+//	              hm.put(index, color.concat("-").concat(number));  
 	              //将花色与牌值拼接，并将编号与拼接后的结果存储到hm中  
+	        	  
 	              array.add(index);   
 	              //将编号存储到array中  
 	              index++;}  
 	          }
-	      
 	      /* * 将小王和大王存储到hm中 */  
 //	      hm.put(index, "4".concat(":").concat("SJoker"));    
 //	      array.add(index);  
@@ -143,15 +147,15 @@ public class CardService extends BaseService{
 	  }
 	  /** * 遍历每个玩家的牌以及底牌 **/  
 	  public static void lookPoker(String name,TreeSet<Integer> ts,HashMap<Integer,String> hm){  
-	      System.out.print(name+":\t");    
-	      for(Integer key : ts){    
-	          //遍历玩家TreeSet集合，获得玩家的牌的编号  
-	          String value = hm.get(key);  
-	          //根据玩家牌编号获取具体的牌值  
-	          System.out.print(value+"  ");  
-	          }  
-	      System.out.println();  
-	      }
+	  System.out.print(name+":\t");    
+      for(Integer key : ts){    
+          //遍历玩家TreeSet集合，获得玩家的牌的编号  
+          String value = hm.get(key);  
+          //根据玩家牌编号获取具体的牌值  
+          System.out.print(value+"  ");  
+          }  
+      System.out.println();  
+      }
 	  
 	  //移动卡牌到手牌区
 	  public String moveCards(String cardList1,String cardList2){
@@ -213,7 +217,7 @@ public class CardService extends BaseService{
 	  
 	  public boolean isWon(String cardHome){
 		for (int i = 0; i < 7; i++) {
-			if(!CardMain.tablelist[i].isEmpty())
+			if(tablelist[i].isEmpty())
 				return false;
 		}
 		return true;
