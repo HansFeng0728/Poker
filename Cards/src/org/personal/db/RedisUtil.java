@@ -32,17 +32,17 @@ public class RedisUtil {
 		// 连接池配置
 		try
 		{
-			String pwd = (ConfigurationUtil.CHAT_REDIS_PWD_OPEN ? ConfigurationUtil.CHAT_REDIS_PWD : null);
+			String pwd = (ConfigurationUtil.CARD_REDIS_PWD_OPEN ? ConfigurationUtil.CARD_REDIS_PWD : null);
 			
 			JedisPoolConfig config = new JedisPoolConfig();
-			config.setMaxTotal(250);
+			config.setMaxTotal(2500);
 			config.setMaxIdle(21600000);
 			config.setMaxWaitMillis(1000);
 			config.setTestOnBorrow(true);
 			config.setTestWhileIdle(true);
 			pool = new JedisPool(config, 
-					ConfigurationUtil.CHAT_REDIS_HOST, 
-					ConfigurationUtil.CHAT_REDIS_PROT, 
+					ConfigurationUtil.CARD_REDIS_HOST, 
+					ConfigurationUtil.CARD_REDIS_PROT,
 					10000, 
 					pwd, 
 					0);

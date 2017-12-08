@@ -43,11 +43,11 @@ public class ConfigurationUtil {
 			logger.info(temp + " -->"+ config.getString(temp));
 		}
 	}
-	public static final int CHAT_REDIS_PROT = config.getInt("app.card.port");
+	public static final int CARD_REDIS_PROT = config.getInt("app.card.port");
 	
-	public static final String CHAT_REDIS_HOST = config.getString("app.card.addr");
+	public static final String CARD_REDIS_HOST = config.getString("app.card.addr");
 	
-	public static final String CHAT_REDIS_PWD = config.getString("app.card.pwd");
+	public static final String CARD_REDIS_PWD = config.getString("app.card.pwd");
 	//redis密码开关
-	public static final boolean CHAT_REDIS_PWD_OPEN = config.getBoolean("card.redis.pwd.open", false);
+	public static final boolean CARD_REDIS_PWD_OPEN = config.getBoolean("card.redis.pwd.open", false);
 }

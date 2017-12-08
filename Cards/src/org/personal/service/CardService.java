@@ -10,6 +10,7 @@ import java.util.TreeSet;
 
 import org.personal.db.DBUtil;
 import org.personal.db.dao.Poker;
+import org.personal.db.dao.PokerList;
 import org.personal.util.JsonUtil;
 
 import com.google.gson.Gson;
@@ -56,15 +57,25 @@ public class CardService extends BaseService{
 	              index++;
 	          }  
 	      }
-	      Collections.shuffle(array);   
+	      Collections.shuffle(array);
 	      
 	      List<String> pokerHandler = new ArrayList<String>();
 	      List<Poker> pokerShuffle = new ArrayList<>();
 	      
 	      DBUtil.GetInstance().init();
-	   
-	      //先留出在洗牌区的24张牌
-	      for( int i = 0; i < 52; i++){
+	      
+	      
+	      //分出洗牌区和手牌区的牌
+	      for( int i = 0; i < array.size(); i++){
+	    	  if( i < 28){
+	    		  if( i >= 21){
+	    			  DBUtil.GetInstance().addPokerToRoom1(userId, hm.get(array.get(i)));
+		    		  continue;
+		    	  }
+		    	  hm.get(array.get(i)).setDirection("opposite");
+		    	  DBUtil.GetInstance().addPokerToRoom1(userId, hm.get(array.get(i)));
+		    	  continue;
+	    	  }
 	    	  pokerShuffle.add(hm.get(array.get(i)));
 //	    	  System.out.println("----"+hm.get(array.get(i)).getNumber()+"----"+hm.get(array.get(i)).getColor()+"---"+hm.get(array.get(i)).getDirection()+"----0-0-"+hm.get(array.get(i)).getPokerId());
 	    	  DBUtil.GetInstance().addPokerToShuffle(userId, hm.get(array.get(i)));
@@ -75,12 +86,8 @@ public class CardService extends BaseService{
 	      String jsonPokerShuffle = gson.toJson(pokerShuffle);
 	      
 	      //分出手牌区里面的7张朝上的牌和21张朝下的牌
-	      for( int i = POKER_SHUFFLE; i < array.size(); i++){
-	    	  if( i >= array.size() - 7){
-	    		  continue;
-	    	  }else{
-	    		  hm.get(array.get(i)).setDirection("opposite");
-	    	  }
+	      for( int i = 0; i < 28; i++){
+	    	 
 	      }
 	      //七个手牌区的数据
 	      String jsonPokerHandler = gson.toJson(pokerHandler);
@@ -91,7 +98,6 @@ public class CardService extends BaseService{
 		  String pokerJson = JsonUtil.encodeJson(pokerJsonParam);    
 	      
 	      return pokerJson;
-	      
 //	      //二人斗地主的发牌  弃用
 //	      List<String> playerOne = new ArrayList<String>();
 //	      List<String> playerTwo = new ArrayList<String>();
@@ -150,7 +156,6 @@ public class CardService extends BaseService{
 //	      }
 //	      buf.append("]");
 //	      return buf.toString().getBytes();
-	      
 	  }
 	  /** * 遍历每个玩家的牌以及底牌 **/  
 	  public static void lookPoker(String name,TreeSet<Integer> ts,HashMap<Integer,String> hm){  
@@ -227,5 +232,41 @@ public class CardService extends BaseService{
 		
 		}
 		return true;
+	  }
+	  
+	  public void initPokerList(String pokerId){
+		  
+	      HashMap<Integer,Poker> hm = new HashMap<Integer,Poker>();   
+	      //定义变量存储洗牌区牌的编号  
+	      ArrayList<Integer> array = new ArrayList<Integer>();  
+	      //定义数组存储牌的花色  
+	      String[] colors = {"0","1","2","3"};   
+	      //定义数组存储牌值  
+	      String[] numbers = {"1","2","3","4","5","6","7","8","9","10","11","12","13"};
+	      //定义扑克牌的状态
+	      String[] state = {"front","opposite"};
+	      
+	      int index = 0; 
+	      //定义编号  
+	      for(String number : numbers){    
+	          //遍历排值数组  
+	          for(String color : colors){   
+	              //遍历花色  
+	        	  Poker poker = new Poker();
+	        	  poker.setPokerId(index);
+	        	  poker.setNumber(number);
+	        	  poker.setColor(color);
+	        	  poker.setDirection("front");
+	        	  
+	        	  hm.put(index, poker);
+	              array.add(index);   
+	              index++;
+	          }  
+	      }
+	      Collections.shuffle(array);
+	      
+	      PokerList pp = new PokerList();
+	      
+	      
 	  }
 }

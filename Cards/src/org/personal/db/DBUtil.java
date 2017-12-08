@@ -59,7 +59,7 @@ public class DBUtil {
 //		loadPayer();
 
 		dbwork = new FastConsumeTask();
-		dbwork.start(10);
+		dbwork.start(3);
 	}
 	
 	public int taskCount()
@@ -133,9 +133,9 @@ public class DBUtil {
 	
 //--------------------------------------------七个移牌区的牌----------------------------------------------
 	//--------------------------------------------------------room1
-	public void addPokerToRoom1(final PokerRoom pokerRoom,final Poker poker)
+	public void addPokerToRoom1(final String userId,final Poker poker)
 	{	
-		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_1,poker);
+		redisUtil.listAdd(userId + RedisKeys.POKERHOME_1,poker);
 	}
 	
 	public List<Poker> getPokerRoom1List(String userId)
@@ -148,9 +148,9 @@ public class DBUtil {
 	}
 	
 	//-------------------------------------------------------room2
-	public void addPokerToRoom2(final PokerRoom pokerRoom,final Poker poker)
+	public void addPokerToRoom2(final String userId,final Poker poker)
 	{	
-		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_2,poker);
+		redisUtil.listAdd(userId + RedisKeys.POKERHOME_2,poker);
 	}
 	
 	public List<Poker> getPokerRoom2List(String userId)
@@ -163,9 +163,9 @@ public class DBUtil {
 	}
 	
 	//--------------------------------------------------------room3
-	public void addPokerToRoom3(final PokerRoom pokerRoom,final Poker poker)
+	public void addPokerToRoom3(final String userId,final Poker poker)
 	{	
-		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_3,poker);
+		redisUtil.listAdd(userId + RedisKeys.POKERHOME_3,poker);
 	}
 	
 	public List<Poker> getPokerRoom3List(String userId)
@@ -178,9 +178,9 @@ public class DBUtil {
 	}
 	
 	//--------------------------------------------------------room4
-	public void addPokerToRoom4(final PokerRoom pokerRoom,final Poker poker)
+	public void addPokerToRoom4(final String userId,final Poker poker)
 	{	
-		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_4,poker);
+		redisUtil.listAdd(userId + RedisKeys.POKERHOME_4,poker);
 	}
 	
 	public List<Poker> getPokerRoom4List(String userId)
@@ -193,9 +193,9 @@ public class DBUtil {
 	}
 	
 	//--------------------------------------------------------room5
-	public void addPokerToRoom5(final PokerRoom pokerRoom,final Poker poker)
+	public void addPokerToRoom5(final String userId,final Poker poker)
 	{	
-		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_5,poker);
+		redisUtil.listAdd(userId + RedisKeys.POKERHOME_5,poker);
 	}
 	
 	public List<Poker> getPokerRoom5List(String userId)
@@ -208,9 +208,9 @@ public class DBUtil {
 	}
 	
 	//-------------------------------------------------------room6
-	public void addPokerToRoom6(final PokerRoom pokerRoom,final Poker poker)
+	public void addPokerToRoom6(final String userId,final Poker poker)
 	{	
-		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_6,poker);
+		redisUtil.listAdd(userId + RedisKeys.POKERHOME_6,poker);
 	}
 	
 	public List<Poker> getPokerRoom8List(String userId)
@@ -223,9 +223,9 @@ public class DBUtil {
 	}
 	
 	//-------------------------------------------------------room7
-	public void addPokerToRoom7(final PokerRoom pokerRoom,final Poker poker)
+	public void addPokerToRoom7(final String userId,final Poker poker)
 	{	
-		redisUtil.listAdd(pokerRoom.getUserId() + RedisKeys.POKERHOME_7,poker);
+		redisUtil.listAdd(userId + RedisKeys.POKERHOME_7,poker);
 	}
 	
 	public List<Poker> getPokerRoomList(String userId)
