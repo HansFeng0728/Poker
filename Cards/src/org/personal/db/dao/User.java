@@ -5,9 +5,9 @@ import java.util.Date;
 public class User {
     private Integer Id;
 
-	private Date lastlogintime;
+	private Date lastLoginTime;
 
-    private Date lastlogouttime;
+	private Date lastLogoutTime;
 
     private Integer score;
 
@@ -21,21 +21,21 @@ public class User {
 		Id = id;
 	}
 
-    public Date getLastlogintime() {
-        return lastlogintime;
-    }
+    public Date getLastLoginTime() {
+		return lastLoginTime;
+	}
 
-    public void setLastlogintime(Date lastlogintime) {
-        this.lastlogintime = lastlogintime;
-    }
+	public void setLastLoginTime(Date lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
+	}
 
-    public Date getLastlogouttime() {
-        return lastlogouttime;
-    }
+	public Date getLastLogoutTime() {
+		return lastLogoutTime;
+	}
 
-    public void setLastlogouttime(Date lastlogouttime) {
-        this.lastlogouttime = lastlogouttime;
-    }
+	public void setLastLogoutTime(Date lastLogoutTime) {
+		this.lastLogoutTime = lastLogoutTime;
+	}
 
     public Integer getScore() {
         return score;

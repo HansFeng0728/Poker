@@ -2,10 +2,10 @@ package org.personal.db.dao;
 
 public class PokerListWithBLOBs extends PokerList {
     private String pokersid;
-
-    private String content;
-
-    private String type;
+    
+ 	private String content;
+     
+    private int type;
 
     public String getPokersid() {
         return pokersid;
@@ -23,11 +23,11 @@ public class PokerListWithBLOBs extends PokerList {
         this.content = content == null ? null : content.trim();
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type == null ? null : type.trim();
+    public void setType(int type) {
+        this.type = type == 0 ? 0 : type;
     }
 }

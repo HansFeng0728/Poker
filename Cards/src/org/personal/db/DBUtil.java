@@ -4,17 +4,19 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.personal.db.dao.Poker;
-import org.personal.db.dao.PokerRoom;
 import org.personal.db.dao.User;
 import org.personal.db.dao.UserMapper;
 import org.personal.util.Constant;
 import org.personal.util.FastConsumeTask;
+import org.personal.util.TaskHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DBUtil {
-	
+	private Logger logger = LoggerFactory.getLogger(DBUtil.class.getName());
 	public static enum DBEnvironment 
 	{  
-		DB_CHAT(new DB("chatdb", Constant.DIR_CONFIG + "chatdb_mbconfig.xml"));
+		DB_CHAT(new DB("carddb", Constant.DIR_CONFIG + "carddb_mbconfig.xml"));
 
 		private DB db;
 
@@ -97,6 +99,7 @@ public class DBUtil {
 		return -1;
 	}
 	
+	//-----------------------------------------------用户相关--------------------------------------
 	public User getUser(String userId)
 	{
 		User user = redisUtil.get(userId, User.class);
@@ -130,6 +133,84 @@ public class DBUtil {
 		}
 		return user;
 	}
+	
+	public void saveUser(final User user)
+	{	
+		redisUtil.set(user.getUserId(), user);
+		dbwork.produce(new TaskHandler()
+		{
+			@Override
+			public void onEvent() 
+			{
+				saveUserByDB(user);
+			}
+		});
+	}
+	
+	public void saveUserByDB(User user)
+	{
+		if(user == null)
+		{
+			logger.error("saveUserByDB user is null!");
+			return ;
+		}
+
+		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+		try
+		{
+			UserMapper userMapper = session.getMapper(UserMapper.class);
+			userMapper.insert(user);
+			session.commit();
+		}
+		catch (Exception e) {
+			logger.error("DBUtil", e);
+		}
+		finally
+		{
+			session.close();
+		}
+	}
+	
+	public void updateUser(final User user)
+	{
+		redisUtil.set(user.getUserId(), user);
+		dbwork.produce(new TaskHandler()
+		{
+			@Override
+			public void onEvent() 
+			{
+				updateUserByDB(user);
+			}
+		});
+	}
+	
+	public void updateUserByDB(User user)
+	{
+		if(user == null)
+		{
+			logger.error("updateUserToDB user is null!");
+			return ;
+		}
+
+		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+		try
+		{
+			UserMapper userMapper = session.getMapper(UserMapper.class);
+			userMapper.updateByPrimaryKeySelective(user);
+			session.commit();
+		}
+		catch (Exception e) {
+			logger.error("DBUtil", e);
+		}
+		finally
+		{
+			session.close();
+		}
+	}
+
+//---------------------------------------------------牌库相关
+	
+	
 	
 //--------------------------------------------七个移牌区的牌----------------------------------------------
 	//--------------------------------------------------------room1
@@ -213,7 +294,7 @@ public class DBUtil {
 		redisUtil.listAdd(userId + RedisKeys.POKERHOME_6,poker);
 	}
 	
-	public List<Poker> getPokerRoom8List(String userId)
+	public List<Poker> getPokerRoom6List(String userId)
 	{
 		return redisUtil.listGet(userId + RedisKeys.POKERHOME_6, Poker.class);
 	}
@@ -228,7 +309,7 @@ public class DBUtil {
 		redisUtil.listAdd(userId + RedisKeys.POKERHOME_7,poker);
 	}
 	
-	public List<Poker> getPokerRoomList(String userId)
+	public List<Poker> getPokerRoom7List(String userId)
 	{
 		return redisUtil.listGet(userId + RedisKeys.POKERHOME_7, Poker.class);
 	}

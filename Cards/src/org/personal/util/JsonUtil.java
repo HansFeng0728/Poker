@@ -74,5 +74,15 @@ public class JsonUtil {
 		 String jsonStr = gson.toJson(userJsonParam);
 		 return jsonStr;
 	}
-
+	
+	public static String encodeJson(Object obj){
+		Gson gson = new Gson();
+		String str = gson.toJson(obj);
+		return str;
+	}
+	
+	public static <T> T decodeObj(String jsonStr, Class<T> clazz){
+		Gson gson = new Gson();
+		return gson.fromJson(jsonStr, clazz);
+	}
 }

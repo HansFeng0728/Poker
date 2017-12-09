@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,10 +15,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.protocol.HTTP;
 import org.personal.service.CardService;
 import org.personal.service.UserService;
+import org.personal.util.ConfigurationUtil;
 import org.personal.util.DButil;
+import org.personal.util.HttpUtil;
 import org.personal.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +40,7 @@ import com.mysql.jdbc.Statement;
  * @author 
  *
  */
+@RequestMapping("/index")
 @Controller
 public class HomeController {
 	
@@ -94,9 +94,9 @@ public class HomeController {
 		if(userService.isNull(userid)){
 			return;
 		}
-		if(userService.isExist(userid)){
-			logger.info("login success,username = {}",userid);
-		}
+//		if(userService.isExist(userid)){
+//			logger.info("login success,username = {}",userid);
+//		}
 		
 		Map<String, String> userJsonParam = new HashMap<String,String>();
 		userJsonParam.put("userId", userid);//内容字符串
@@ -114,7 +114,7 @@ public class HomeController {
 		
 		Map<String, String> body = new HashMap<String, String>();
 		body.put("user", userJson);
-		body.put("pokers", pokerJson + cardService.sendPoker());
+		body.put("pokers", pokerJson + cardService.sendPoker(userid));
 		String jsoncontent = JsonUtil.encodeJson(body);
 		
 		PrintWriter pw = response.getWriter();
@@ -122,28 +122,36 @@ public class HomeController {
 //		pw.flush();
 	}
 	
-	@RequestMapping("/moveCards")
-	public void moveCards(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"utf-8"));
-		String line = null;
-		
-		while ((line = br.readLine()) == null) {  
-	           logger.error("moveCards json data is null, json = {}",line);  
-	    }
-		JsonParser parse = new JsonParser();
-        JsonObject json = (JsonObject)parse.parse(line);
-        JsonArray trans = (JsonArray)json.get("sendPokers");
-        JsonObject trans_result = (JsonObject)trans.get(0);
-        String movePoker = trans_result.get("movepokerList").getAsString();
-        String targetPoker = trans_result.get("targetpoker").getAsString();
-        
-        String jsoncard = cardService.moveCards(movePoker, targetPoker);
-        
-        PrintWriter pw = response.getWriter();
-        pw.println();
-	}
+//	@RequestMapping("/moveCards")
+//	public void moveCards(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException{
+//		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"utf-8"));
+//		String line = null;
+//		
+//		while ((line = br.readLine()) == null) {  
+//	           logger.error("moveCards json data is null, json = {}",line);  
+//	    }
+//		JsonParser parse = new JsonParser();
+//        JsonObject json = (JsonObject)parse.parse(line);
+//        JsonArray trans = (JsonArray)json.get("sendPokers");
+//        JsonObject trans_result = (JsonObject)trans.get(0);
+//        String movePoker = trans_result.get("movepokerList").getAsString();
+//        String targetPoker = trans_result.get("targetpoker").getAsString();
+//        if()
+//        String jsoncard = cardService.moveCards(movePoker, targetPoker);
+//        
+//        PrintWriter pw = response.getWriter();
+//        pw.println();
+//	}
 	
-	@RequestMapping("/moveCardToCardHome")
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @throws UnsupportedEncodingException
+	 * @throws IOException
+	 * 把卡牌移动到
+	 */
+	@RequestMapping("/moveCardToPokerRoom")
 	public void moveCardToCardHome(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"utf-8"));
 		String line = null;
@@ -161,33 +169,30 @@ public class HomeController {
 		return mav;
 	}
 	
-	@RequestMapping(value="/loginTest", method = RequestMethod.POST)  
-	public void recieveRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// 读取请求内容
-		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-		String line = null;
-		StringBuilder sb = new StringBuilder();
-		while ((line = br.readLine()) != null) {
-			sb.append(line);
-		}
+	@RequestMapping(value="/loginTest", method = RequestMethod.GET)
+	public void recieveRequest(HttpServletRequest request, HttpServletResponse response,String requestStr) throws Exception {
+//		// 读取请求内容
+//		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+//		String line = null;
+//		StringBuilder sb = new StringBuilder();
+//		while ((line = br.readLine()) != null) {
+//			sb.append(line);
+//		}
 
 		// 将资料解码
 		JsonParser parse = new JsonParser();
-		String reqBody = sb.toString();
-		JsonObject json = (JsonObject) parse.parse(reqBody); 
+//		String reqBody = sb.toString();
 		String data = "{'isAdmin':'true', 'usename':wsf}";
+		JsonObject json = (JsonObject) parse.parse(data); 
 		
-		String username = json.get("user").getAsString();
+		String username = json.get("isAdmin").getAsString();
 		if(username.equals("") || null == username || username.length()<=0 ){
 			response.setContentType("text/html;charset=utf-8");
 			PrintWriter pw = response.getWriter();
-			
-			
 			return;
 		}
 		
 		System.out.println("user's name is:" + username);
-		
 		ResultSet test;
 		try {
 			Connection connect = DButil.getConnect();
@@ -200,22 +205,25 @@ public class HomeController {
 			}else{
 				String sqlInsertPass = "insert into " + DButil.TABLE_USER + "(userName) values('"+ username + "')";
 				statement.execute(sqlInsertPass);
-				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}  
-		response.setContentType("text/html;charset=utf-8");
 		
+		response.setContentType("text/html;charset=utf-8");
+		if(userService.isLoginCards(username)){
+//			String url =  ConfigurationUtil.ZONE_CHATSERVER_URL + "/index/initCards";	
+			String jsonname = JsonUtil.encodeJson(username);
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("data", jsonname);
+//			String resultJson = 
+		}
 		// 要返回的json字符串
 		PrintWriter writer = response.getWriter();
 		writer.write(data); 
 		writer.flush();
 		writer.close();
-		writer.flush();
 		
 		response.getWriter().append("\n").append("Served at: ").append(request.getContextPath());
 	}
-	
-
 }

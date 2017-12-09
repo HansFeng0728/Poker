@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.nkm.db.dao.UserMapper" >
-  <resultMap id="BaseResultMap" type="com.nkm.db.dao.User" >
+<mapper namespace="org.personal.db.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="org.personal.db.dao.User" >
     <id column="Id" property="id" jdbcType="INTEGER" />
     <result column="lastLoginTime" property="lastlogintime" jdbcType="DATE" />
     <result column="lastLogoutTime" property="lastlogouttime" jdbcType="DATE" />
     <result column="score" property="score" jdbcType="INTEGER" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.nkm.db.dao.User" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="org.personal.db.dao.User" extends="BaseResultMap" >
     <result column="userId" property="userid" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -28,13 +28,13 @@
     delete from user
     where Id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.nkm.db.dao.User" >
+  <insert id="insert" parameterType="org.personal.db.dao.User" >
     insert into user (Id, lastLoginTime, lastLogoutTime, 
       score, userId)
-    values (#{id,jdbcType=INTEGER}, #{lastlogintime,jdbcType=DATE}, #{lastlogouttime,jdbcType=DATE}, 
-      #{score,jdbcType=INTEGER}, #{userid,jdbcType=LONGVARCHAR})
+    values (#{id,jdbcType=INTEGER}, #{lastLoginTime,jdbcType=DATE}, #{lastLogoutTime,jdbcType=DATE}, 
+      #{score,jdbcType=INTEGER}, #{userId,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.nkm.db.dao.User" >
+  <insert id="insertSelective" parameterType="org.personal.db.dao.User" >
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -71,7 +71,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nkm.db.dao.User" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.personal.db.dao.User" >
     update user
     <set >
       <if test="lastlogintime != null" >
@@ -89,7 +89,7 @@
     </set>
     where Id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.nkm.db.dao.User" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.personal.db.dao.User" >
     update user
     set lastLoginTime = #{lastLogintime,jdbcType=DATE},
       lastLogoutTime = #{lastLogouttime,jdbcType=DATE},
@@ -97,7 +97,7 @@
       userId = #{userId,jdbcType=LONGVARCHAR}
     where Id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.nkm.db.dao.User" >
+  <update id="updateByPrimaryKey" parameterType="org.personal.db.dao.User" >
     update user
     set lastLoginTime = #{lastLogintime,jdbcType=DATE},
       lastLogoutTime = #{lastLogouttime,jdbcType=DATE},

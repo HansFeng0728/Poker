@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.nkm.db.dao.PokerListMapper" >
-  <resultMap id="BaseResultMap" type="com.nkm.db.dao.PokerList" >
+<mapper namespace="org.personal.db.dao.PokerListMapper" >
+  <resultMap id="BaseResultMap" type="org.personal.db.dao.PokerList" >
     <id column="Id" property="id" jdbcType="INTEGER" />
     <result column="shortestCompleteTime" property="shortestcompletetime" jdbcType="DATE" />
     <result column="successRate" property="successrate" jdbcType="TINYINT" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.nkm.db.dao.PokerListWithBLOBs" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="org.personal.db.dao.PokerListWithBLOBs" extends="BaseResultMap" >
     <result column="pokersId" property="pokersid" jdbcType="LONGVARCHAR" />
     <result column="content" property="content" jdbcType="LONGVARCHAR" />
     <result column="type" property="type" jdbcType="LONGVARCHAR" />
@@ -29,7 +29,7 @@
     delete from pokerlist
     where Id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.nkm.db.dao.PokerListWithBLOBs" >
+  <insert id="insert" parameterType="org.personal.db.dao.PokerListWithBLOBs" >
     insert into pokerlist (Id, shortestCompleteTime, successRate, 
       pokersId, content, type
       )
@@ -37,7 +37,7 @@
       #{pokersid,jdbcType=LONGVARCHAR}, #{content,jdbcType=LONGVARCHAR}, #{type,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.nkm.db.dao.PokerListWithBLOBs" >
+  <insert id="insertSelective" parameterType="org.personal.db.dao.PokerListWithBLOBs" >
     insert into pokerlist
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -80,7 +80,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nkm.db.dao.PokerListWithBLOBs" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.personal.db.dao.PokerListWithBLOBs" >
     update pokerlist
     <set >
       <if test="shortestcompletetime != null" >
@@ -101,7 +101,7 @@
     </set>
     where Id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.nkm.db.dao.PokerListWithBLOBs" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.personal.db.dao.PokerListWithBLOBs" >
     update pokerlist
     set shortestCompleteTime = #{shortestcompletetime,jdbcType=DATE},
       successRate = #{successrate,jdbcType=TINYINT},
@@ -110,7 +110,7 @@
       type = #{type,jdbcType=LONGVARCHAR}
     where Id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.nkm.db.dao.PokerList" >
+  <update id="updateByPrimaryKey" parameterType="org.personal.db.dao.PokerList" >
     update pokerlist
     set shortestCompleteTime = #{shortestcompletetime,jdbcType=DATE},
       successRate = #{successrate,jdbcType=TINYINT}

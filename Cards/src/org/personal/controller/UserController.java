@@ -1,13 +1,5 @@
 package org.personal.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.personal.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 
 /***
@@ -48,5 +37,13 @@ public class UserController {
 			}
 		}
 		return true;
+	}
+	
+	public void LoginCard(String userName){
+		if(userName == null){
+			logger.error("null of userName,{}",userName);
+		}
+		
+		
 	}
 }

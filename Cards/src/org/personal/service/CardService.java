@@ -7,24 +7,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
-
 import org.personal.db.DBUtil;
 import org.personal.db.dao.Poker;
 import org.personal.db.dao.PokerList;
 import org.personal.util.JsonUtil;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 
 public class CardService extends BaseService{
 	
-	private static final int POKER_SHUFFLE = 24;
+	private static final int POKER_HANDLEER = 28;
 	
 	public Container container=null;
 	
-	public static void main(String[] args){
-		CardService cc = new CardService();
-		cc.sendPoker("1001");
-	}
+	static Logger logger = LoggerFactory.getLogger(CardService.class);
 	
 	public String sendPoker(String userId){
 		  //定义HashMap变量用于存储每张牌的编号以及牌型  
@@ -34,14 +31,13 @@ public class CardService extends BaseService{
 	      //定义数组存储牌的花色  
 	      String[] colors = {"0","1","2","3"};   
 	      //定义数组存储牌值  
-	      String[] numbers = {"1","2","3","4","5","6","7","8","9","10","11","12","13"};
+	      int[] numbers = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 	      //定义扑克牌的状态
 	      String[] state = {"front","opposite"};
 	      
 	      int index = 0; 
-	      
 	      //定义编号  
-	      for(String number : numbers){    
+	      for(int number : numbers){    
 	          //遍历排值数组  
 	          for(String color : colors){   
 	              //遍历花色  
@@ -64,20 +60,18 @@ public class CardService extends BaseService{
 	      
 	      DBUtil.GetInstance().init();
 	      
-	      
 	      //分出洗牌区和手牌区的牌
 	      for( int i = 0; i < array.size(); i++){
-	    	  if( i < 28){
-	    		  if( i >= 21){
+	    	  if( i < POKER_HANDLEER){
+	    		  if( i >= POKER_HANDLEER - 7){
 	    			  DBUtil.GetInstance().addPokerToRoom1(userId, hm.get(array.get(i)));
 		    		  continue;
 		    	  }
-		    	  hm.get(array.get(i)).setDirection("opposite");
+	    		  hm.get(array.get(i)).setDirection("opposite");
 		    	  DBUtil.GetInstance().addPokerToRoom1(userId, hm.get(array.get(i)));
 		    	  continue;
 	    	  }
 	    	  pokerShuffle.add(hm.get(array.get(i)));
-//	    	  System.out.println("----"+hm.get(array.get(i)).getNumber()+"----"+hm.get(array.get(i)).getColor()+"---"+hm.get(array.get(i)).getDirection()+"----0-0-"+hm.get(array.get(i)).getPokerId());
 	    	  DBUtil.GetInstance().addPokerToShuffle(userId, hm.get(array.get(i)));
 	      }
 	      
@@ -169,86 +163,87 @@ public class CardService extends BaseService{
       System.out.println();  
       }
 	  
-	  //移动卡牌到手牌区
-	  public String moveCards(String cardList1,String cardList2){
-		  String[] cardlist2 = cardList2.split("-");
-		  String list2_color = cardlist2[0];
-		  String list2_num = cardlist2[1];
-		  
-		  String[] cardlist1 = cardList1.split(",");
-		  String cardlist_first = cardlist1[0];
-		  String[] list1_color_num = cardlist_first.split("-");
-		  String list1_color = list1_color_num[0];
-		  String list1_num = list1_color_num[1];
-		  
-		  int listcolor1 = Integer.valueOf(list1_color);
-		  int listcolor2 = Integer.valueOf(list2_color);
-		  if((listcolor1%2) == (listcolor2%2) ){
-			 System.out.println("error,the color is same, move_color = {},target_color = {}"+listcolor1+listcolor2);
-		  }
-		  
-		  int listnum1 = Integer.valueOf(list1_num);
-		  int listnum2 = Integer.valueOf(list2_num);
-		  if(listnum1+1 == listnum2){
-			  System.out.println("error,only can be moved when the target card is the next num of current card,move_num ="+listnum1+"target_num="+listnum2);
-		  }
-		  cardList2 = cardList2 + cardList1;
-		  return cardList2;
-	  }
+	  //移动卡牌到七个手牌区之一(1.从洗牌区移入 2.在手牌区互相移动)
+	  //position 只有在向空白的位置移动时才会进行判断
+	  //这里的poker不用判断为空，是在上一步解析中拼接的
+	public boolean moveCardsToPokerRoom(Poker poker, Poker targetPoker, String position) {
+		if ("opposite".equals(poker.getDirection()) || "opposite".equals(targetPoker.getDirection())) {
+			logger.error("can't move the opposite card");
+			return false;
+		}
+		
+		if(!poker.getColor().equals(targetPoker.getColor())){
+			return false;
+		}
+		
+		if(!(poker.getNumber() == targetPoker.getNumber()-1)){
+			logger.error("can't put the poker into the false number");
+			return false;
+		}
+		return true;
+	}
 	  
 	  //移动卡牌到四个存牌区之一
-	  public String moveToCardHome(String card,String cardHome){
-		  String[] cardlist = card.split("-");
-		  String cardnum = cardlist[1];
-		  int num = Integer.valueOf(cardnum);
-		  
-		  String[] cardHomeList = cardHome.split(",");
-		  if( cardHomeList.length < 1){
-			  if( num != 1){
-				  System.out.println("can't put card which is not A in the empty cardHome");
+	  //空位置只能从A开始放，从小到大依次放
+	  public boolean moveToCardHome(Poker poker,Poker targetPoker, String position, String cardHome){
+		  if(targetPoker == null){
+			  if(poker.getNumber() != 1){
+				  logger.error("can't put number except A to the null position");
+				  return false;
 			  }
-			  cardHome = cardHome.concat(",").concat(card);
-			  return cardHome;
+		  }else{
+			  if(poker.getNumber()-1 != targetPoker.getNumber()){
+				  logger.error("must put the card in order of number");
+				  return false;
+			  }
 		  }
-		  String currentCard = cardHomeList[cardHomeList.length-1];
-		  String[] currentCardList =  currentCard.split("-");
-		  String currentCardN = currentCardList[1];
-		  int currentCardnum = Integer.valueOf(currentCardN);
-		  
-		  if( num != currentCardnum+1){
-			  System.out.println("must put the card into the cardHome in order of num, the movecardnum:{}"+num);
-		  }
-		  cardHome = cardHome.concat(",").concat(card);
-		  return cardHome;
+		  return true;
 	  }
-	  
 	  public boolean isCorrenctCardHome(String pokerHomeList){
-		  
 		  return false;
 	  }
 	  
-	  public boolean isWon(String cardHome){
-		for (int i = 0; i < 7; i++) {
+	  //判断是否胜利，七个手牌区和洗牌区的均没有卡牌
+	  public boolean isWon(String userId){
+		List<Poker> rList1 = DBUtil.GetInstance().getPokerRoom1List(userId);
+		List<Poker> rList2 = DBUtil.GetInstance().getPokerRoom2List(userId);
+		List<Poker> rList3 = DBUtil.GetInstance().getPokerRoom3List(userId);
+		List<Poker> rList4 = DBUtil.GetInstance().getPokerRoom4List(userId);
+		List<Poker> rList5 = DBUtil.GetInstance().getPokerRoom5List(userId);
+		List<Poker> rList6 = DBUtil.GetInstance().getPokerRoom6List(userId);
+		List<Poker> rList7 = DBUtil.GetInstance().getPokerRoom7List(userId);
 		
+		List<Poker> sList = DBUtil.GetInstance().getShuffleList(userId);
+		if(rList1 == null && rList2 == null && rList3 == null && rList4 == null){
+			if(rList5 == null && rList6 == null && rList7 == null){
+				if(sList == null){
+					return true;
+				}
+			}
 		}
-		return true;
+		return false;
 	  }
 	  
-	  public void initPokerList(String pokerId){
+	  public boolean isFailed(String userId,List<Poker> allPokers){
 		  
+		  return true;
+	  }
+	  
+	  //洗牌  存入数据库  
+	  public void initPokerList(String pokerId){
 	      HashMap<Integer,Poker> hm = new HashMap<Integer,Poker>();   
 	      //定义变量存储洗牌区牌的编号  
 	      ArrayList<Integer> array = new ArrayList<Integer>();  
 	      //定义数组存储牌的花色  
 	      String[] colors = {"0","1","2","3"};   
 	      //定义数组存储牌值  
-	      String[] numbers = {"1","2","3","4","5","6","7","8","9","10","11","12","13"};
+	      int[] numbers = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 	      //定义扑克牌的状态
 	      String[] state = {"front","opposite"};
 	      
 	      int index = 0; 
 	      //定义编号  
-	      for(String number : numbers){    
+	      for(int number : numbers){    
 	          //遍历排值数组  
 	          for(String color : colors){   
 	              //遍历花色  
@@ -264,9 +259,8 @@ public class CardService extends BaseService{
 	          }  
 	      }
 	      Collections.shuffle(array);
-	      
 	      PokerList pp = new PokerList();
-	      
-	      
+	      pp.setContent(hm.toString());
+	      pp.setPokerId(pokerId);
 	  }
 }

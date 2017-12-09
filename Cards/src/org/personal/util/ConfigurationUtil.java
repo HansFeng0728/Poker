@@ -50,4 +50,6 @@ public class ConfigurationUtil {
 	public static final String CARD_REDIS_PWD = config.getString("app.card.pwd");
 	//redis密码开关
 	public static final boolean CARD_REDIS_PWD_OPEN = config.getBoolean("card.redis.pwd.open", false);
+	
+	public static final String ZONE_CHATSERVER_URL = config.getString("card.web");
 }
