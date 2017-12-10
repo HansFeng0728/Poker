@@ -27,10 +27,6 @@ public class CardService extends BaseService{
 	public Container container=null;
 	
 	static Logger logger = LoggerFactory.getLogger(CardService.class);
-	public static void main(String[] args) throws JsonGenerationException, JsonMappingException, IOException{
-		CardService cc = new CardService();
-		cc.sendPoker("tt11");
-	}
 	
 	private static ObjectMapper mapper = new ObjectMapper();
 	public  Map<String, String> sendPoker(String userId) throws JsonGenerationException, JsonMappingException, IOException{
@@ -62,6 +58,9 @@ public class CardService extends BaseService{
 	              index++;
 	          }  
 	      }
+	      for(int i = 0; i < hm.size();i++){
+	    	  System.out.println(hm.get(array.get(i)).getPokerId()+"--"+hm.get(array.get(i)).getNumber()+"--"+hm.get(array.get(i)).getColor());
+	      }
 	      Collections.shuffle(array);
 
 	      DBUtil.GetInstance().init();
@@ -78,18 +77,18 @@ public class CardService extends BaseService{
 //	    			  System.out.println(hm.get(array.get(i)).getNumber()+":"+hm.get(array.get(i)).getDirection()+":"+hm.get(array.get(i)).getColor());
 	    			  pokerHandler.add(hm.get(array.get(i)).getPokerId()+":"+hm.get(array.get(i)).getDirection());
 //	    			  DBUtil.GetInstance().addPokerToRoom1(userId, hm.get(array.get(i)));
-		    	  }else{
-		    		  pokerOppositeHandler.add(hm.get(array.get(i)));
-		    		  hm.get(array.get(i)).setDirection("opposite");
-		    		  pokerHandler.add(hm.get(array.get(i)).getPokerId()+":"+hm.get(array.get(i)).getDirection());
-//		    	      DBUtil.GetInstance().addPokerToRoom1(userId, hm.get(array.get(i)));
+	    			  continue;
 		    	  }
+	    		  pokerOppositeHandler.add(hm.get(array.get(i)));
+	    		  hm.get(array.get(i)).setDirection("opposite");
+	    		  pokerHandler.add(hm.get(array.get(i)).getPokerId()+":"+hm.get(array.get(i)).getDirection());
+//		    	  DBUtil.GetInstance().addPokerToRoom1(userId, hm.get(array.get(i)));
+	    	  }else{
+	    		  pokerShuffle.add(hm.get(array.get(i)).getPokerId()+":"+hm.get(array.get(i)).getDirection());
+		    	  DBUtil.GetInstance().addPokerToShuffle(userId, hm.get(array.get(i)));
 	    	  }
-	    	  pokerShuffle.add(hm.get(array.get(i)).getPokerId()+":"+hm.get(array.get(i)).getDirection());
-	    	  DBUtil.GetInstance().addPokerToShuffle(userId, hm.get(array.get(i)));
 	      }
 	    //把洗牌区的牌分为七份，存到redis中
-	    int frontNum = pokerFrontHandler.size();
 	    List<String> pokerHandlerList1 = new ArrayList<String>();
 	    List<String> pokerHandlerList2 = new ArrayList<String>();
 	    List<String> pokerHandlerList3 = new ArrayList<String>();
@@ -97,6 +96,8 @@ public class CardService extends BaseService{
 	    List<String> pokerHandlerList5 = new ArrayList<String>();
 	    List<String> pokerHandlerList6 = new ArrayList<String>();
 	    List<String> pokerHandlerList7 = new ArrayList<String>();
+	    
+	    int frontNum = pokerFrontHandler.size();
 		for (int i = 0; i < frontNum; i++) {
 			switch (i) {
 			case 0:
@@ -133,27 +134,22 @@ public class CardService extends BaseService{
 	    	  if( i >= oppositeNum-6){
 	    		  pokerHandlerList7.add(pokerOppositeHandler.get(i).getPokerId()+":"+pokerOppositeHandler.get(i).getDirection());
 	    		  DBUtil.GetInstance().addPokerToRoom7(userId, pokerOppositeHandler.get(i));
-	    		  continue;
 	    	  }
 	    	  else if( i >= oppositeNum-11){
 	    		  pokerHandlerList6.add(pokerOppositeHandler.get(i).getPokerId()+":"+pokerOppositeHandler.get(i).getDirection());
 	    		  DBUtil.GetInstance().addPokerToRoom6(userId, pokerOppositeHandler.get(i));
-	    		  continue;
 	    	  }
 	    	  else if( i >= oppositeNum-15){
 	    		  pokerHandlerList5.add(pokerOppositeHandler.get(i).getPokerId()+":"+pokerOppositeHandler.get(i).getDirection());
 	    		  DBUtil.GetInstance().addPokerToRoom5(userId, pokerOppositeHandler.get(i));
-	    		  continue;
 	    	  }
 	    	  else if( i >= oppositeNum-18){
 	    		  pokerHandlerList4.add(pokerOppositeHandler.get(i).getPokerId()+":"+pokerOppositeHandler.get(i).getDirection());
 	    		  DBUtil.GetInstance().addPokerToRoom4(userId, pokerOppositeHandler.get(i));
-	    		  continue;
 	    	  }
 	    	  else if( i >= oppositeNum-20){
 	    		  pokerHandlerList3.add(pokerOppositeHandler.get(i).getPokerId()+":"+pokerOppositeHandler.get(i).getDirection());
 	    		  DBUtil.GetInstance().addPokerToRoom3(userId, pokerOppositeHandler.get(i));
-	    		  continue;
 	    	  }
 	    	  else{
 	    		  pokerHandlerList2.add(pokerOppositeHandler.get(i).getPokerId()+":"+pokerOppositeHandler.get(i).getDirection());
@@ -164,13 +160,12 @@ public class CardService extends BaseService{
 	      Gson gson = new Gson();
 	      //七个手牌区的数据
 //	      String jsonPokerHandler = gson.toJson(pokerHandler);
-	      String jsonPokerHandler = pokerHandler.toString();
-	      
+//	      String jsonPokerHandler = pokerHandler.toString();
 	      String h1 = pokerHandlerList1.toString();
 	      String h2 = pokerHandlerList2.toString();
-	      String h3 =pokerHandlerList3.toString();
+	      String h3 = pokerHandlerList3.toString();
 	      String h4 = pokerHandlerList4.toString();
-	      String h5 =pokerHandlerList5.toString();
+	      String h5 = pokerHandlerList5.toString();
 	      String h6 = pokerHandlerList6.toString();
 	      String h7 = pokerHandlerList7.toString();
 	      
@@ -265,7 +260,7 @@ public class CardService extends BaseService{
 	//移动卡牌到七个手牌区之一(1.从洗牌区移入 2.在手牌区互相移动)
 	//position 只有在向空白的位置移动时才会进行判断
 	//这里的poker不用判断为空，是在上一步解析中拼接的
-	public boolean moveCardsToPokerRoom(Poker poker, Poker targetPoker, String position) {
+	public boolean moveCardsToPokerRoom(Poker poker, Poker targetPoker, String move_position,String target_position) {
 		if ("opposite".equals(poker.getDirection()) || "opposite".equals(targetPoker.getDirection())) {
 			logger.error("can't move the opposite card");
 			return false;

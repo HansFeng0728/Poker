@@ -210,7 +210,20 @@ public class DBUtil {
 
 //---------------------------------------------------牌库相关
 	
+//---------------------------------牌
+	public void addPoker(final String pokerId,final Poker poker)
+	{	
+		redisUtil.listAdd(pokerId + RedisKeys.POKER,poker);
+	}
 	
+	public List<Poker> getPokerList(String pokerId)
+	{
+		return redisUtil.listGet(pokerId + RedisKeys.POKER, Poker.class);
+	}
+	
+	public void deletePoker(String pokerId,Poker poker){
+		redisUtil.listDel(pokerId + RedisKeys.POKER, poker);
+	}
 	
 //--------------------------------------------七个移牌区的牌----------------------------------------------
 	//--------------------------------------------------------room1

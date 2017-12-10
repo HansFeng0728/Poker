@@ -104,7 +104,7 @@ public class HomeController {
         	
         	Map<String, String> body = new HashMap<String, String>();
         	body.put("user", userJson);
-        	body.put("pokers", pokerJson + cardService.sendPoker(userId));
+        	body.put("pokers", pokerJson);
         	
 //        	String jsoncontent = JsonUtil.encodeJson(body);
         	String jsoncontent = mapper.writeValueAsString(cardService.sendPoker(userId));
@@ -113,7 +113,7 @@ public class HomeController {
         	pw.write(jsoncontent);
         	pw.flush();
     		pw.close();
-    		logger.info("initCards response success--------------{}",cardService.sendPoker(userId)+userJson);
+    		logger.info("initCards response success--------------{}",jsoncontent);
         	pw.println(jsoncontent);
         }
 	}
@@ -122,20 +122,18 @@ public class HomeController {
 	
 	@RequestMapping("/moveCards")
 	public void moveCards(HttpServletRequest request, HttpServletResponse response, String requestStr) throws UnsupportedEncodingException, IOException{
-//		JsonParser parse = new JsonParser();
-//        JsonObject json = (JsonObject)parse.parse(line);
-//        JsonArray trans = (JsonArray)json.get("sendPokers");
-//        JsonObject trans_result = (JsonObject)trans.get(0);
+
 		if("".equals(requestStr) || requestStr != null){
 			
 		}
-//        String movePoker = requestStr.get("movepoker").getAsString();
-//        String targetPoker = requestStr.get("targetpoker").getAsString();
-//        if()
-//        String jsoncard = cardService.moveCards(movePoker, targetPoker);
-//        
-//        PrintWriter pw = response.getWriter();
-//        pw.println();
+		JsonParser parse = new JsonParser();
+		JsonObject json = (JsonObject) parse.parse(requestStr); 
+		String userId = json.get("UserId").getAsString();
+		String movepoker_Position = json.get("movepoker_Position").getAsString();
+		String movePoker = json.get("movePoker").getAsString();
+		String userId = json.get("UserId").getAsString();
+		String userId = json.get("UserId").getAsString();
+
 	}
 	
 	@RequestMapping(value="otherTest",method=RequestMethod.POST)
@@ -155,7 +153,7 @@ public class HomeController {
 //		while ((line = br.readLine()) != null) {
 //			sb.append(line);
 //		}
-		// 将资料解码
+		// 将json解码
 		JsonParser parse = new JsonParser();
 		JsonObject json = (JsonObject) parse.parse(requestStr); 
 //		String reqBody = sb.toString();
