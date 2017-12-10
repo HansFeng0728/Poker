@@ -126,13 +126,16 @@ public class HomeController {
 //        JsonObject json = (JsonObject)parse.parse(line);
 //        JsonArray trans = (JsonArray)json.get("sendPokers");
 //        JsonObject trans_result = (JsonObject)trans.get(0);
-        String movePoker = requestStr.get("movepokerList").getAsString();
-        String targetPoker = requestStr.get("targetpoker").getAsString();
-        if()
-        String jsoncard = cardService.moveCards(movePoker, targetPoker);
-        
-        PrintWriter pw = response.getWriter();
-        pw.println();
+		if("".equals(requestStr) || requestStr != null){
+			
+		}
+//        String movePoker = requestStr.get("movepoker").getAsString();
+//        String targetPoker = requestStr.get("targetpoker").getAsString();
+//        if()
+//        String jsoncard = cardService.moveCards(movePoker, targetPoker);
+//        
+//        PrintWriter pw = response.getWriter();
+//        pw.println();
 	}
 	
 	@RequestMapping(value="otherTest",method=RequestMethod.POST)
