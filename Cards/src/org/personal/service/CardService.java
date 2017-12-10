@@ -1,12 +1,17 @@
 package org.personal.service;
 
 import java.awt.Container;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.personal.db.DBUtil;
 import org.personal.db.dao.Poker;
 import org.personal.db.dao.PokerList;
@@ -17,13 +22,14 @@ import com.google.gson.Gson;
 
 public class CardService extends BaseService{
 	
-	private static final int POKER_HANDLEER = 28;
+	private static final int POKER_HANDLER = 28;
 	
 	public Container container=null;
 	
 	static Logger logger = LoggerFactory.getLogger(CardService.class);
 	
-	public String sendPoker(String userId){
+	private static ObjectMapper mapper = new ObjectMapper();
+	public  Map<String, String> sendPoker(String userId) throws JsonGenerationException, JsonMappingException, IOException{
 		  //定义HashMap变量用于存储每张牌的编号以及牌型  
 	      HashMap<Integer,Poker> hm = new HashMap<Integer,Poker>();   
 	      //定义变量存储洗牌区牌的编号  
@@ -54,44 +60,51 @@ public class CardService extends BaseService{
 	          }  
 	      }
 	      Collections.shuffle(array);
-	      
-	      List<String> pokerHandler = new ArrayList<String>();
-	      List<Poker> pokerShuffle = new ArrayList<>();
-	      
+
 	      DBUtil.GetInstance().init();
+	      List<String> pokerShuffle = new ArrayList<>();
+	      List<String> pokerHandler = new ArrayList<>();
 	      
-	      //分出洗牌区和手牌区的牌
+	      List<Poker> pokerFrontHandler = new ArrayList();
+	      //分出洗牌区24和手牌区28的牌,并留出七张正面朝上的牌
 	      for( int i = 0; i < array.size(); i++){
-	    	  if( i < POKER_HANDLEER){
-	    		  if( i >= POKER_HANDLEER - 7){
+	    	  if( i < POKER_HANDLER){
+	    		  if( i >= POKER_HANDLER - 7){
+	    			  pokerFrontHandler.add(hm.get(array.get(i)));
+	    			  pokerHandler.add(hm.get(array.get(i)).getPokerId()+":"+hm.get(array.get(i)).getDirection());
 	    			  DBUtil.GetInstance().addPokerToRoom1(userId, hm.get(array.get(i)));
 		    		  continue;
 		    	  }
+	    		  
 	    		  hm.get(array.get(i)).setDirection("opposite");
+	    		  pokerHandler.add(hm.get(array.get(i)).getPokerId()+":"+hm.get(array.get(i)).getDirection());
 		    	  DBUtil.GetInstance().addPokerToRoom1(userId, hm.get(array.get(i)));
 		    	  continue;
 	    	  }
-	    	  pokerShuffle.add(hm.get(array.get(i)));
+	    	  pokerShuffle.add(hm.get(array.get(i)).getPokerId()+":"+hm.get(array.get(i)).getDirection());
 	    	  DBUtil.GetInstance().addPokerToShuffle(userId, hm.get(array.get(i)));
+	      }
+	      //把洗牌区的牌分为七份，存到redis中
+	      for(int i = 0; i < pokerFrontHandler.size();i++){
+	      	  DBUtil.GetInstance().addPokerToRoom1(userId, hm.get(pokerHandler.get(0)));
 	      }
 	      
 	      Gson gson = new Gson();
-	      //洗牌区的json数据
-	      String jsonPokerShuffle = gson.toJson(pokerShuffle);
-	      
-	      //分出手牌区里面的7张朝上的牌和21张朝下的牌
-	      for( int i = 0; i < 28; i++){
-	    	 
-	      }
 	      //七个手牌区的数据
-	      String jsonPokerHandler = gson.toJson(pokerHandler);
-
+//	      String jsonPokerHandler = gson.toJson(pokerHandler);
+	      String jsonPokerHandler = pokerHandler.toString();
+	      //洗牌区的json数据
+//	      String jsonPokerShuffle = gson.toJson(pokerShuffle);
+	      String jsonPokerShuffle = pokerShuffle.toString();
 	      Map<String, String> pokerJsonParam = new HashMap<String, String>();
 		  pokerJsonParam.put("shufflePokerList", jsonPokerShuffle);
 		  pokerJsonParam.put("handPokerList", jsonPokerHandler);
-		  String pokerJson = JsonUtil.encodeJson(pokerJsonParam);    
+		  pokerJsonParam.put("userId", userId);
+//		  String pokerJson = JsonUtil.encodeJson(pokerJsonParam); 
+//		  String pokerJson = mapper.writeValueAsString(pokerJsonParam);
+//		  String pokerJson = pokerJsonParam.toString();
 	      
-	      return pokerJson;
+	      return pokerJsonParam;
 //	      //二人斗地主的发牌  弃用
 //	      List<String> playerOne = new ArrayList<String>();
 //	      List<String> playerTwo = new ArrayList<String>();
@@ -105,7 +118,6 @@ public class CardService extends BaseService{
 //	                playerTwo.add(hm.get(array.get(x)));  
 //	                }
 //	      }
-//	      
 //	      //list转成json
 //	      String json1 =JSONArray.fromObject(playerOne).toString();
 //	  
@@ -115,7 +127,6 @@ public class CardService extends BaseService{
 //	      
 //	      String str = json1 + json2 + json3;
 //	      return str;
-	      
 	      
 	  //之前的socket 时传byte[]的方法  弃用    
 //	      //调用Collections集合的shuffle()方法，将array中存储的编号进行随机的置换，即打乱顺序  
@@ -133,7 +144,6 @@ public class CardService extends BaseService{
 //	                      PlayerTwo.add(array.get(x));  
 //	                      }
 //	      } 
-	//    
 //	      //把结果存在String内
 //	      StringBuilder buf = new StringBuilder();
 //	      buf.append('[');
@@ -163,9 +173,11 @@ public class CardService extends BaseService{
       System.out.println();  
       }
 	  
-	  //移动卡牌到七个手牌区之一(1.从洗牌区移入 2.在手牌区互相移动)
-	  //position 只有在向空白的位置移动时才会进行判断
-	  //这里的poker不用判断为空，是在上一步解析中拼接的
+	  
+//----------------------------------------------------------移牌逻辑--------------------------------------------------	  
+	//移动卡牌到七个手牌区之一(1.从洗牌区移入 2.在手牌区互相移动)
+	//position 只有在向空白的位置移动时才会进行判断
+	//这里的poker不用判断为空，是在上一步解析中拼接的
 	public boolean moveCardsToPokerRoom(Poker poker, Poker targetPoker, String position) {
 		if ("opposite".equals(poker.getDirection()) || "opposite".equals(targetPoker.getDirection())) {
 			logger.error("can't move the opposite card");
@@ -202,7 +214,8 @@ public class CardService extends BaseService{
 	  public boolean isCorrenctCardHome(String pokerHomeList){
 		  return false;
 	  }
-	  
+
+//-----------------------------------------------------胜利判断逻辑--------------------------------------------------------------
 	  //判断是否胜利，七个手牌区和洗牌区的均没有卡牌
 	  public boolean isWon(String userId){
 		List<Poker> rList1 = DBUtil.GetInstance().getPokerRoom1List(userId);

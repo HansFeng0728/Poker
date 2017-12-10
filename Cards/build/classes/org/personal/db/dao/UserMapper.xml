@@ -3,6 +3,7 @@
 <mapper namespace="org.personal.db.dao.UserMapper" >
   <resultMap id="BaseResultMap" type="org.personal.db.dao.User" >
     <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="userId" property="userId" jdbcType="LONGVARCHAR" />
     <result column="lastLoginTime" property="lastlogintime" jdbcType="DATE" />
     <result column="lastLogoutTime" property="lastlogouttime" jdbcType="DATE" />
     <result column="score" property="score" jdbcType="INTEGER" />
@@ -11,7 +12,7 @@
     <result column="userId" property="userid" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    Id, lastLoginTime, lastLogoutTime, score
+    Id, userId, lastLoginTime, lastLogoutTime, score
   </sql>
   <sql id="Blob_Column_List" >
     userId
@@ -100,8 +101,8 @@
   <update id="updateByPrimaryKey" parameterType="org.personal.db.dao.User" >
     update user
     set lastLoginTime = #{lastLogintime,jdbcType=DATE},
-      lastLogoutTime = #{lastLogouttime,jdbcType=DATE},
-      score = #{score,jdbcType=INTEGER}
+    lastLogoutTime = #{lastLogouttime,jdbcType=DATE},
+    score = #{score,jdbcType=INTEGER}
     where Id = #{id,jdbcType=INTEGER}
   </update>
   
@@ -109,7 +110,7 @@
   select 
   <include refid="Base_Column_List" />
   from USER
-  where USER_ID = #{userId,jdbcType=VARCHAR}
+  where user_Id = #{userId,jdbcType=VARCHAR}
   </select>
   
 </mapper>

@@ -14,7 +14,7 @@ Json 协议
 		//"pokerId": "0/1",  		//卡牌Id 共54个
 		//"pokerColor": "",  																				//颜色  四个
 		//"pokerNum":""3","4","5","6","7","8","9","10","J","Q","K","A","2","SJoker","BJoker"",     			//卡牌的牌面大小
-		//"state":"front---0","opposite---1",	//卡牌的状态  正面or反面	
+		//"state":"front---1","opposite---0",	//卡牌的状态  正面or反面	
 		
 		"userId":"",
 		"shufflePokerList":"",  //洗牌牌堆里面的牌
@@ -25,11 +25,11 @@ Json 协议
 
 	"sendPokers":[
 		{
-		"movepokerList":"",    //用户想要移动的牌
+		"movepoker":"",    //用户想要移动的牌（数字-花色-正反（0，1））
 		"targetpoker":"",	   //移动的卡牌要放置在哪张卡牌上
-		"pokerHome":"",		   //四个存牌区的list
+		"pokerHome":"",		   //存牌区（0，1，2，3）
         "submit_time": "",	   //打出牌的时间
-		"canSendPokers":"0/1", //能不能出牌
+		"canSendPokers":"0/1", //能不能出牌（1可以 0不可以）
 		}
 	],
 	
@@ -41,14 +41,8 @@ Json 协议
 	
     "error_code": 0
 }
+
+
+
 	
-	
-	//"token": "",  				//消息唯一序列码
-    //"roomId": "",   				//房间Id
-	
-	//"sendMsg":[   			   //预留的  聊天
-	//	{
-	//	"text":"",
-	//	}
-	//]
 
