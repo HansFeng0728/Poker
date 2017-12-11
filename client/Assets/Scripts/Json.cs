@@ -16,10 +16,20 @@ public class User
 {
     //UDID
     private string userId;
-    private string score;
-    public string daojishiTime;
+    private int score;
+    private int daojishiTime;
+    private int userState;
+
     //预留聊天
-    public string text { get; set; }
+    private List<string> conncent = new List<string>();
+
+    //public User(string UserId,int Score,int UserState,int DaojishiTime = 0)
+    //{
+    //    userId = UserId;
+    //    score = Score;
+    //    userState = UserState;
+    //    daojishiTime = DaojishiTime;
+    //}
 
     public string UserId
     {
@@ -33,7 +43,7 @@ public class User
         }
     }
 
-    public string Score
+    public int Score
     {
         get
         {
@@ -45,7 +55,7 @@ public class User
         }
     }
 
-    public string DaojishiTime
+    public int DaojishiTime
     {
         get
         {
@@ -54,6 +64,30 @@ public class User
         set
         {
             daojishiTime = value;
+        }
+    }
+
+    public int UserState
+    {
+        get
+        {
+            return userState;
+        }
+        set
+        {
+            userState = value;
+        }
+    }
+
+    public List<string> Conncent
+    {
+        get
+        {
+            return conncent;
+        }
+        set
+        {
+            conncent = value;
         }
     }
 }
@@ -166,34 +200,60 @@ public class Pokers
 
 public class SendPokers{
 
-    private string movepokerList;
+    private string userId;
+    private int movepoker_position;
+    private string movepoker;
     private string targetpoker;
     private int submit_time;
-    private string pokerHome;    
+    private int pokerHome;    
     private int canSendPokers;
 
     //防止MissingMethodException: Method not found: 'Default constructor not found...ctor()   报错
-    public SendPokers() {}
+    //public SendPokers() {}
 
-    public SendPokers(string movepokerList, string targetpoker, int submit_time, string pokerHome, int canSendPokers)
-    {
-        MovepokerList = movepokerList;
-        Targetpoker = targetpoker;
-        Submit_time = submit_time;
-        PokerHome = pokerHome;
-        CanSendPokers = canSendPokers;
-    }
+    //public SendPokers(string movepokerList, string targetpoker, int submit_time, string pokerHome, int canSendPokers)
+    //{
+    //    Movepoker = movepokerList;
+    //    Targetpoker = targetpoker;
+    //    Submit_time = submit_time;
+    //    PokerHome = pokerHome;
+    //    CanSendPokers = canSendPokers;
+    //}
 
-    //用户想要移动的牌
-    public string MovepokerList
+    public string UserId
     {
         get
         {
-            return movepokerList;
+            return userId;
         }
         set
         {
-            movepokerList = value;
+            userId = value;
+        }
+    }
+
+    public int Movepoker_position
+    {
+        get
+        {
+            return movepoker_position;
+        }
+        set
+        {
+            movepoker_position = value;
+        }
+    }
+
+    //用户想要移动的牌
+    public string Movepoker
+    {
+        get
+        {
+            return movepoker;
+        }
+        set
+        {
+            movepoker = value;
         }
     }
 
@@ -223,7 +283,7 @@ public class SendPokers{
         }
     }
 
-    public string PokerHome
+    public int PokerHome
     {
         get
         {
@@ -264,16 +324,3 @@ public class TipsPokers
         }
     }
 }
-
-
-//public class Users
-//{
-//    public int userState { get; set; }  //0未进入游戏  1 进入游戏  2匹配中  3进入房间（未准备） 4进入房间（已准备）  5开始游戏 
-//    public string userId { get; set; }
-//    public string roomId { get; set; }
-//    public int score { get; set; }
-//    public int isLandLord { get; set; }
-//    public int userPosition { get; set; }
-//    public int userpokerList { get; set; }      //用户拥有的卡牌
-//    public double daojishiTime { get; set; }    //倒计时准备时间
-//}

@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Text;
 using LitJson;
+using Newtonsoft.Json;
+using System;
 
 public class http : MonoBehaviour {
 
@@ -13,53 +15,108 @@ public class http : MonoBehaviour {
     public class MessageJson
     {
         public int intValue;
+    }    
+
+    public void ConnectRequest(string name)
+    {
+        User user = new User();
+        user.UserId = name;
+        user.UserState = 0;
+        string userJson = JsonMapper.ToJson(user);
+        string url = "http://192.168.90.126:8080/Cards/index/loginTest?requestStr=" + userJson;
+        StartCoroutine(GetPlayerInfo(url));
+
     }
 
-    IEnumerator Get<T>(string _url)
+    IEnumerator GetPlayerInfo(string _url)
     {
-        string data = ""    ;
-        WWW getData = new WWW(_url, Encoding.UTF8.GetBytes(data));
-        yield return getData;
-        if (getData.error != null)
+        WWW getPlayerInfo = new WWW(_url);
+        yield return getPlayerInfo;
+        if (getPlayerInfo.error != null)
         {
-            Debug.Log("http:getData error: " + getData.error);
+            Debug.Log("http:ConnectRequest error: " + getPlayerInfo.error);
         }
         else
         {
-            T message = JsonMapper.ToObject<T>(getData.text);
-            Debug.Log("http:getData success: " + getData.text);
+            Debug.Log("http:ConnectRequest success: " + getPlayerInfo.text);
+            User user = JsonMapper.ToObject<User>(getPlayerInfo.text);
+            Manager.player0.Name = user.UserId;
+            Manager.player0.State = user.UserState;
+            Manager.player0.Score = user.Score;
+            Manager.player0.DaojishiTime = user.DaojishiTime;
+            yield return StartCoroutine(GetAllCardsRequest(Manager.player0.Name));
         }
     }
 
-    IEnumerator Post(string _url,string data)
+    IEnumerator GetAllCardsRequest(string name)
     {
-        WWW postData = new WWW(_url,Encoding.UTF8.GetBytes(data));
-        yield return postData;
-        if (postData.error != null)
+        Pokers pokers = new Pokers();
+        pokers.UserId = name;
+        string pokersJson = JsonMapper.ToJson(pokers);
+        string url = "http://192.168.90.126:8080/Cards/index/initCards?requestStr=" + pokersJson;
+
+        WWW getAllCards = new WWW(url);
+        yield return getAllCards;
+        if (getAllCards.error != null)
         {
-            Debug.Log("postData error: " + postData.error);
+            Debug.Log("http:GetAllCardsRequest error: " + getAllCards.error);
         }
         else
         {
-            Debug.Log("postData success: " + postData.text);
+            Debug.Log("http:GetAllCardsRequest success: " + getAllCards.text);
+            JsonData AllCards = JsonMapper.ToObject(getAllCards.text);
+            bool checkName = Manager.player0.Name == AllCards["userId"].ToString() ? true : false;
+            if (checkName)
+            {
+                MethodAllCards.HttpInitPlayerInfo(AllCards);
+                Manager.InitLobby();
+            }                
+            else
+                Debug.Log("CheckName is error!!!!!!!!!!!!!!");
+        }
+
+    }
+
+    public bool SendCardsRequset(string movePoker,string targetPoker,int pokerHome)
+    {
+        SendPokers sendPokers = new SendPokers();
+        sendPokers.UserId = Manager.player0.Name;
+        sendPokers.Movepoker = movePoker;
+        sendPokers.Targetpoker = targetPoker;
+        sendPokers.PokerHome = pokerHome;
+        Manager.moveCardsHttp = 0;
+        string sendPokersJson = JsonMapper.ToJson(sendPokers);
+        string url = "http://192.168.90.126:8080/Cards/index/moveCards?requestStr=" + sendPokers;
+        StartCoroutine(SendCards(url, sendPokers));
+        if (Manager.moveCardsHttp == 1)
+            return true;
+        else
+            return false;
+    }
+
+    IEnumerator SendCards(string _url,SendPokers sendPokers)
+    {
+        WWW sendCardsResponse = new WWW(_url);
+        yield return sendCardsResponse;
+        if (sendCardsResponse.error != null)
+        {
+            Debug.Log("http:ConnectRequest error: " + sendCardsResponse.error);
+        }
+        else
+        {
+            Debug.Log("http:SendCardsRequset success: " + sendCardsResponse.text);
+            JsonData sendPokerJson = JsonMapper.ToObject(sendCardsResponse.text);
+            int canSendPokers = (int)sendPokerJson["canSendPokers"];
+            if (canSendPokers == 1)
+                Manager.moveCardsHttp = 1;            
         }
     }
 
-    //private void SendGet(string _url,string name)
-    //{
-    //    StartCoroutine(Get(_url));
-    //}
-    //public void Connect(string name)
-    //{
-    //    //测试GET方法
-    //    SendGet("http://192.168.90.126:8080/ServletTest/Home/FirstServlet?uname=" + name);
 
-    //    //测试POST方法
-    //    //WWWForm form = new WWWForm();
-    //    //form.AddField("int", "6");
-    //    //StartCoroutine(SendPost("http://192.168.90.126:8080/ServletTest/Home/FirstServlet", form));
-    //}
-
-
+    public string ReplaceStr(string str)
+    {
+        str = str.Substring(1, str.Length - 2);
+        return str;
+    }
 
 }

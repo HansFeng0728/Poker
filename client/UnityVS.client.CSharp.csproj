@@ -61,6 +61,9 @@
     <Reference Include="LitJson">
       <HintPath>Assets\Plugins\LitJson.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Assets\UnityPackages\JsonNet-Lite\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\NGUI\Examples\Scripts\InventorySystem\Game\EquipItems.cs" />
@@ -197,15 +200,28 @@
     <Compile Include="Assets\NGUI\Scripts\UI\UITexture.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
-    <Compile Include="Assets\Scripts\Card.cs" />
-    <Compile Include="Assets\Scripts\Cards.cs" />
+    <Compile Include="Assets\Scripts\AllCompleteCard.cs" />
+    <Compile Include="Assets\Scripts\CardActivity.cs" />
+    <Compile Include="Assets\Scripts\CompleteCards.cs" />
+    <Compile Include="Assets\Scripts\Data\MethodAllCards.cs" />
+    <Compile Include="Assets\Scripts\Data\MethodcompleteCards.cs" />
+    <Compile Include="Assets\Scripts\Data\MethodhandCards.cs" />
+    <Compile Include="Assets\Scripts\Data\MethodshuffleCards.cs" />
+    <Compile Include="Assets\Scripts\Drag\DragDropItem1.cs" />
+    <Compile Include="Assets\Scripts\Drag\NDragDropSurface.cs" />
+    <Compile Include="Assets\Scripts\Drag\NUIDragDropItem.cs" />
+    <Compile Include="Assets\Scripts\HandCardList.cs" />
+    <Compile Include="Assets\Scripts\HandCards.cs" />
     <Compile Include="Assets\Scripts\Json.cs" />
     <Compile Include="Assets\Scripts\Lobby.cs" />
     <Compile Include="Assets\Scripts\Manager.cs" />
     <Compile Include="Assets\Scripts\PlayerInfo.cs" />
+    <Compile Include="Assets\Scripts\ShuffleCards.cs" />
     <Compile Include="Assets\Scripts\SignIn.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\Socket\SocketClient.cs" />
+    <Compile Include="Assets\Scripts\Struct\Card.cs" />
+    <Compile Include="Assets\Scripts\Struct\Cards.cs" />
     <Compile Include="Assets\Scripts\buffer\ByteBuffer.cs" />
     <Compile Include="Assets\Scripts\common\Back.cs" />
     <Compile Include="Assets\Scripts\common\ClickCard.cs" />
