@@ -260,7 +260,7 @@ public class CardActivity : MonoBehaviour {
 
         //int positionState = 
         //string targetPoker = (positionNum-1).ToString() + "-"+state.ToString()
-        Manager.httpVar.SendCardsRequset(previewNum,movePoker)
+        //Manager.httpVar.SendCardsRequset(previewNum,movePoker)
 
         if (!sameColor && compareNum)
         {
