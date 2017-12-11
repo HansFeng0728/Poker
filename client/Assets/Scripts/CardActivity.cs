@@ -274,9 +274,10 @@ public class CardActivity : MonoBehaviour {
         int positionIndex = MethodAllCards.FindPosition(positionNum);
         int positionState = Manager.allCardList[positionIndex].State;
         string targetPoker = (positionNum-1).ToString() + "-"+positionState.ToString();
-        Manager.httpVar.SendCardsRequset(movePoker, targetPoker, 0,index);
+        //Manager.httpVar.SendCardsRequset(movePoker, targetPoker, 0,index);
 
-        if (!sameColor && compareNum && Manager.moveCardsHttp)
+        if (!sameColor && compareNum)
+        //if (!sameColor && compareNum && Manager.moveCardsHttp)
         {
             //数据层
             MethodshuffleCards.RemoveCard(previewNum);
