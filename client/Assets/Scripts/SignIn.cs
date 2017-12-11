@@ -9,14 +9,15 @@ public class SignIn : MonoBehaviour {
 
     void Start()
     {
-        //SendPokers sendPokers = new SendPokers();
-        //sendPokers.UserId = "abc";
-        //sendPokers.Movepoker_position = 0;
-        //sendPokers.Movepoker = "20:1";
-        //sendPokers.Targetpoker = "30:1";
+        SendPokers sendPokers = new SendPokers();
+        sendPokers.UserId = "abc";
+        sendPokers.Movepoker_Position = 0;
+        sendPokers.Movepoker = "20-1";
+        sendPokers.Targetpoker = "30-1";
         //sendPokers.PokerHome = 1;
-        //string json = JsonMapper.ToJson(sendPokers);
-        //Debug.Log(json);
+        string json = JsonMapper.ToJson(sendPokers);
+        SendPokers send = JsonMapper.ToObject<SendPokers>(json);
+        Debug.Log(json);
     }
 
     public void Sign()

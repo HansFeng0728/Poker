@@ -1,36 +1,36 @@
 ﻿Json 协议
-
 {
     "user": [   
 		{
 		"userId": "",  
 		"score": "",     		//用户分数
 		"daojishiTime":"",	  	//倒计时准备时间
+		"userState":"",			//用户登录状态
 		}
 	],
 	
 	"pokers": [
 		{
-		"userId":"",
 		//"pokerId": "0/1",  		//卡牌Id 共54个
 		//"pokerColor": "",  																				//颜色  四个
 		//"pokerNum":""3","4","5","6","7","8","9","10","J","Q","K","A","2","SJoker","BJoker"",     			//卡牌的牌面大小
-		//"state":"front","opposite",	//卡牌的状态  正面or反面
-		"shufflePokerList":"",  //洗牌牌堆里面的牌
-		"handPokerList":"",		//手牌里面的牌
-		"completeCardList":"",	//四个存牌区域的卡牌
+		//"state":"front---1","opposite---0",	//卡牌的状态  正面or反面	
 		
+		"userId":"",
+		"shufflePokerList":"",  //洗牌牌堆里面的牌
+		"handPokerList":"",		//六个手牌区里面的牌
+		"completeCardList":"",	//四个存牌区域的卡牌
 		}
 	],  
 
 	"sendPokers":[
 		{
-		"userId": "",
-		"movepoker_position":"",//用户移动的牌之前的位置（洗牌区：0  手牌区：1-7）
-		"movepoker":"",    //用户想要移动的牌（数字-花色-正反（0，1））
-		"targetpoker":"",	   //移动的卡牌要放置在哪张卡牌上
-		"pokerHome":"",		   //存牌区（0，1，2，3）仅有向空的存牌区放牌时用到，平时传 -1
-       		"submit_time": "",	   //打出牌的时间
+		"movepoker_Position":"",//用户移动的牌之前的位置（洗牌区：0  手牌区：1-7）
+		"movePoker":"",    //用户想要移动的牌（数字-花色-正反（0，1））
+		"targetPoker":"",	   //移动的卡牌要放置在哪张卡牌上
+		"targetPoker_Position":"", //想要放置的牌的位置(手牌区：1-7，存牌区8-11)
+		
+        "submit_Time": "",	   //打出牌的时间
 		"canSendPokers":"0/1", //能不能出牌（1可以 0不可以）
 		}
 	],
@@ -43,14 +43,3 @@
 	
     "error_code": 0
 }
-	
-	
-	//"token": "",  				//消息唯一序列码
-    //"roomId": "",   				//房间Id
-	
-	//"sendMsg":[   			   //预留的  聊天
-	//	{
-	//	"text":"",
-	//	}
-	//]
-

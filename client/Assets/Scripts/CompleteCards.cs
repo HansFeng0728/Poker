@@ -113,6 +113,15 @@ public class CompleteCards : MonoBehaviour {
         cardbg.spriteName = num.ToString();
         chooseIndex = Manager.choosedCards.Index;
         chooseType = Manager.choosedCards.Type;
+        previewNum = Manager.choosedCards.CardList[0].Number;
+        int choosePosition = MethodhandCards.FindPosition(chooseIndex, previewNum);
+
+        if (choosePosition >= 1)
+        {
+            int pPreviewNum = Manager.player0.HandCardsList[chooseIndex].CardList[choosePosition - 1].Number;
+            MethodAllCards.ChangeState0(pPreviewNum);
+            Manager.handCardListBgs[chooseIndex][choosePosition - 1].spriteName = pPreviewNum.ToString();
+        }  
 
         //表现层
         length = Manager.player0.HandCardsList[chooseIndex].CardList.Count;

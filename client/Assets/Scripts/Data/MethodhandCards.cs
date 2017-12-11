@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MethodhandCards : MonoBehaviour {
 
@@ -42,5 +43,101 @@ public class MethodhandCards : MonoBehaviour {
                 return i;
         }
         return -1111111;
+    }
+
+    public static void ChangeColor(int index, int nextIndex,string type="noChoose")
+    {
+        if(type == "choose")
+            Manager.handCardListBgs[index][nextIndex].color = new Color(225 / 255f, 220 / 255f, 150 / 255f);
+        else
+            Manager.handCardListBgs[index][nextIndex].color = new Color(1,1,1);
+    }
+
+    public static void ResetColor()
+    {
+        int count1 = Manager.handCardListBgs.Count;        
+        for(int i =0;i<count1;i++)
+        {
+            int count2 =Manager.handCardListBgs[i].Count;
+            for(int j=0;j<count2;j++)
+            {
+                Manager.handCardListBgs[i][j].color = new Color(1, 1, 1);
+            }
+        }        
+    }
+
+    public static void DoubleClick(int num,int index)
+    {
+        int completeCount = Manager.player0.CompleteCardList.Count;
+        int listCount;
+        int number;
+        bool sameColorType;
+        bool compareNumIsLow;
+        List<int> typeList = MethodAllCards.NumToType(num);
+        int choosePosition = MethodhandCards.FindPosition(index, num);
+
+        if (typeList[1] == 1)
+        {
+            for (int i = 0; i < completeCount; i++)
+            {
+                listCount = Manager.player0.CompleteCardList[i].CardList.Count;
+                if (listCount == 0)
+                {
+                    //表现层
+                    Manager.completeCards[i].SetActive(true);
+                    Manager.completeCardBgs[i].spriteName = num.ToString();
+
+                    int length = Manager.player0.HandCardsList[index].CardList.Count;
+                    Manager.handCardLists[index][length - 1].SetActive(false);
+
+                    if (choosePosition >= 1)
+                    {
+                        int pPreviewNum = Manager.player0.HandCardsList[index].CardList[choosePosition - 1].Number;
+                        MethodAllCards.ChangeState0(pPreviewNum);
+                        Manager.handCardListBgs[index][choosePosition - 1].spriteName = pPreviewNum.ToString();
+                    }
+
+                    //数据层
+                    MethodhandCards.RemoveCard(index, num);
+                    MethodcompleteCards.AddCard(i, num);
+
+                    Debug.Log("双击移动区");
+                    return;
+                }
+            }            
+        }
+
+        for (int i = 0; i < completeCount; i++)
+        {
+            listCount = Manager.player0.CompleteCardList[i].CardList.Count;
+            if (listCount == 0)
+                continue;
+            number = Manager.player0.CompleteCardList[i].CardList[listCount - 1].Number;
+            sameColorType = MethodAllCards.SameColorType(number, num);
+            compareNumIsLow = MethodAllCards.CompareNumIsLow(number, num);
+            if (sameColorType && compareNumIsLow)
+            {
+                //表现层
+                Manager.completeCardBgs[i].spriteName = num.ToString();
+
+                int length = Manager.player0.HandCardsList[index].CardList.Count;
+                Manager.handCardLists[index][length - 1].SetActive(false);
+
+                if (choosePosition >= 1)
+                {
+                    int pPreviewNum = Manager.player0.HandCardsList[index].CardList[choosePosition - 1].Number;
+                    MethodAllCards.ChangeState0(pPreviewNum);
+                    Manager.handCardListBgs[index][choosePosition - 1].spriteName = pPreviewNum.ToString();
+                }
+
+                //数据层
+                MethodhandCards.RemoveCard(index, num);
+                MethodcompleteCards.AddCard(i, num);
+
+                Debug.Log("双击移动区");
+                return;
+            }
+        }
+        Debug.Log("无法双击牌到存牌区");
     }
 }

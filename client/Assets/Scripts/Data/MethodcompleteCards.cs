@@ -29,4 +29,13 @@ public class MethodcompleteCards
         Manager.player0.AllCompleteCards.Add(cardInfo);
         Manager.player0.CompleteCardList[index].CardList.Add(cardInfo);
     }
+
+    public static bool Check13(int index)
+    {
+        int count = Manager.player0.CompleteCardList[index].CardList.Count;
+        if (count == 13)
+            return true;
+        else
+            return false;
+    }
 }

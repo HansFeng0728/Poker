@@ -65,6 +65,7 @@ public class MethodAllCards
             return false;
         }
     }
+
     //根据花色和值获取num
     public static int TypeToNum(List<int> typeList)
     {
@@ -194,4 +195,33 @@ public class MethodAllCards
         }
         return -1111111;
     }
+
+    //如果主动移动区下面还有反着的牌,那么将其正反状态改变
+    public static void ChangeState0(int num)
+    {
+        int index = MethodAllCards.FindPosition(num);
+        Manager.allCardList[index].State = 1;
+    }
+
+    public static int CheckState1(int num)
+    {
+        int index = MethodAllCards.FindPosition(num);
+        //反面转正只会1次,所以转过后会变成特殊的2,暂时处理
+        Manager.allCardList[index].State = (Manager.allCardList[index].State == 0) ? 1 : 2;
+        int state = Manager.allCardList[index].State;
+        return state;
+    }
+
+    public static bool CheckState2(int num1, int num2)
+    {
+        int index1 = MethodAllCards.FindPosition(num1);
+        int index2 = MethodAllCards.FindPosition(num2);
+        //反面转正只会1次,所以转过后会变成特殊的2,暂时处理
+        int state1 = Manager.allCardList[index1].State;
+        int state2 = Manager.allCardList[index2].State;
+        if (state1 == 0 || state2 == 0)
+            return false;
+        else
+            return true;
+    }    
 }

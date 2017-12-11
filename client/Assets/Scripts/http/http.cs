@@ -77,18 +77,21 @@ public class http : MonoBehaviour {
 
     }
 
-    public bool SendCardsRequset(string movePoker,string targetPoker,int pokerHome)
+    public bool SendCardsRequset(string movePoker, string targetPoker, int movepoker_Position, int targetPoker_Position, int pokerHome = -1)
     {
         SendPokers sendPokers = new SendPokers();
         sendPokers.UserId = Manager.player0.Name;
         sendPokers.Movepoker = movePoker;
+        sendPokers.Movepoker_Position = movepoker_Position;
         sendPokers.Targetpoker = targetPoker;
-        sendPokers.PokerHome = pokerHome;
-        Manager.moveCardsHttp = 0;
+        sendPokers.TargetPoker_Position = targetPoker_Position;
+        //sendPokers.PokerHome = pokerHome;
+        Manager.moveCardsHttp = false;
         string sendPokersJson = JsonMapper.ToJson(sendPokers);
+        Debug.Log(sendPokersJson);
         string url = "http://192.168.90.126:8080/Cards/index/moveCards?requestStr=" + sendPokers;
         StartCoroutine(SendCards(url, sendPokers));
-        if (Manager.moveCardsHttp == 1)
+        if (Manager.moveCardsHttp)
             return true;
         else
             return false;
@@ -108,7 +111,7 @@ public class http : MonoBehaviour {
             JsonData sendPokerJson = JsonMapper.ToObject(sendCardsResponse.text);
             int canSendPokers = (int)sendPokerJson["canSendPokers"];
             if (canSendPokers == 1)
-                Manager.moveCardsHttp = 1;            
+                Manager.moveCardsHttp = true;            
         }
     }
 

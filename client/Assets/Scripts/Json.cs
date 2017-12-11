@@ -201,11 +201,12 @@ public class Pokers
 public class SendPokers{
 
     private string userId;
-    private int movepoker_position;
+    private int movepoker_Position;    
     private string movepoker;
     private string targetpoker;
+    private int targetPoker_Position;
     private int submit_time;
-    private int pokerHome;    
+    //private int pokerHome;    
     private int canSendPokers;
 
     //防止MissingMethodException: Method not found: 'Default constructor not found...ctor()   报错
@@ -232,15 +233,27 @@ public class SendPokers{
         }
     }
 
-    public int Movepoker_position
+    public int Movepoker_Position
     {
         get
         {
-            return movepoker_position;
+            return movepoker_Position;
         }
         set
         {
-            movepoker_position = value;
+            movepoker_Position = value;
+        }
+    }
+
+    public int TargetPoker_Position
+    {
+        get
+        {
+            return targetPoker_Position;
+        }
+        set
+        {
+            targetPoker_Position = value;
         }
     }
 
@@ -283,17 +296,17 @@ public class SendPokers{
         }
     }
 
-    public int PokerHome
-    {
-        get
-        {
-            return pokerHome;
-        }
-        set
-        {
-            pokerHome = value;
-        }
-    }   
+    //public int PokerHome
+    //{
+    //    get
+    //    {
+    //        return pokerHome;
+    //    }
+    //    set
+    //    {
+    //        pokerHome = value;
+    //    }
+    //}   
 
     //能不能出牌
     public int CanSendPokers

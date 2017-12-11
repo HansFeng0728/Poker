@@ -35,6 +35,12 @@ public class Card
         set { index = value; }
     }
 
+    public int Num
+    {
+        get { return num; }
+        set { num = value; }
+    }
+
     public int State
     {
         get { return state; }

@@ -52,7 +52,7 @@ public class Manager : MonoBehaviour
     public static int shuffleLevel; //洗牌区显示第几张牌,0为最底下,2为最上层
     public static bool choosed = false; //是否已经有牌被选中
     public static Cards choosedCards = new Cards(-1);
-    public static int moveCardsHttp = 0;    //用于http的移牌
+    public static bool moveCardsHttp = false;    //用于http的移牌
 
     public static void InitSignIn()
     {
@@ -100,6 +100,7 @@ public class Manager : MonoBehaviour
 
     public static void ChoosedCardsReset()
      {
+         MethodhandCards.ResetColor();
          Manager.choosed = false;
          Manager.choosedCards.Reset();
      }

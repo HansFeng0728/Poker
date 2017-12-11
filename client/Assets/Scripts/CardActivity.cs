@@ -29,7 +29,9 @@ public class CardActivity : MonoBehaviour {
         }
         else
         {
-            Debug.Log("不能放牌到洗牌堆");
+            previewNum = Manager.choosedCards.CardList[0].Number;
+            MethodshuffleCards.DoubleClick(previewNum);            
+            Manager.ChoosedCardsReset();
         }
     }    
 
@@ -63,42 +65,7 @@ public class CardActivity : MonoBehaviour {
             }
             Manager.ChoosedCardsReset();
         }
-    }
-
-    public void ClickHandCard()
-    {
-        positionCount = Manager.player0.HandCardsList[index].CardList.Count;
-        
-        if (!Manager.choosed)
-        {
-            ClickHandCardNoChoose();            
-        }
-        else
-        {
-            //从洗牌堆传来的牌
-            if (Manager.choosedCards.Type == 1)
-            {
-                ClickHandCardType1();
-                Debug.Log(Manager.player0.AllHandCards.Count);
-            }
-
-            //从存牌区传来的牌
-            if (Manager.choosedCards.Type == 2)
-            {
-                //存牌区不向移牌区传牌
-                //ClickHandCardType2(); 
-                Debug.Log("存牌区不能向移牌区传牌");
-            }
-
-            //移动区相互传牌
-            if(Manager.choosedCards.Type == 3)
-            {
-                ClickHandCardType3();    
-            }
-            Manager.ChoosedCardsReset();
-            Debug.Log(Manager.player0.AllHandCards.Count);            
-        }
-    }
+    }    
 
     public void ClickCompleteCardNoChoose()
     {
@@ -150,6 +117,8 @@ public class CardActivity : MonoBehaviour {
         positionNum = Manager.player0.CompleteCardList[index].CardList[positionCount - 1].Number;
         bool sameColorType = MethodAllCards.SameColorType(previewNum, positionNum);
         bool compareNum = MethodAllCards.CompareNumIsLow(previewNum, positionNum);
+
+
         if (sameColorType && compareNum)
         {
             //数据层
@@ -182,12 +151,13 @@ public class CardActivity : MonoBehaviour {
     {
         chooseIndex = Manager.choosedCards.Index;
         chooseCount = Manager.choosedCards.CardList.Count;
-        previewNum = Manager.choosedCards.CardList[chooseCount - 1].Number;
+        previewNum = Manager.choosedCards.CardList[0].Number;
 
         positionCount = Manager.player0.CompleteCardList[index].CardList.Count;
         positionNum = Manager.player0.CompleteCardList[index].CardList[positionCount - 1].Number;
         bool sameColorType = MethodAllCards.SameColorType(previewNum, positionNum);
         bool compareNum = MethodAllCards.CompareNumIsLow(positionNum, previewNum);
+        int choosePosition = MethodhandCards.FindPosition(chooseIndex, previewNum);
 
         if (sameColorType && compareNum)
         {
@@ -196,6 +166,13 @@ public class CardActivity : MonoBehaviour {
 
             int length = Manager.player0.HandCardsList[chooseIndex].CardList.Count;
             Manager.handCardLists[chooseIndex][length - 1].SetActive(false);
+
+            if (choosePosition >= 1)
+            {
+                int pPreviewNum = Manager.player0.HandCardsList[chooseIndex].CardList[choosePosition - 1].Number;
+                MethodAllCards.ChangeState0(pPreviewNum);
+                Manager.handCardListBgs[chooseIndex][choosePosition - 1].spriteName = pPreviewNum.ToString();
+            }
 
             //数据层
             MethodhandCards.RemoveCard(chooseIndex, previewNum);
@@ -207,21 +184,57 @@ public class CardActivity : MonoBehaviour {
         }
     }
 
+    public void ClickHandCard()
+    {
+        positionCount = Manager.player0.HandCardsList[index].CardList.Count;
+
+        if (!Manager.choosed)
+        {
+            ClickHandCardNoChoose();
+        }
+        else
+        {
+            //从洗牌堆传来的牌
+            if (Manager.choosedCards.Type == 1)
+            {
+                ClickHandCardType1();
+                Debug.Log(Manager.player0.AllHandCards.Count);
+            }
+
+            //从存牌区传来的牌
+            if (Manager.choosedCards.Type == 2)
+            {
+                //存牌区不向移牌区传牌
+                //ClickHandCardType2(); 
+                Debug.Log("存牌区不能向移牌区传牌");
+            }
+
+            //移动区相互传牌
+            if (Manager.choosedCards.Type == 3)
+            {
+                ClickHandCardType3();
+            }
+            Manager.ChoosedCardsReset();
+            Debug.Log(Manager.player0.AllHandCards.Count);
+        }
+    }
+
     public void ClickHandCardNoChoose()
     {
         Manager.choosedCards.Type = type;
         Manager.choosedCards.Index = index;
         positionNum = Manager.player0.HandCardsList[index].CardList[positionCount - 1].Number;
         Card card = MethodAllCards.CreateCardInfo(positionNum, type, index);
+        MethodhandCards.ChangeColor(index, positionCount - 1, "choose");
         Manager.choosedCards.CardList.Add(card);
 
-        //判断是否反面
-        if (CheckState1(positionNum) == 1)
-        {
-            Manager.handCardListBgs[index][positionCount - 1].spriteName = positionNum.ToString();
-            Manager.ChoosedCardsReset(); 
-            return;
-        }
+        ////判断是否反面
+        //if (CheckState1(positionNum) == 1)
+        //{
+        //    Manager.handCardListBgs[index][positionCount - 1].spriteName = positionNum.ToString();
+        //    Manager.ChoosedCardsReset(); 
+        //    return;
+        //}
             
 
         for (int i = positionCount - 1; i >= 1 && positionCount > 1; i--)
@@ -229,7 +242,7 @@ public class CardActivity : MonoBehaviour {
             positionNum = Manager.player0.HandCardsList[index].CardList[i].Number;
             previewNum = Manager.player0.HandCardsList[index].CardList[i - 1].Number;
 
-            if (!CheckState2(positionNum, previewNum))
+            if (!MethodAllCards.CheckState2(positionNum, previewNum))
             {
                 Manager.choosed = true;
                 return;
@@ -239,6 +252,7 @@ public class CardActivity : MonoBehaviour {
             if (!sameColor)
             {
                 card = MethodAllCards.CreateCardInfo(previewNum, type, index);
+                MethodhandCards.ChangeColor(index, i-1, "choose");
                 Manager.choosedCards.CardList.Add(card);
             }
             else
@@ -257,12 +271,12 @@ public class CardActivity : MonoBehaviour {
         bool compareNum = MethodAllCards.CompareNumIsLow(previewNum, positionNum);
         int previewIndex = MethodAllCards.FindPosition(previewNum);
         string movePoker = (previewNum-1).ToString() + "-"+"1";
+        int positionIndex = MethodAllCards.FindPosition(positionNum);
+        int positionState = Manager.allCardList[positionIndex].State;
+        string targetPoker = (positionNum-1).ToString() + "-"+positionState.ToString();
+        Manager.httpVar.SendCardsRequset(movePoker, targetPoker, 0,index);
 
-        //int positionState = 
-        //string targetPoker = (positionNum-1).ToString() + "-"+state.ToString()
-        //Manager.httpVar.SendCardsRequset(previewNum,movePoker)
-
-        if (!sameColor && compareNum)
+        if (!sameColor && compareNum && Manager.moveCardsHttp)
         {
             //数据层
             MethodshuffleCards.RemoveCard(previewNum);
@@ -330,57 +344,44 @@ public class CardActivity : MonoBehaviour {
         bool sameColor = MethodAllCards.SameColor(previewNum, positionNum);
         bool compareNum = MethodAllCards.CompareNumIsLow(previewNum, positionNum);
         int choosePosition = MethodhandCards.FindPosition(chooseIndex, previewNum);
-
+        int length = chooseCount + positionCount;
+        if (positionNum == previewNum)
+        {
+            MethodhandCards.DoubleClick(previewNum,index);
+            return;
+        }
+        if (length >= 13)
+        {
+            Debug.Log("移动区超长！！！！！");
+            return;
+        }
         if (!sameColor && compareNum)
         {
             for (int i = chooseCount-1; i >=0; i--)
-            {
-                int length = chooseCount + positionCount;
-                if (length <= 13)
-                {
-                    int nextIndex = Manager.player0.HandCardsList[index].CardList.Count;
-                    previewNum = Manager.choosedCards.CardList[i].Number;
-                    Card card = MethodAllCards.CreateCardInfo(previewNum, type, index);
+            {                                
+                int nextIndex = Manager.player0.HandCardsList[index].CardList.Count;
+                previewNum = Manager.choosedCards.CardList[i].Number;
+                Card card = MethodAllCards.CreateCardInfo(previewNum, type, index);
 
-                    //被移动区表现层
-                    Manager.handCardLists[index][nextIndex].SetActive(true);
-                    Manager.handCardListBgs[index][nextIndex].spriteName = previewNum.ToString();
+                //被移动区表现层
+                Manager.handCardLists[index][nextIndex].SetActive(true);
+                Manager.handCardListBgs[index][nextIndex].spriteName = previewNum.ToString();                
 
-                    //主动移动区表现层
-                    Manager.handCardLists[chooseIndex][choosePosition+i].SetActive(false);
+                //主动移动区表现层
+                Manager.handCardLists[chooseIndex][choosePosition+i].SetActive(false);
 
-                    //数据层
-                    MethodhandCards.RemoveCard(chooseIndex, previewNum);
-                    MethodhandCards.AddCard(index, previewNum);
-                }
-                else
-                {
-                    Debug.Log("移动区超长！！！！！");
-                    break;
-                }
+                //数据层
+                MethodhandCards.RemoveCard(chooseIndex, previewNum);
+                MethodhandCards.AddCard(index, previewNum);                
             }
+            if(choosePosition >= 1)
+            {
+                int pPreviewNum = Manager.player0.HandCardsList[chooseIndex].CardList[choosePosition-1].Number;
+                MethodAllCards.ChangeState0(pPreviewNum);
+                Manager.handCardListBgs[chooseIndex][choosePosition - 1].spriteName = pPreviewNum.ToString();                
+            }            
         }
     }
 
-    public int CheckState1(int num)
-    {
-        int index = MethodAllCards.FindPosition(num);
-        //反面转正只会1次,所以转过后会变成特殊的2,暂时处理
-        Manager.allCardList[index].State = (Manager.allCardList[index].State == 0) ? 1 : 2;
-        int state = Manager.allCardList[index].State;
-        return state;
-    }
-
-    public bool CheckState2(int num1,int num2)
-    {
-        int index1 = MethodAllCards.FindPosition(num1);
-        int index2 = MethodAllCards.FindPosition(num2);
-        //反面转正只会1次,所以转过后会变成特殊的2,暂时处理
-        int state1 = Manager.allCardList[index1].State;
-        int state2 = Manager.allCardList[index2].State;
-        if (state1 == 0 || state2 == 0)
-            return false;
-        else
-            return true;
-    }
+    
 }
