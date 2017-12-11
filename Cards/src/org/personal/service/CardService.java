@@ -100,6 +100,7 @@ public class CardService extends BaseService{
 	    
 	    int frontNum = pokerFrontHandler.size();
 		for (int i = 0; i < frontNum; i++) {
+			//使用明确数值比较的条件语句时，从效率跟时间上，switch效率要优于if
 			switch (i) {
 			case 0:
 				pokerHandlerList1.add(pokerFrontHandler.get(i).getPokerId()+":"+pokerFrontHandler.get(i).getDirection());
@@ -271,7 +272,7 @@ public class CardService extends BaseService{
 		}
 		//移动牌到手牌区
 		if(target_position < 8){
-			movePokerToRoom(target_position, move_position, userId, poker, targetPoker);
+			movePokerToRoom(userId, target_position, move_position, poker, targetPoker);
 		}
 		//移动牌到存牌区
 		if(target_position >= 8){
@@ -280,7 +281,7 @@ public class CardService extends BaseService{
 		return true;
 	}
 	
-	private void movePokerToRoom(int move_position, int target_position, String userId, Poker poker,Poker targetPoker) {
+	private void movePokerToRoom(String userId, int move_position, int target_position, Poker poker,Poker targetPoker) {
 		switch(target_position){
 		case 1:
 			if(DBUtil.GetInstance().getPokerRoom1List(userId).size() == 0){
@@ -292,7 +293,7 @@ public class CardService extends BaseService{
 				break;
 			}else{
 				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandler(poker,move_position,userId);
+					removeCardFromHandlerOrShuffle(poker,move_position,userId);
 					DBUtil.GetInstance().addPokerToRoom1(userId, poker);
 					break;
 				}
@@ -309,7 +310,7 @@ public class CardService extends BaseService{
 				break;
 			}else{
 				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandler(poker,move_position,userId);
+					removeCardFromHandlerOrShuffle(poker,move_position,userId);
 					DBUtil.GetInstance().addPokerToRoom2(userId, poker);
 					break;
 				}
@@ -326,7 +327,7 @@ public class CardService extends BaseService{
 				break;
 			}else{
 				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandler(poker,move_position,userId);
+					removeCardFromHandlerOrShuffle(poker,move_position,userId);
 					DBUtil.GetInstance().addPokerToRoom3(userId, poker);
 					break;
 				}
@@ -343,7 +344,7 @@ public class CardService extends BaseService{
 				break;
 			}else{
 				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandler(poker,move_position,userId);
+					removeCardFromHandlerOrShuffle(poker,move_position,userId);
 					DBUtil.GetInstance().addPokerToRoom4(userId, poker);
 					break;
 				}
@@ -360,7 +361,7 @@ public class CardService extends BaseService{
 				break;
 			}else{
 				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandler(poker,move_position,userId);
+					removeCardFromHandlerOrShuffle(poker,move_position,userId);
 					DBUtil.GetInstance().addPokerToRoom5(userId, poker);
 					break;
 				}
@@ -377,7 +378,7 @@ public class CardService extends BaseService{
 				break;
 			}else{
 				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandler(poker,move_position,userId);
+					removeCardFromHandlerOrShuffle(poker,move_position,userId);
 					DBUtil.GetInstance().addPokerToRoom6(userId, poker);
 					break;
 				}
@@ -394,7 +395,7 @@ public class CardService extends BaseService{
 				break;
 			}else{
 				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandler(poker,move_position,userId);
+					removeCardFromHandlerOrShuffle(poker,move_position,userId);
 					DBUtil.GetInstance().addPokerToRoom7(userId, poker);
 					break;
 				}
@@ -416,7 +417,7 @@ public class CardService extends BaseService{
 				DBUtil.GetInstance().addPokerToHome1(userId, poker);
 			}else{
 				if(comparePokerOfHome(poker,targetPoker)){
-					removeCardFromHandler(poker,move_position,userId);
+					removeCardFromHandlerOrShuffle(poker,move_position,userId);
 					DBUtil.GetInstance().addPokerToHome1(userId, poker);
 					break;
 				}
@@ -429,11 +430,11 @@ public class CardService extends BaseService{
 					logger.error("");
 					break;
 				}
-				DBUtil.GetInstance().addPokerToHome1(userId, poker);
+				DBUtil.GetInstance().addPokerToHome2(userId, poker);
 			}else{
 				if(comparePokerOfHome(poker,targetPoker)){
-					removeCardFromHandler(poker,move_position,userId);
-					DBUtil.GetInstance().addPokerToHome1(userId, poker);
+					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+					DBUtil.GetInstance().addPokerToHome2(userId, poker);
 					break;
 				}
 				logger.error("");
@@ -445,11 +446,11 @@ public class CardService extends BaseService{
 					logger.error("");
 					break;
 				}
-				DBUtil.GetInstance().addPokerToHome1(userId, poker);
+				DBUtil.GetInstance().addPokerToHome3(userId, poker);
 			}else{
 				if(comparePokerOfHome(poker,targetPoker)){
-					removeCardFromHandler(poker,move_position,userId);
-					DBUtil.GetInstance().addPokerToHome1(userId, poker);
+					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+					DBUtil.GetInstance().addPokerToHome3(userId, poker);
 					break;
 				}
 				logger.error("");
@@ -461,11 +462,11 @@ public class CardService extends BaseService{
 					logger.error("");
 					break;
 				}
-				DBUtil.GetInstance().addPokerToHome1(userId, poker);
+				DBUtil.GetInstance().addPokerToHome4(userId, poker);
 			}else{
 				if(comparePokerOfHome(poker,targetPoker)){
-					removeCardFromHandler(poker,move_position,userId);
-					DBUtil.GetInstance().addPokerToHome1(userId, poker);
+					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+					DBUtil.GetInstance().addPokerToHome4(userId, poker);
 					break;
 				}
 				logger.error("");
@@ -474,7 +475,7 @@ public class CardService extends BaseService{
 		}
 	}
 	
-	private void removeCardFromHandler(Poker poker, int move_position,String userId) {
+	private void removeCardFromHandlerOrShuffle(Poker poker, int move_position,String userId) {
 		switch(move_position){
 		case 0:
 			DBUtil.GetInstance().deletePokerFromShuffle(userId, poker);

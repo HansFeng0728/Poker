@@ -122,13 +122,28 @@ public class HomeController {
 	
 	@RequestMapping("/moveCards")
 	public void moveCards(HttpServletRequest request, HttpServletResponse response, String requestStr) throws UnsupportedEncodingException, IOException{
-
+		Map<String, Object> params = new HashMap<String, Object>();
+		PrintWriter pw = response.getWriter();
 		if("".equals(requestStr) || requestStr != null){
-			
+			logger.error("illegal requestStr of moveCards");
+			params.put("ErrorCode", "illegal requestStr of moveCards");
+			String error = mapper.writeValueAsString(params);
+			pw.write(error);
+			pw.flush();
+			pw.close();
 		}
+		
 		JsonParser parse = new JsonParser();
 		JsonObject json = (JsonObject) parse.parse(requestStr); 
 		String userId = json.get("UserId").getAsString();
+		if(userId == null || DBUtil.GetInstance().getUser(userId) == null){
+			logger.error("illegal userId of moveCards");
+			params.put("ErrorCode", "illegal userId of moveCards");
+			String error = mapper.writeValueAsString(params);
+			pw.write(error);
+			pw.flush();
+			pw.close();
+		}
 		
 		String movePoker = json.get("movePoker").getAsString();
 		String targetPoker = json.get("targetPoker").getAsString();
@@ -138,6 +153,15 @@ public class HomeController {
 		
 		int movepoker_Position = json.get("movepoker_Position").getAsInt();
 		int targetPoker_Position = json.get("targetPoker_Position").getAsInt();
+		
+		if(movepoker_Position < 0 || movepoker_Position > 7){
+			logger.error("illegal move_position");
+			params.put("ErrorCode", "illegal move_position");
+			String error = mapper.writeValueAsString(params);
+			pw.write(error);
+			pw.flush();
+			pw.close();
+		}
 		
 		String targetPokerId = tp[0];
 		String pokerId = mp[0];
