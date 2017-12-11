@@ -327,9 +327,9 @@ public class DBUtil {
 		return redisUtil.hashGetAll(RedisKeys.POKER + userId, Poker.class);
 	}
 	
-	public Poker getPoker(String userId, String pokerId)
+	public Poker getPoker(String userId, int pokerId)
 	{
-		return redisUtil.hashGet(RedisKeys.POKER + userId, pokerId, Poker.class);
+		return redisUtil.hashGet(RedisKeys.POKER + userId, String.valueOf(pokerId), Poker.class);
 	}
 	
 	public void savePoker(String userId, Poker poker)

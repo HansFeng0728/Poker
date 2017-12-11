@@ -122,7 +122,7 @@ public class HomeController {
 	public void moveCards(HttpServletRequest request, HttpServletResponse response, String requestStr) throws UnsupportedEncodingException, IOException{
 		Map<String, Object> params = new HashMap<String, Object>();
 		PrintWriter pw = response.getWriter();
-		if("".equals(requestStr) || requestStr != null){
+		if("".equals(requestStr) || requestStr == null){
 			logger.error("illegal requestStr of moveCards");
 			params.put("ErrorCode", "illegal requestStr of moveCards");
 			String error = mapper.writeValueAsString(params);
@@ -130,7 +130,7 @@ public class HomeController {
 			pw.flush();
 			pw.close();
 		}
-		
+		logger.info("requestStr---{}",requestStr);
 		JsonParser parse = new JsonParser();
 		JsonObject json = (JsonObject) parse.parse(requestStr); 
 		String userId = json.get("UserId").getAsString();
@@ -161,8 +161,8 @@ public class HomeController {
 			pw.close();
 		}
 		
-		String targetPokerId = tp[0];
-		String pokerId = mp[0];
+		int targetPokerId = Integer.valueOf(tp[0]);
+		int pokerId = Integer.valueOf(mp[0]);
 		
 		cardService.moveCardsToPokerRoom(userId, pokerId, targetPokerId, movepoker_Position, targetPoker_Position);
 	}

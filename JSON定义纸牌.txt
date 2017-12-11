@@ -26,7 +26,7 @@ Json 协议
 	"sendPokers":[
 		{
 		"movepoker_Position":"",//用户移动的牌之前的位置（洗牌区：0  手牌区：1-7）
-		"movePoker":"",    //用户想要移动的牌（数字-花色-正反（0，1））
+		"movePoker":"",    //用户想要移动的牌（Id-正反（0，1））
 		"targetPoker":"",	   //移动的卡牌要放置在哪张卡牌上
 		"targetPoker_Position":"", //想要放置的牌的位置(手牌区：1-7，存牌区8-11)
 		
