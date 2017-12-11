@@ -28,9 +28,7 @@ public class CardService extends BaseService{
 	
 	static Logger logger = LoggerFactory.getLogger(CardService.class);
 	
-	private static ObjectMapper mapper = new ObjectMapper();
-
-	//---------------------------------------------------------------洗牌逻辑----------------------------------------------------------------------------
+	//---------------------------------------------------------------洗牌发牌逻辑----------------------------------------------------------------------------
 	/**为登录的用户进行洗牌和发牌 **/ 
 	public  Map<String, String> sendPoker(String userId) throws JsonGenerationException, JsonMappingException, IOException{
 		  //定义HashMap变量用于存储每张牌的编号以及牌型  
@@ -61,10 +59,10 @@ public class CardService extends BaseService{
 	              index++;
 	          }  
 	      }
-	      for(int i = 0; i < hm.size();i++){
-	    	  DBUtil.GetInstance().savePoker(userId, hm.get(array.get(i)));
-	    	  System.out.println("pokerId:"+hm.get(array.get(i)).getPokerId()+"--pokerNumber"+hm.get(array.get(i)).getNumber()+"--pokerColor"+hm.get(array.get(i)).getColor());
-	      }
+//	      for(int i = 0; i < hm.size();i++){
+//	    	  DBUtil.GetInstance().savePoker(userId, hm.get(array.get(i)));
+//	    	  System.out.println("pokerId:"+hm.get(array.get(i)).getPokerId()+"--pokerNumber"+hm.get(array.get(i)).getNumber()+"--pokerColor"+hm.get(array.get(i)).getColor());
+//	      }
 	      //打乱编号，重新排序
 	      Collections.shuffle(array);
 	      DBUtil.GetInstance().init();
@@ -194,7 +192,8 @@ public class CardService extends BaseService{
 //		  String pokerJson = JsonUtil.encodeJson(pokerJsonParam); 
 //		  String pokerJson = mapper.writeValueAsString(pokerJsonParam);
 //		  String pokerJson = pokerJsonParam.toString();
-	      
+	      PokerList pl = new PokerList();
+	      pl.setContent(pokerJsonParam.toString());
 	      return pokerJsonParam;
 //	      //二人斗地主的发牌  弃用
 //	      List<String> playerOne = new ArrayList<String>();

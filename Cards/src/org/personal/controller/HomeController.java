@@ -118,8 +118,6 @@ public class HomeController {
         }
 	}
 	
-	
-	
 	@RequestMapping("/moveCards")
 	public void moveCards(HttpServletRequest request, HttpServletResponse response, String requestStr) throws UnsupportedEncodingException, IOException{
 		Map<String, Object> params = new HashMap<String, Object>();

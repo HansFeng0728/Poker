@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.personal.db.dao.Poker;
+import org.personal.db.dao.PokerList;
+import org.personal.db.dao.PokerListMapper;
 import org.personal.db.dao.User;
 import org.personal.db.dao.UserMapper;
 import org.personal.util.Constant;
@@ -210,6 +212,114 @@ public class DBUtil {
 	}
 
 //---------------------------------------------------牌库相关
+//	public PokerList getPokerList(String userId)
+//	{
+//		PokerList pokerList = redisUtil.get(userId + RedisKeys.POKERLIST, PokerList.class);
+//		if(pokerList == null)
+//		{
+//			pokerList = getUserByDB(userId);
+//			if(pokerList != null)
+//			{
+//				redisUtil.set(pokerList.getPokerId(), pokerList);
+//			}
+//		}
+//		return pokerList;
+//	}
+//	
+//	public PokerList getPokerListByDB(String userId)
+//	{
+//		PokerList pokerList = null;
+//		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+//		try
+//		{
+//			PokerListMapper pokerListMapper = session.getMapper(PokerListMapper.class);
+//			pokerList = PokerListMapper.selectByPokerId(userId);
+//			session.commit();
+//		}
+//		catch (Exception e) {
+//			System.out.println("DBUtil:---"+e);;
+//		}
+//		finally
+//		{
+//			session.close();
+//		}
+//		return pokerList;
+//	}
+//	
+//	public void savePokerList(final PokerList pokerList)
+//	{	
+//		redisUtil.set(pokerList.getUserId(), pokerList);
+//		dbwork.produce(new TaskHandler()
+//		{
+//			@Override
+//			public void onEvent() 
+//			{
+//				saveUserByDB(user);
+//			}
+//		});
+//	}
+//	
+//	public void saveUserByDB(User user)
+//	{
+//		if(user == null)
+//		{
+//			logger.error("saveUserByDB user is null!");
+//			return ;
+//		}
+//
+//		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+//		try
+//		{
+//			UserMapper userMapper = session.getMapper(UserMapper.class);
+//			userMapper.insert(user);
+//			session.commit();
+//		}
+//		catch (Exception e) {
+//			logger.error("DBUtil", e);
+//		}
+//		finally
+//		{
+//			session.close();
+//		}
+//	}
+//	
+//	public void updateUser(final User user)
+//	{
+//		redisUtil.set(user.getUserId(), user);
+//		dbwork.produce(new TaskHandler()
+//		{
+//			@Override
+//			public void onEvent() 
+//			{
+//				updateUserByDB(user);
+//			}
+//		});
+//	}
+//	
+//	public void updateUserByDB(User user)
+//	{
+//		if(user == null)
+//		{
+//			logger.error("updateUserToDB user is null!");
+//			return ;
+//		}
+//
+//		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+//		try
+//		{
+//			UserMapper userMapper = session.getMapper(UserMapper.class);
+//			userMapper.updateByPrimaryKeySelective(user);
+//			session.commit();
+//		}
+//		catch (Exception e) {
+//			logger.error("DBUtil", e);
+//		}
+//		finally
+//		{
+//			session.close();
+//		}
+//	}
+	
 	
 //---------------------------------牌
 	public Map<String, Poker> getPokerMap(String userId)
