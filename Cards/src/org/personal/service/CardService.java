@@ -15,9 +15,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.personal.db.DBUtil;
 import org.personal.db.dao.Poker;
 import org.personal.db.dao.PokerList;
-import org.personal.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 
 public class CardService extends BaseService{
@@ -29,13 +29,16 @@ public class CardService extends BaseService{
 	static Logger logger = LoggerFactory.getLogger(CardService.class);
 	
 	private static ObjectMapper mapper = new ObjectMapper();
+
+	//---------------------------------------------------------------洗牌逻辑----------------------------------------------------------------------------
+	/**为登录的用户进行洗牌和发牌 **/ 
 	public  Map<String, String> sendPoker(String userId) throws JsonGenerationException, JsonMappingException, IOException{
 		  //定义HashMap变量用于存储每张牌的编号以及牌型  
 	      HashMap<Integer,Poker> hm = new HashMap<Integer,Poker>();   
 	      //定义变量存储洗牌区牌的编号  
 	      ArrayList<Integer> array = new ArrayList<Integer>();  
 	      //定义数组存储牌的花色  
-	      int[] colors = {0,1,2,3};   
+	      int[] colors = {1,2,3,4};   
 	      //定义数组存储牌值  
 	      int[] numbers = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 	      //定义扑克牌的状态
@@ -60,11 +63,15 @@ public class CardService extends BaseService{
 	      }
 	      for(int i = 0; i < hm.size();i++){
 	    	  DBUtil.GetInstance().savePoker(userId, hm.get(array.get(i)));
-	    	  System.out.println(hm.get(array.get(i)).getPokerId()+"--"+hm.get(array.get(i)).getNumber()+"--"+hm.get(array.get(i)).getColor());
+	    	  System.out.println("pokerId:"+hm.get(array.get(i)).getPokerId()+"--pokerNumber"+hm.get(array.get(i)).getNumber()+"--pokerColor"+hm.get(array.get(i)).getColor());
 	      }
+	      //打乱编号，重新排序
 	      Collections.shuffle(array);
-
 	      DBUtil.GetInstance().init();
+	      
+	      if(DBUtil.GetInstance().getShuffleList(userId).size() ==24 || DBUtil.GetInstance().getPokerRoom1List(userId).size() != 0){
+	    	  return getInitCards(userId);
+	      }
 	      List<String> pokerShuffle = new ArrayList<>();
 	      List<String> pokerHandler = new ArrayList<>();
 	      
@@ -173,9 +180,9 @@ public class CardService extends BaseService{
 	      
 	      //洗牌区的json数据
 //	      String jsonPokerShuffle = gson.toJson(pokerShuffle);
-	      String jsonPokerShuffle = pokerShuffle.toString();
+	      String shuffle = pokerShuffle.toString();
 	      Map<String, String> pokerJsonParam = new HashMap<String, String>();
-		  pokerJsonParam.put("shufflePokerList", jsonPokerShuffle);
+		  pokerJsonParam.put("shufflePokerList", shuffle);
 		  pokerJsonParam.put("handPokerList1", h1);
 		  pokerJsonParam.put("handPokerList2", h2);
 		  pokerJsonParam.put("handPokerList3", h3);
@@ -245,6 +252,7 @@ public class CardService extends BaseService{
 //	      buf.append("]");
 //	      return buf.toString().getBytes();
 	  }
+	
 	  /** * 遍历每个玩家的牌以及底牌 **/  
 	  public static void lookPoker(String name,TreeSet<Integer> ts,HashMap<Integer,String> hm){  
 	  System.out.print(name+":\t");    
@@ -257,11 +265,58 @@ public class CardService extends BaseService{
       System.out.println();  
       }
 	  
+	  /** 已经洗牌并发牌了  直接读redis**/ 
+	  public Map<String,String> getInitCards(String userId){
+		  List<String> room1 = new ArrayList<>();
+		  for(Poker p : DBUtil.GetInstance().getPokerRoom1List(userId)){
+			  room1.add(p.getPokerId()+":"+p.getDirection());
+		  }
+		  List<String> room2 = new ArrayList<>();
+		  for(Poker p : DBUtil.GetInstance().getPokerRoom2List(userId)){
+			  room2.add(p.getPokerId()+":"+p.getDirection());
+		  }
+		  List<String> room3 = new ArrayList<>();
+		  for(Poker p : DBUtil.GetInstance().getPokerRoom3List(userId)){
+			  room3.add(p.getPokerId()+":"+p.getDirection());
+		  }
+		  List<String> room4 = new ArrayList<>();
+		  for(Poker p : DBUtil.GetInstance().getPokerRoom4List(userId)){
+			  room4.add(p.getPokerId()+":"+p.getDirection());
+		  }
+		  List<String> room5 = new ArrayList<>();
+		  for(Poker p : DBUtil.GetInstance().getPokerRoom5List(userId)){
+			  room5.add(p.getPokerId()+":"+p.getDirection());
+		  }
+		  List<String> room6 = new ArrayList<>();
+		  for(Poker p : DBUtil.GetInstance().getPokerRoom6List(userId)){
+			  room6.add(p.getPokerId()+":"+p.getDirection());
+		  }
+		  List<String> room7 = new ArrayList<>();
+		  for(Poker p : DBUtil.GetInstance().getPokerRoom7List(userId)){
+			  room7.add(p.getPokerId()+":"+p.getDirection());
+		  }
+		  List<String> shuffle = new ArrayList<>();
+		  for(Poker p : DBUtil.GetInstance().getShuffleList(userId)){
+			  shuffle.add(p.getPokerId()+":"+p.getDirection());
+		  }
+		  
+		  Map<String, String> pokerJsonParam = new HashMap<String, String>();
+		  pokerJsonParam.put("shufflePokerList", shuffle.toString());
+		  pokerJsonParam.put("handPokerList1", room1.toString());
+		  pokerJsonParam.put("handPokerList2", room2.toString());
+		  pokerJsonParam.put("handPokerList3", room3.toString());
+		  pokerJsonParam.put("handPokerList4", room4.toString());
+		  pokerJsonParam.put("handPokerList5", room5.toString());
+		  pokerJsonParam.put("handPokerList6", room6.toString());
+		  pokerJsonParam.put("handPokerList7", room7.toString());
+		  pokerJsonParam.put("userId", userId);
+		  pokerJsonParam.put("ErrorCode", "already init cards,if want to get another pair of deck,please finish the game or restart");
+		  return pokerJsonParam;
+	  }
 	  
 //----------------------------------------------------------移牌逻辑--------------------------------------------------	  
 	//移动卡牌到七个手牌区之一(1.从洗牌区移入 2.在手牌区互相移动)
 	//position 只有在向空白的位置移动时才会进行判断
-	//这里的poker不用判断为空，是在上一步解析中拼接的
 	public boolean moveCardsToPokerRoom(String userId,String pokerId, String targetPokerId, int move_position,int target_position) {
 		Poker poker = DBUtil.GetInstance().getPoker(userId, pokerId);
 		Poker targetPoker = DBUtil.GetInstance().getPoker(userId, targetPokerId);
@@ -282,201 +337,201 @@ public class CardService extends BaseService{
 	}
 	
 	private void movePokerToRoom(String userId, int move_position, int target_position, Poker poker,Poker targetPoker) {
-		switch(target_position){
+		switch (target_position) {
 		case 1:
-			if(DBUtil.GetInstance().getPokerRoom1List(userId).size() == 0){
-				if(poker.getNumber() == 13){
+			if (DBUtil.GetInstance().getPokerRoom1List(userId).size() == 0) {
+				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom1(userId, poker);
 					break;
 				}
-				logger.error("");//TODO 不同的errorcode
+				logger.error("");// TODO 不同的errorcode
 				break;
-			}else{
-				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+			} else {
+				if (comparePokerOfHandle(poker, targetPoker)) {
+					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom1(userId, poker);
 					break;
 				}
 				logger.error("");
 			}
-		break;
+			break;
 		case 2:
-			if(DBUtil.GetInstance().getPokerRoom2List(userId).size() == 0){
-				if(poker.getNumber() == 13){
+			if (DBUtil.GetInstance().getPokerRoom2List(userId).size() == 0) {
+				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom2(userId, poker);
 					break;
 				}
-				logger.error("");//TODO 不同的errorcode
+				logger.error("");// TODO 不同的errorcode
 				break;
-			}else{
-				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+			} else {
+				if (comparePokerOfHandle(poker, targetPoker)) {
+					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom2(userId, poker);
 					break;
 				}
 				logger.error("");
 			}
-		break;
+			break;
 		case 3:
-			if(DBUtil.GetInstance().getPokerRoom3List(userId).size() == 0){
-				if(poker.getNumber() == 13){
+			if (DBUtil.GetInstance().getPokerRoom3List(userId).size() == 0) {
+				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom3(userId, poker);
 					break;
 				}
-				logger.error("");//TODO 不同的errorcode
+				logger.error("");// TODO 不同的errorcode
 				break;
-			}else{
-				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+			} else {
+				if (comparePokerOfHandle(poker, targetPoker)) {
+					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom3(userId, poker);
 					break;
 				}
 				logger.error("");
 			}
-		break;
+			break;
 		case 4:
-			if(DBUtil.GetInstance().getPokerRoom4List(userId).size() == 0){
-				if(poker.getNumber() == 13){
+			if (DBUtil.GetInstance().getPokerRoom4List(userId).size() == 0) {
+				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom4(userId, poker);
 					break;
 				}
-				logger.error("");//TODO 不同的errorcode
+				logger.error("");// TODO 不同的errorcode
 				break;
-			}else{
-				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+			} else {
+				if (comparePokerOfHandle(poker, targetPoker)) {
+					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom4(userId, poker);
 					break;
 				}
 				logger.error("");
 			}
-		break;
+			break;
 		case 5:
-			if(DBUtil.GetInstance().getPokerRoom5List(userId).size() == 0){
-				if(poker.getNumber() == 13){
+			if (DBUtil.GetInstance().getPokerRoom5List(userId).size() == 0) {
+				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom5(userId, poker);
 					break;
 				}
-				logger.error("");//TODO 不同的errorcode
+				logger.error("");// TODO 不同的errorcode
 				break;
-			}else{
-				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+			} else {
+				if (comparePokerOfHandle(poker, targetPoker)) {
+					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom5(userId, poker);
 					break;
 				}
 				logger.error("");
 			}
-		break;
+			break;
 		case 6:
-			if(DBUtil.GetInstance().getPokerRoom6List(userId).size() == 0){
-				if(poker.getNumber() == 13){
+			if (DBUtil.GetInstance().getPokerRoom6List(userId).size() == 0) {
+				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom6(userId, poker);
 					break;
 				}
-				logger.error("");//TODO 不同的errorcode
+				logger.error("");// TODO 不同的errorcode
 				break;
-			}else{
-				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+			} else {
+				if (comparePokerOfHandle(poker, targetPoker)) {
+					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom6(userId, poker);
 					break;
 				}
 				logger.error("");
 			}
-		break;
+			break;
 		case 7:
-			if(DBUtil.GetInstance().getPokerRoom7List(userId).size() == 0){
-				if(poker.getNumber() == 13){
+			if (DBUtil.GetInstance().getPokerRoom7List(userId).size() == 0) {
+				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom7(userId, poker);
 					break;
 				}
-				logger.error("");//TODO 不同的errorcode
+				logger.error("");// TODO 不同的errorcode
 				break;
-			}else{
-				if(comparePokerOfHandle(poker,targetPoker)){
-					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+			} else {
+				if (comparePokerOfHandle(poker, targetPoker)) {
+					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom7(userId, poker);
 					break;
 				}
 				logger.error("");
 			}
-		break;
+			break;
 		}
-		
 	}
-	//移动牌到存牌区
-	public void movePokerToHome(int target_position, int move_position, String userId,Poker poker,Poker targetPoker){
-		switch(target_position){
+
+	// 移动牌到存牌区
+	public void movePokerToHome(int target_position, int move_position, String userId, Poker poker, Poker targetPoker) {
+		switch (target_position) {
 		case 8:
-			if(DBUtil.GetInstance().getHome1List(userId).size() == 0){
-				if(poker.getNumber() != 1){
-					logger.error("");//TODO 不同的errorcode
+			if (DBUtil.GetInstance().getHome1List(userId).size() == 0) {
+				if (poker.getNumber() != 1) {
+					logger.error("");// TODO 不同的errorcode
 					break;
 				}
 				DBUtil.GetInstance().addPokerToHome1(userId, poker);
-			}else{
-				if(comparePokerOfHome(poker,targetPoker)){
-					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+			} else {
+				if (comparePokerOfHome(poker, targetPoker)) {
+					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToHome1(userId, poker);
 					break;
 				}
 				logger.error("");
 			}
-		break;
+			break;
 		case 9:
-			if(DBUtil.GetInstance().getHome2List(userId).size() == 0){
-				if(poker.getNumber() != 1){
+			if (DBUtil.GetInstance().getHome2List(userId).size() == 0) {
+				if (poker.getNumber() != 1) {
 					logger.error("");
 					break;
 				}
 				DBUtil.GetInstance().addPokerToHome2(userId, poker);
-			}else{
-				if(comparePokerOfHome(poker,targetPoker)){
-					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+			} else {
+				if (comparePokerOfHome(poker, targetPoker)) {
+					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToHome2(userId, poker);
 					break;
 				}
 				logger.error("");
 			}
-		break;
+			break;
 		case 10:
-			if(DBUtil.GetInstance().getHome3List(userId).size() == 0){
-				if(poker.getNumber() != 1){
+			if (DBUtil.GetInstance().getHome3List(userId).size() == 0) {
+				if (poker.getNumber() != 1) {
 					logger.error("");
 					break;
 				}
 				DBUtil.GetInstance().addPokerToHome3(userId, poker);
-			}else{
-				if(comparePokerOfHome(poker,targetPoker)){
-					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+			} else {
+				if (comparePokerOfHome(poker, targetPoker)) {
+					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToHome3(userId, poker);
 					break;
 				}
 				logger.error("");
 			}
-		break;
+			break;
 		case 11:
-			if(DBUtil.GetInstance().getHome4List(userId).size() == 0){
-				if(poker.getNumber() != 1){
+			if (DBUtil.GetInstance().getHome4List(userId).size() == 0) {
+				if (poker.getNumber() != 1) {
 					logger.error("");
 					break;
 				}
 				DBUtil.GetInstance().addPokerToHome4(userId, poker);
-			}else{
-				if(comparePokerOfHome(poker,targetPoker)){
-					removeCardFromHandlerOrShuffle(poker,move_position,userId);
+			} else {
+				if (comparePokerOfHome(poker, targetPoker)) {
+					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToHome4(userId, poker);
 					break;
 				}
 				logger.error("");
 			}
-		break;
+			break;
 		}
 	}
-	
-	private void removeCardFromHandlerOrShuffle(Poker poker, int move_position,String userId) {
-		switch(move_position){
+
+	private void removeCardFromHandlerOrShuffle(Poker poker, int move_position, String userId) {
+		switch (move_position) {
 		case 0:
 			DBUtil.GetInstance().deletePokerFromShuffle(userId, poker);
 			break;
@@ -502,30 +557,31 @@ public class CardService extends BaseService{
 			DBUtil.GetInstance().deletePokerFromRoom7(userId, poker);
 			break;
 		}
-	
 	}
-	//比较牌的大小和花色（存牌区）
-	public boolean comparePokerOfHome(Poker poker,Poker targetPoker){
-		if(poker.getNumber() == targetPoker.getNumber() - 1 && poker.getColor() == targetPoker.getColor()){
+
+	// 比较牌的大小和花色（存牌区）
+	public boolean comparePokerOfHome(Poker poker, Poker targetPoker) {
+		if (poker.getNumber() == targetPoker.getNumber() - 1 && poker.getColor() == targetPoker.getColor()) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-	
-	//手牌区
-	public boolean comparePokerOfHandle(Poker poker,Poker targetPoker){
-		//判断数字和花色  与1进行按与运算，运算结果为1则是奇数，0则为偶数。
-		if(poker.getNumber() == targetPoker.getNumber() - 1 && (poker.getColor() & 1) == (targetPoker.getColor() & 1)){
+
+	// 手牌区
+	public boolean comparePokerOfHandle(Poker poker, Poker targetPoker) {
+		// 手牌区，只有花色不同才可以叠加
+		// 判断数字和花色 与1进行按与运算，运算结果为1则是奇数，0则为偶数。
+		if (poker.getNumber() == targetPoker.getNumber() - 1 && (poker.getColor() & 1) == (targetPoker.getColor() & 1)) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-	
-	  public boolean isCorrenctCardHome(String pokerHomeList){
-		  return false;
-	  }
+
+	public boolean isCorrenctCardHome(String pokerHomeList) {
+		return false;
+	}
 
 //-----------------------------------------------------胜利判断逻辑--------------------------------------------------------------
 	  //判断是否胜利，七个手牌区和洗牌区的均没有卡牌
