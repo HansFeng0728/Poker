@@ -7,8 +7,8 @@ public class Poker {
 
 	private int number;
 	
-	private String color;
-	
+	private int color;
+
 	private String direction;
 	
 	public String getUserId() {
@@ -34,15 +34,15 @@ public class Poker {
 	public void setNumber(int number) {
 		this.number = number;
 	}
-
-	public String getColor() {
+	
+	public int getColor() {
 		return color;
 	}
 
-	public void setColor(String color) {
+	public void setColor(int color) {
 		this.color = color;
 	}
-
+	
 	public String getDirection() {
 		return direction;
 	}

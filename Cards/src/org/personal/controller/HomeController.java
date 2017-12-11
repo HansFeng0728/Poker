@@ -129,11 +129,20 @@ public class HomeController {
 		JsonParser parse = new JsonParser();
 		JsonObject json = (JsonObject) parse.parse(requestStr); 
 		String userId = json.get("UserId").getAsString();
-		String movepoker_Position = json.get("movepoker_Position").getAsString();
+		
 		String movePoker = json.get("movePoker").getAsString();
-		String userId = json.get("UserId").getAsString();
-		String userId = json.get("UserId").getAsString();
-
+		String targetPoker = json.get("targetPoker").getAsString();
+		
+		String[] mp = movePoker.split(":");
+		String[] tp = targetPoker.split(":");
+		
+		int movepoker_Position = json.get("movepoker_Position").getAsInt();
+		int targetPoker_Position = json.get("targetPoker_Position").getAsInt();
+		
+		String targetPokerId = tp[0];
+		String pokerId = mp[0];
+		
+		cardService.moveCardsToPokerRoom(userId, pokerId, targetPokerId, movepoker_Position, targetPoker_Position);
 	}
 	
 	@RequestMapping(value="otherTest",method=RequestMethod.POST)

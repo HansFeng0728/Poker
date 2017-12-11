@@ -1,6 +1,7 @@
 package org.personal.db;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.personal.db.dao.Poker;
@@ -211,19 +212,27 @@ public class DBUtil {
 //---------------------------------------------------牌库相关
 	
 //---------------------------------牌
-	public void addPoker(final String pokerId,final Poker poker)
-	{	
-		redisUtil.listAdd(pokerId + RedisKeys.POKER,poker);
-	}
-	
-	public List<Poker> getPokerList(String pokerId)
+	public Map<String, Poker> getPokerMap(String userId)
 	{
-		return redisUtil.listGet(pokerId + RedisKeys.POKER, Poker.class);
+		return redisUtil.hashGetAll(RedisKeys.POKER + userId, Poker.class);
 	}
 	
-	public void deletePoker(String pokerId,Poker poker){
-		redisUtil.listDel(pokerId + RedisKeys.POKER, poker);
+	public Poker getPoker(String userId, String pokerId)
+	{
+		return redisUtil.hashGet(RedisKeys.POKER + userId, pokerId, Poker.class);
 	}
+	
+	public void savePoker(String userId, Poker poker)
+	{	
+		String pokerId = String.valueOf(poker.getPokerId());
+		redisUtil.hashSet(RedisKeys.POKER + userId, pokerId, poker);
+	}
+	
+	public void deletePoker(String userId, String pokerId)
+	{
+		redisUtil.hashDel(RedisKeys.POKER + userId, pokerId);
+	}
+	
 	
 //--------------------------------------------七个移牌区的牌----------------------------------------------
 	//--------------------------------------------------------room1
@@ -342,6 +351,59 @@ public class DBUtil {
 	}
 	
 	public void deletePokerFromShuffle(String userId,Poker poker){
+		redisUtil.listDel(userId + RedisKeys.SHUFFLE, poker);
+	}
+	
+//---------------------------------------四个存牌区的牌--------------------------------------------
+	// --------------存牌区1
+	public void addPokerToHome1(final String userId, final Poker poker) {
+		redisUtil.listAdd(userId + RedisKeys.SHUFFLE, poker);
+	}
+
+	public List<Poker> getHome1List(String userId) {
+		return redisUtil.listGet(userId + RedisKeys.SHUFFLE, Poker.class);
+	}
+
+	public void deletePokerFromHome1(String userId, Poker poker) {
+		redisUtil.listDel(userId + RedisKeys.SHUFFLE, poker);
+	}
+
+	// --------------存牌区2
+	public void addPokerToHome2(final String userId, final Poker poker) {
+		redisUtil.listAdd(userId + RedisKeys.SHUFFLE, poker);
+	}
+
+	public List<Poker> getHome2List(String userId) {
+		return redisUtil.listGet(userId + RedisKeys.SHUFFLE, Poker.class);
+	}
+
+	public void deletePokerFromHome2(String userId, Poker poker) {
+		redisUtil.listDel(userId + RedisKeys.SHUFFLE, poker);
+	}
+
+	// --------------存牌区3
+	public void addPokerToHome3(final String userId, final Poker poker) {
+		redisUtil.listAdd(userId + RedisKeys.SHUFFLE, poker);
+	}
+
+	public List<Poker> getHome3List(String userId) {
+		return redisUtil.listGet(userId + RedisKeys.SHUFFLE, Poker.class);
+	}
+
+	public void deletePokerFromHome3(String userId, Poker poker) {
+		redisUtil.listDel(userId + RedisKeys.SHUFFLE, poker);
+	}
+
+	// --------------存牌区4
+	public void addPokerToHome4(final String userId, final Poker poker) {
+		redisUtil.listAdd(userId + RedisKeys.SHUFFLE, poker);
+	}
+
+	public List<Poker> getHome4List(String userId) {
+		return redisUtil.listGet(userId + RedisKeys.SHUFFLE, Poker.class);
+	}
+
+	public void deletePokerFromHome4(String userId, Poker poker) {
 		redisUtil.listDel(userId + RedisKeys.SHUFFLE, poker);
 	}
 }
