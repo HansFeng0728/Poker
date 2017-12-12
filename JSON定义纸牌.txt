@@ -27,8 +27,8 @@ Json 协议
 		{
 		"MovePoker":"",    //用户想要移动的牌（Id-正反（0，1））
 		"TargetPoker":"",	   //移动的卡牌要放置在哪张卡牌上
-		"movePoker_Position":"",//用户移动的牌之前的位置（洗牌区：0  手牌区：1-7）
-		"targetPoker_Position":"", //想要放置的牌的位置(手牌区：1-7，存牌区8-11)
+		"MovePoker_Position":"",//用户移动的牌之前的位置（洗牌区：0  手牌区：1-7）
+		"TargetPoker_Position":"", //想要放置的牌的位置(手牌区：1-7，存牌区8-11)
 		
         "Submit_Time": "",	   //打出牌的时间
 		"CanSendPokers":"0/1", //能不能出牌（1可以 0不可以）
