@@ -131,9 +131,11 @@ public class HomeController {
 			pw.flush();
 			pw.close();
 		}
-		logger.info("requestStr---{}",requestStr);
+		
+		logger.info("-----request moveCards:{}",requestStr);
 		JsonParser parse = new JsonParser();
 		JsonObject json = (JsonObject) parse.parse(requestStr); 
+//		JsonObject json = parse.parse(requestStr).getAsJsonObject();
 		String userId = json.get("UserId").getAsString();
 		if(userId == null || DBUtil.GetInstance().getUser(userId) == null){
 			logger.error("illegal userId of moveCards");
@@ -165,7 +167,13 @@ public class HomeController {
 		int targetPokerId = Integer.valueOf(tp[0]);
 		int pokerId = Integer.valueOf(mp[0]);
 		
-		cardService.moveCardsToPokerRoom(userId, pokerId, targetPokerId, movepoker_Position, targetPoker_Position);
+		Map<String, Object> moveResult = cardService.moveCards(userId, pokerId, targetPokerId, movepoker_Position, targetPoker_Position);
+		String jsonStr = mapper.writeValueAsString(moveResult);
+		pw.write(jsonStr); 
+		pw.flush();
+		pw.close();
+		logger.info("moveCards response success--------{}",jsonStr);
+		response.getWriter().append("\n").append("Served at: ").append(request.getContextPath());
 	}
 	
 	@RequestMapping(value="otherTest",method=RequestMethod.POST)

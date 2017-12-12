@@ -110,7 +110,7 @@
   select 
   <include refid="Base_Column_List" />
   from USER
-  where user_Id = #{userId,jdbcType=VARCHAR}
+  where userId = #{userId,jdbcType=VARCHAR}
   </select>
   
 </mapper>

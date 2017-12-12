@@ -60,16 +60,15 @@ public class CardService extends BaseService{
 				index++;
 			}
 		}
-		// for(int i = 0; i < hm.size();i++){
-		// DBUtil.GetInstance().savePoker(userId, hm.get(array.get(i)));
-		// System.out.println("pokerId:"+hm.get(array.get(i)).getPokerId()+"--pokerNumber"+hm.get(array.get(i)).getNumber()+"--pokerColor"+hm.get(array.get(i)).getColor());
-		// }
+		 for(int i = 0; i < hm.size();i++){
+		 DBUtil.GetInstance().savePoker(userId, hm.get(array.get(i)));
+//		 System.out.println("pokerId:"+hm.get(array.get(i)).getPokerId()+"--pokerNumber"+hm.get(array.get(i)).getNumber()+"--pokerColor"+hm.get(array.get(i)).getColor());
+		 }
 		// 打乱编号，重新排序
 		Collections.shuffle(array);
 		DBUtil.GetInstance().init();
 
-		if (DBUtil.GetInstance().getShuffleList(userId).size() == 24
-				|| DBUtil.GetInstance().getPokerRoom1List(userId).size() != 0) {
+		if (DBUtil.GetInstance().getShuffleList(userId).size() == 24 || DBUtil.GetInstance().getPokerRoom1List(userId).size() != 0) {
 			return getInitCards(userId);
 		}
 		List<String> pokerShuffle = new ArrayList<>();
@@ -316,165 +315,224 @@ public class CardService extends BaseService{
 //----------------------------------------------------------移牌逻辑--------------------------------------------------	  
 	//移动卡牌到七个手牌区之一(1.从洗牌区移入 2.在手牌区互相移动)
 	//position 只有在向空白的位置移动时才会进行判断
-	public boolean moveCardsToPokerRoom(String userId,int pokerId, int targetPokerId, int move_position,int target_position) {
+	public Map<String, Object> moveCards(String userId,int pokerId, int targetPokerId, int move_position,int target_position) {
 		DBUtil.GetInstance().init();
 		Poker poker = DBUtil.GetInstance().getPoker(userId, pokerId);
 		Poker targetPoker = DBUtil.GetInstance().getPoker(userId, targetPokerId);
 		
+		HashMap<String,Object> result = new HashMap<>();
 		if ("opposite".equals(poker.getDirection()) || "opposite".equals(targetPoker.getDirection())) {
 			logger.error("can't move the opposite card");
-			return false;
+			result.put("ErrorCode", "opposite card can't move");
+			return result;
 		}
 		//移动牌到手牌区
 		if(target_position < 8){
-			movePokerToRoom(userId, target_position, move_position, poker, targetPoker);
+			return movePokerToRoom(userId, move_position,target_position, poker, targetPoker);
 		}
 		//移动牌到存牌区
 		if(target_position >= 8){
-			movePokerToHome(target_position, move_position, userId, poker, targetPoker);
+			return movePokerToHome(userId,move_position,target_position,   poker, targetPoker);
 		}
-		return true;
+		result.put("CanSendPokers", "0");
+		result.put("ErrorCode", "false target_position");
+		return result;
 	}
 	
-	private void movePokerToRoom(String userId, int move_position, int target_position, Poker poker,Poker targetPoker) {
+	private Map<String,Object> movePokerToRoom(String userId, int move_position, int target_position, Poker poker,Poker targetPoker) {
+		Map<String,Object> mm = new HashMap<>();
 		switch (target_position) {
 		case 1:
 			if (DBUtil.GetInstance().getPokerRoom1List(userId).size() == 0) {
 				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom1(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("----");// TODO 不同的errorcode
-				break;
+				logger.error("----can't put the card except 13 to the room1");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card except 13 to the room1");
+				return mm;
 			} else {
 				if (comparePokerOfHandle(poker, targetPoker)) {
 					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom1(userId, poker);
-					break;
+					logger.info("move to room1 successfully");
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("----");
+				logger.error("----can't move to the room1 because of the uncorrect number or color");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card with false number or color");
+				return mm;
 			}
-			break;
+			
 		case 2:
 			if (DBUtil.GetInstance().getPokerRoom2List(userId).size() == 0) {
 				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom2(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("---");// TODO 不同的errorcode
-				break;
+				logger.error("----can't put the card except 13 to the room2");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card except 13 to the room2");
+				return mm;
 			} else {
 				if (comparePokerOfHandle(poker, targetPoker)) {
 					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom2(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("----");
+				logger.error("----can't move to the room2 because of the uncorrect number or color");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card with false number or color");
+				return mm;
 			}
-			break;
 		case 3:
 			if (DBUtil.GetInstance().getPokerRoom3List(userId).size() == 0) {
 				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom3(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("-----");// TODO 不同的errorcode
-				break;
+				logger.error("----can't put the card except 13 to the room3");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card except 13 to the room3");
+				return mm;
 			} else {
 				if (comparePokerOfHandle(poker, targetPoker)) {
 					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom3(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("-----");
+				logger.error("----can't move to the room3 because of the uncorrect number or color");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card with false number or color");
+				return mm;
 			}
-			break;
 		case 4:
-			if (DBUtil.GetInstance().getPokerRoom4List(userId).size() == 0) {
+			if(DBUtil.GetInstance().getPokerRoom4List(userId).size() == 0) {
 				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom4(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("-------");// TODO 不同的errorcode
-				break;
-			} else {
+				logger.error("----can't put the card except 13 to the room4");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card except 13 to the room4");
+				return mm;
+			}else{
 				if (comparePokerOfHandle(poker, targetPoker)) {
 					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom4(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					logger.info("move to room4 successfully");
+					return mm;
 				}
-				logger.error("---------");
+				logger.error("----can't move  to the room4 because of the uncorrect number or color");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card with false number or color");
+				return mm;
 			}
-			break;
 		case 5:
 			if (DBUtil.GetInstance().getPokerRoom5List(userId).size() == 0) {
 				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom5(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("-------");// TODO 不同的errorcode
-				break;
+				logger.error("----can't put the card except 13 to the room5");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card except 13 to the room5");
+				return mm;
 			} else {
 				if (comparePokerOfHandle(poker, targetPoker)) {
 					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom5(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("----------");
+				logger.error("----can't move  to the room5 because of the uncorrect number or color");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card with false number or color");
+				return mm;
 			}
-			break;
 		case 6:
 			if (DBUtil.GetInstance().getPokerRoom6List(userId).size() == 0) {
 				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom6(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("---------");// TODO 不同的errorcode
-				break;
+				logger.error("----can't put the card except 13 to the room6");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card except 13 to the room6");
+				return mm;
 			} else {
 				if (comparePokerOfHandle(poker, targetPoker)) {
 					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom6(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("-------");
+				logger.error("----can't move to the room6 because of the uncorrect number or color");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card with false number or color");
+				return mm;
 			}
-			break;
 		case 7:
 			if (DBUtil.GetInstance().getPokerRoom7List(userId).size() == 0) {
 				if (poker.getNumber() == 13) {
 					DBUtil.GetInstance().addPokerToRoom7(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("---------");// TODO 不同的errorcode
-				break;
+				logger.error("----can't put the card except 13 to the room7");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card except 13 to the room7");
+				return mm;
 			} else {
 				if (comparePokerOfHandle(poker, targetPoker)) {
 					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToRoom7(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("----------");
+				logger.error("----can't move to the room7 because of the uncorrect number or color");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card with false number or color");
+				return mm;
 			}
-			break;
 		}
+		mm.put("CanSendPokers", "0");
+		mm.put("Errorcode", "can't put the card with false number or color");
+		return mm;
 	}
 
 	// 移动牌到存牌区
-	public void movePokerToHome(int target_position, int move_position, String userId, Poker poker, Poker targetPoker) {
+	public Map<String,Object> movePokerToHome( String userId, int move_position, int target_position, Poker poker, Poker targetPoker){
+		Map<String,Object> mm = new HashMap<>();
 		switch (target_position) {
 		case 8:
 			if (DBUtil.GetInstance().getHome1List(userId).size() == 0) {
 				if (poker.getNumber() != 1) {
-					logger.error("----");// TODO 不同的errorcode
-					break;
+					logger.error("----can't put the card except A in the empty PokerHome1");
+					mm.put("CanSendPokers", "0");
+					mm.put("Errorcode", "can't put the card except A in the empty PokerHome1");
+					return mm;
 				}
 				DBUtil.GetInstance().addPokerToHome1(userId, poker);
+				mm.put("CanSendPokers", "1");
+				return mm;
 			} else {
 				if (comparePokerOfHome(poker, targetPoker)) {
 					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToHome1(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
 				logger.error("---");
 			}
@@ -482,52 +540,73 @@ public class CardService extends BaseService{
 		case 9:
 			if (DBUtil.GetInstance().getHome2List(userId).size() == 0) {
 				if (poker.getNumber() != 1) {
-					logger.error("----");
-					break;
+					logger.error("----can't put the card except A in the empty PokerHome2");
+					mm.put("CanSendPokers", "0");
+					mm.put("Errorcode", "can't put the card except A in the empty PokerHome2");
+					return mm;
 				}
 				DBUtil.GetInstance().addPokerToHome2(userId, poker);
+				mm.put("CanSendPokers", "1");
+				return mm;
 			} else {
 				if (comparePokerOfHome(poker, targetPoker)) {
 					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToHome2(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("----");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card with false number or color");
+				return mm;
 			}
-			break;
 		case 10:
 			if (DBUtil.GetInstance().getHome3List(userId).size() == 0) {
 				if (poker.getNumber() != 1) {
-					logger.error("----");
-					break;
+					logger.error("----can't put the card except A in the empty PokerHome3");
+					mm.put("CanSendPokers", "0");
+					mm.put("Errorcode", "can't put the card except A in the empty PokerHome3");
+					return mm;
 				}
 				DBUtil.GetInstance().addPokerToHome3(userId, poker);
+				mm.put("CanSendPokers", "1");
+				return mm;
 			} else {
 				if (comparePokerOfHome(poker, targetPoker)) {
 					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToHome3(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("----");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card with false number or color");
+				return mm;
 			}
-			break;
 		case 11:
 			if (DBUtil.GetInstance().getHome4List(userId).size() == 0) {
 				if (poker.getNumber() != 1) {
-					logger.error("-----");
-					break;
+					logger.error("----can't put the card except A in the empty PokerHome4");
+					mm.put("CanSendPokers", "0");
+					mm.put("Errorcode", "can't put the card except A in the empty PokerHome4");
+					return mm;
 				}
 				DBUtil.GetInstance().addPokerToHome4(userId, poker);
+				mm.put("CanSendPokers", "1");
+				return mm;
 			} else {
 				if (comparePokerOfHome(poker, targetPoker)) {
 					removeCardFromHandlerOrShuffle(poker, move_position, userId);
 					DBUtil.GetInstance().addPokerToHome4(userId, poker);
-					break;
+					mm.put("CanSendPokers", "1");
+					return mm;
 				}
-				logger.error("----");
+				mm.put("CanSendPokers", "0");
+				mm.put("Errorcode", "can't put the card with false number or color");
+				return mm;
 			}
-			break;
 		}
+		mm.put("CanSendPokers", "0");
+		mm.put("Errorcode", "false targetPosition");
+		return mm;
 	}
 	
 //	public static void main(String[] args){
@@ -636,7 +715,7 @@ public class CardService extends BaseService{
 	public boolean comparePokerOfHandle(Poker poker, Poker targetPoker) {
 		// 手牌区，只有花色不同才可以叠加
 		// 判断数字和花色 与1进行按与运算，运算结果为1则是奇数，0则为偶数。
-		if (poker.getNumber() == targetPoker.getNumber() - 1 && (poker.getColor() & 1) == (targetPoker.getColor() & 1)) {
+		if (poker.getNumber() == targetPoker.getNumber() - 1 && (poker.getColor() & 1) != (targetPoker.getColor() & 1)) {
 			return true;
 		} else {
 			return false;
