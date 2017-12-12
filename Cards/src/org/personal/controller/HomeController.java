@@ -186,18 +186,8 @@ public class HomeController {
 	
 	@RequestMapping(value="/loginTest", method = RequestMethod.GET)
 	public void recieveRequest(HttpServletRequest request, HttpServletResponse response,String requestStr) throws Exception {
-//		//读取请求内容
-//		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-//		String line = null;
-//		StringBuilder sb = new StringBuilder();
-//		while ((line = br.readLine()) != null) {
-//			sb.append(line);
-//		}
-		// 将json解码
 		JsonParser parse = new JsonParser();
 		JsonObject json = (JsonObject) parse.parse(requestStr); 
-//		String reqBody = sb.toString();
-//		String data = "{'isAdmin':'true', 'UseId':wsf}";
 		String userId = json.get("UserId").getAsString();
 		
 		if(userId.equals("") || null == userId || userId.length()<=0 ){

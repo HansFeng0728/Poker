@@ -83,8 +83,6 @@ public class CardService extends BaseService{
 					pokerFrontHandler.add(hm.get(array.get(i)));
 					// System.out.println(hm.get(array.get(i)).getNumber()+":"+hm.get(array.get(i)).getDirection()+":"+hm.get(array.get(i)).getColor());
 					pokerHandler.add(hm.get(array.get(i)).getPokerId() + ":" + hm.get(array.get(i)).getDirection());
-					// DBUtil.GetInstance().addPokerToRoom1(userId,
-					// hm.get(array.get(i)));
 					continue;
 				}
 				pokerOppositeHandler.add(hm.get(array.get(i)));
@@ -190,8 +188,10 @@ public class CardService extends BaseService{
 		// String pokerJson = JsonUtil.encodeJson(pokerJsonParam);
 		// String pokerJson = mapper.writeValueAsString(pokerJsonParam);
 		// String pokerJson = pokerJsonParam.toString();
-		PokerList pl = new PokerList();
-		pl.setContent(pokerJsonParam.toString());
+		
+	    PokerList pp = new PokerList();
+	    pp.setContent(pokerJsonParam.toString());
+	    pp.setPokerId(userId+"_"+Math.random()*20);
 		return pokerJsonParam;
 		// //二人斗地主的发牌 弃用
 		// List<String> playerOne = new ArrayList<String>();
@@ -783,8 +783,5 @@ public class CardService extends BaseService{
 	          }  
 	      }
 	      Collections.shuffle(array);
-	      PokerList pp = new PokerList();
-	      pp.setContent(hm.toString());
-	      pp.setPokerId(pokerId);
 	  }
 }

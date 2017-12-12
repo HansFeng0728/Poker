@@ -6,7 +6,7 @@
     <result column="shortestCompleteTime" property="shortestcompletetime" jdbcType="DATE" />
     <result column="successRate" property="successrate" jdbcType="TINYINT" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="org.personal.db.dao.PokerListWithBLOBs" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="org.personal.db.dao.PokerList" extends="BaseResultMap" >
     <result column="pokersId" property="pokersid" jdbcType="LONGVARCHAR" />
     <result column="content" property="content" jdbcType="LONGVARCHAR" />
     <result column="type" property="type" jdbcType="LONGVARCHAR" />
@@ -29,15 +29,15 @@
     delete from pokerlist
     where Id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="org.personal.db.dao.PokerListWithBLOBs" >
+  <insert id="insert" parameterType="org.personal.db.dao.PokerList" >
     insert into pokerlist (Id, shortestCompleteTime, successRate, 
       pokersId, content, type
       )
-    values (#{id,jdbcType=INTEGER}, #{shortestcompletetime,jdbcType=DATE}, #{successrate,jdbcType=TINYINT}, 
+    values (#{id,jdbcType=INTEGER}, #{shortestCompleteTime,jdbcType=DATE}, #{successrate,jdbcType=TINYINT}, 
       #{pokersid,jdbcType=LONGVARCHAR}, #{content,jdbcType=LONGVARCHAR}, #{type,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="org.personal.db.dao.PokerListWithBLOBs" >
+  <insert id="insertSelective" parameterType="org.personal.db.dao.PokerList" >
     insert into pokerlist
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -64,13 +64,13 @@
         #{id,jdbcType=INTEGER},
       </if>
       <if test="shortestcompletetime != null" >
-        #{shortestcompletetime,jdbcType=DATE},
+        #{shortestCompleteTime,jdbcType=DATE},
       </if>
       <if test="successrate != null" >
-        #{successrate,jdbcType=TINYINT},
+        #{successRate,jdbcType=TINYINT},
       </if>
       <if test="pokersid != null" >
-        #{pokersid,jdbcType=LONGVARCHAR},
+        #{pokersId,jdbcType=LONGVARCHAR},
       </if>
       <if test="content != null" >
         #{content,jdbcType=LONGVARCHAR},
@@ -80,17 +80,17 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.personal.db.dao.PokerListWithBLOBs" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.personal.db.dao.PokerList" >
     update pokerlist
     <set >
       <if test="shortestcompletetime != null" >
-        shortestCompleteTime = #{shortestcompletetime,jdbcType=DATE},
+        shortestCompleteTime = #{shortestCompleteTime,jdbcType=DATE},
       </if>
       <if test="successrate != null" >
-        successRate = #{successrate,jdbcType=TINYINT},
+        successRate = #{successRate,jdbcType=TINYINT},
       </if>
       <if test="pokersid != null" >
-        pokersId = #{pokersid,jdbcType=LONGVARCHAR},
+        pokersId = #{pokersId,jdbcType=LONGVARCHAR},
       </if>
       <if test="content != null" >
         content = #{content,jdbcType=LONGVARCHAR},
@@ -101,19 +101,19 @@
     </set>
     where Id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.personal.db.dao.PokerListWithBLOBs" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.personal.db.dao.PokerList" >
     update pokerlist
-    set shortestCompleteTime = #{shortestcompletetime,jdbcType=DATE},
-      successRate = #{successrate,jdbcType=TINYINT},
-      pokersId = #{pokersid,jdbcType=LONGVARCHAR},
+    set shortestCompleteTime = #{shortestCompleteTime,jdbcType=DATE},
+      successRate = #{successRate,jdbcType=TINYINT},
+      pokersId = #{pokersId,jdbcType=LONGVARCHAR},
       content = #{content,jdbcType=LONGVARCHAR},
       type = #{type,jdbcType=LONGVARCHAR}
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="org.personal.db.dao.PokerList" >
     update pokerlist
-    set shortestCompleteTime = #{shortestcompletetime,jdbcType=DATE},
-      successRate = #{successrate,jdbcType=TINYINT}
+    set shortestCompleteTime = #{shortestCompleteTime,jdbcType=DATE},
+      successRate = #{successRate,jdbcType=TINYINT}
     where Id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

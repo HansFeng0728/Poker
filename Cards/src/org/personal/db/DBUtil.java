@@ -210,30 +210,30 @@ public class DBUtil {
 			session.close();
 		}
 	}
-
-//---------------------------------------------------牌库相关
-//	public PokerList getPokerList(String userId)
+	
+	//--------------------------------------------------------------------游戏对局-------------------------------------------------
+//	public Game getGame(String userId)
 //	{
-//		PokerList pokerList = redisUtil.get(userId + RedisKeys.POKERLIST, PokerList.class);
-//		if(pokerList == null)
+//		User user = redisUtil.get(userId, User.class);
+//		if(user == null)
 //		{
-//			pokerList = getUserByDB(userId);
-//			if(pokerList != null)
+//			user = getUserByDB(userId);
+//			if(user != null)
 //			{
-//				redisUtil.set(pokerList.getPokerId(), pokerList);
+//				redisUtil.set(user.getUserId(), user);
 //			}
 //		}
-//		return pokerList;
+//		return user;
 //	}
 //	
-//	public PokerList getPokerListByDB(String userId)
+//	public User getUserByDB(String userId)
 //	{
-//		PokerList pokerList = null;
+//		User user = null;
 //		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
 //		try
 //		{
-//			PokerListMapper pokerListMapper = session.getMapper(PokerListMapper.class);
-//			pokerList = PokerListMapper.selectByPokerId(userId);
+//			UserMapper userMapper = session.getMapper(UserMapper.class);
+//			user = userMapper.selectByUserId(userId);
 //			session.commit();
 //		}
 //		catch (Exception e) {
@@ -243,12 +243,12 @@ public class DBUtil {
 //		{
 //			session.close();
 //		}
-//		return pokerList;
+//		return user;
 //	}
 //	
-//	public void savePokerList(final PokerList pokerList)
+//	public void saveUser(final User user)
 //	{	
-//		redisUtil.set(pokerList.getUserId(), pokerList);
+//		redisUtil.set(user.getUserId(), user);
 //		dbwork.produce(new TaskHandler()
 //		{
 //			@Override
@@ -320,8 +320,117 @@ public class DBUtil {
 //		}
 //	}
 	
+
+//------------------------------------------------------牌库相关----------------------------------------------------------------------
+	public PokerList getPokerList(String pokerId)
+	{
+		PokerList pokerList = redisUtil.get(pokerId + RedisKeys.POKERLIST, PokerList.class);
+		if(pokerList == null)
+		{
+			pokerList = getPokerListByDB(pokerId);
+			if(pokerList != null)
+			{
+				redisUtil.set(pokerList.getPokerId(), pokerList);
+			}
+		}
+		return pokerList;
+	}
 	
-//---------------------------------牌
+	public PokerList getPokerListByDB(String pokerId)
+	{
+		PokerList pokerList = null;
+		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+		try
+		{
+			PokerListMapper pokerListMapper = session.getMapper(PokerListMapper.class);
+			pokerList = pokerListMapper.selectByPokerId(pokerId);
+			session.commit();
+		}
+		catch (Exception e) {
+			System.out.println("DBUtil:---"+e);;
+		}
+		finally
+		{
+			session.close();
+		}
+		return pokerList;
+	}
+	
+	public void savePokerList(final PokerList pokerList)
+	{	
+		redisUtil.set(pokerList.getPokerId(), pokerList);
+		dbwork.produce(new TaskHandler()
+		{
+			@Override
+			public void onEvent() 
+			{
+				savePokerListByDB(pokerList);
+			}
+		});
+	}
+	
+	public void savePokerListByDB(PokerList pokerList)
+	{
+		if(pokerList == null)
+		{
+			logger.error("saveUserByDB user is null!");
+			return ;
+		}
+
+		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+		try
+		{
+			PokerListMapper pokerListMapper = session.getMapper(PokerListMapper.class);
+			pokerListMapper.insert(pokerList);
+			session.commit();
+		}
+		catch (Exception e) {
+			logger.error("DBUtil", e);
+		}
+		finally
+		{
+			session.close();
+		}
+	}
+	
+	public void updatePokerList(final PokerList pokerList)
+	{
+		redisUtil.set(pokerList.getPokerId(), pokerList);
+		dbwork.produce(new TaskHandler()
+		{
+			@Override
+			public void onEvent() 
+			{
+				updatePokerListByDB(pokerList);
+			}
+		});
+	}
+	
+	public void updatePokerListByDB(PokerList pokerList)
+	{
+		if(pokerList == null)
+		{
+			logger.error("updateUserToDB user is null!");
+			return ;
+		}
+
+		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+		try
+		{
+			PokerListMapper pokerListMapper = session.getMapper(PokerListMapper.class);
+			pokerListMapper.updateByPrimaryKeySelective(pokerList);
+			session.commit();
+		}
+		catch (Exception e) {
+			logger.error("DBUtil", e);
+		}
+		finally
+		{
+			session.close();
+		}
+	}
+	
+//-------------------------------------------------------------------------牌----------------------------------------------------------------------------------
 	public Map<String, Poker> getPokerMap(String userId)
 	{
 		return redisUtil.hashGetAll(RedisKeys.POKER + userId, Poker.class);
@@ -342,7 +451,6 @@ public class DBUtil {
 	{
 		redisUtil.hashDel(RedisKeys.POKER + userId, pokerId);
 	}
-	
 	
 //--------------------------------------------七个移牌区的牌----------------------------------------------
 	//--------------------------------------------------------room1
@@ -516,4 +624,5 @@ public class DBUtil {
 	public void deletePokerFromHome4(String userId, Poker poker) {
 		redisUtil.listDel(userId + RedisKeys.SHUFFLE, poker);
 	}
+	
 }

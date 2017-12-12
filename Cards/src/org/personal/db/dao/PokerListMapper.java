@@ -6,15 +6,17 @@ import org.personal.db.dao.PokerListWithBLOBs;
 public interface PokerListMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(PokerListWithBLOBs record);
+    int insert(PokerList record);
 
-    int insertSelective(PokerListWithBLOBs record);
+    int insertSelective(PokerList record);
 
-    PokerListWithBLOBs selectByPrimaryKey(Integer id);
+    PokerList selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(PokerListWithBLOBs record);
+    int updateByPrimaryKeySelective(PokerList record);
 
     int updateByPrimaryKeyWithBLOBs(PokerListWithBLOBs record);
 
     int updateByPrimaryKey(PokerList record);
+
+	PokerList selectByPokerId(String pokerId);
 }
