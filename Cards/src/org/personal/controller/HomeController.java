@@ -120,6 +120,7 @@ public class HomeController {
 	
 	@RequestMapping("/moveCards")
 	public void moveCards(HttpServletRequest request, HttpServletResponse response, String requestStr) throws UnsupportedEncodingException, IOException{
+		DBUtil.GetInstance().init();
 		Map<String, Object> params = new HashMap<String, Object>();
 		PrintWriter pw = response.getWriter();
 		if("".equals(requestStr) || requestStr == null){
@@ -143,14 +144,14 @@ public class HomeController {
 			pw.close();
 		}
 		
-		String movePoker = json.get("movePoker").getAsString();
-		String targetPoker = json.get("targetPoker").getAsString();
+		String movePoker = json.get("MovePoker").getAsString();
+		String targetPoker = json.get("TargetPoker").getAsString();
 		
-		String[] mp = movePoker.split(":");
-		String[] tp = targetPoker.split(":");
+		String[] mp = movePoker.split("-");
+		String[] tp = targetPoker.split("-");
 		
-		int movepoker_Position = json.get("movepoker_Position").getAsInt();
-		int targetPoker_Position = json.get("targetPoker_Position").getAsInt();
+		int movepoker_Position = json.get("MovePoker_Position").getAsInt();
+		int targetPoker_Position = json.get("TargetPoker_Position").getAsInt();
 		
 		if(movepoker_Position < 0 || movepoker_Position > 7){
 			logger.error("illegal move_position");
