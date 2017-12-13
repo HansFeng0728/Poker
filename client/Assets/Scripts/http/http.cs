@@ -77,27 +77,27 @@ public class http : MonoBehaviour {
 
     }
 
-    public bool SendCardsRequset(string movePoker, string targetPoker, int movepoker_Position, int targetPoker_Position, int pokerHome = -1)
+    public bool SendCardsRequset(string movePoker, string targetPoker, int movepoker_Position, int targetPoker_Position, Callback callback, int pokerHome = -1)
     {
         SendPokers sendPokers = new SendPokers();
         sendPokers.UserId = Manager.player0.Name;
-        sendPokers.Movepoker = movePoker;
-        sendPokers.Movepoker_Position = movepoker_Position;
-        sendPokers.Targetpoker = targetPoker;
+        sendPokers.MovePoker = movePoker;
+        sendPokers.MovePoker_Position = movepoker_Position;
+        sendPokers.TargetPoker = targetPoker;
         sendPokers.TargetPoker_Position = targetPoker_Position;
         //sendPokers.PokerHome = pokerHome;
         Manager.moveCardsHttp = false;
         string sendPokersJson = JsonMapper.ToJson(sendPokers);
         Debug.Log(sendPokersJson);
-        string url = "http://192.168.90.126:8080/Cards/index/moveCards?requestStr=" + sendPokers;
-        StartCoroutine(SendCards(url, sendPokers));
+        string url = "http://192.168.90.126:8080/Cards/index/moveCards?requestStr=" + sendPokersJson;
+        StartCoroutine(SendCards(url, callback));
         if (Manager.moveCardsHttp)
             return true;
         else
             return false;
     }
 
-    IEnumerator SendCards(string _url,SendPokers sendPokers)
+    IEnumerator SendCards(string _url, Callback callback)
     {
         WWW sendCardsResponse = new WWW(_url);
         yield return sendCardsResponse;
@@ -107,11 +107,14 @@ public class http : MonoBehaviour {
         }
         else
         {
-            Debug.Log("http:SendCardsRequset success: " + sendCardsResponse.text);
+            Debug.Log("http:SendCardsRequset success: " + sendCardsResponse.text); 
             JsonData sendPokerJson = JsonMapper.ToObject(sendCardsResponse.text);
-            int canSendPokers = (int)sendPokerJson["canSendPokers"];
+            Debug.Log(sendPokerJson["CanSendPokers"]);
+            int canSendPokers = int.Parse(sendPokerJson["CanSendPokers"].ToString());
             if (canSendPokers == 1)
-                Manager.moveCardsHttp = true;            
+                Manager.moveCardsHttp = true;
+
+            callback();
         }
     }
 

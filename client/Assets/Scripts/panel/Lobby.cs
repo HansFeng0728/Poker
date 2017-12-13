@@ -30,8 +30,8 @@ public class Lobby : MonoBehaviour {
     //返回重新登陆
 	public void BackView()
     {
-        //退出游戏玩家头像和名字需要消失
-        this.GetComponent<UIPanel>().alpha = 0;        
+        Destroy(this.gameObject);
+        Manager.ResetCards();
     }
 
     public void InitPanel()
@@ -39,5 +39,8 @@ public class Lobby : MonoBehaviour {
         //readyButton.SetActive(true);
     }
 
-    
+    void Destroy()
+    {
+        Debug.Log("11111111");
+    }
 }

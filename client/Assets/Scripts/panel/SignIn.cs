@@ -11,9 +11,9 @@ public class SignIn : MonoBehaviour {
     {
         SendPokers sendPokers = new SendPokers();
         sendPokers.UserId = "abc";
-        sendPokers.Movepoker_Position = 0;
-        sendPokers.Movepoker = "20-1";
-        sendPokers.Targetpoker = "30-1";
+        sendPokers.MovePoker_Position = 0;
+        sendPokers.MovePoker = "20-1";
+        sendPokers.TargetPoker = "30-1";
         //sendPokers.PokerHome = 1;
         string json = JsonMapper.ToJson(sendPokers);
         SendPokers send = JsonMapper.ToObject<SendPokers>(json);
@@ -28,8 +28,9 @@ public class SignIn : MonoBehaviour {
         }
         else
         {
-            Manager.httpVar.ConnectRequest(inPutLabel.text);
             Manager.player0 = new PlayerInfo();
+            Manager.httpVar.ConnectRequest(inPutLabel.text);
+            
             //MethodAllCards.InitPlayerInfo();   //单机版用   
             //Manager.InitLobby();
         }     

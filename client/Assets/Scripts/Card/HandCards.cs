@@ -63,7 +63,7 @@ public class HandCards : MonoBehaviour {
                 int index = MethodAllCards.FindPosition(num);
                 int state = Manager.allCardList[index].State;
                 string spriteName = Manager.allCardList[index].Number.ToString();
-                Manager.handCardListBgs[i][j].spriteName = state == 1 ? spriteName : "0";
+                Manager.handCardListBgs[i][j].spriteName = (state == 1) ? spriteName : "0";
             }
         }
     }

@@ -38,4 +38,9 @@ public class MethodcompleteCards
         else
             return false;
     }
+
+    public static void ChangeColor(int index)
+    {
+        Manager.completeCardBgs[index].color = new Color(225 / 255f, 220 / 255f, 150 / 255f);
+    }
 }

@@ -112,27 +112,41 @@ public class MethodAllCards
     }
 
     //登录初始化 随机52张牌,32张给移动堆,剩下的给洗牌堆
-    public static void InitPlayerInfo()
+    public static void InitSoloPlayerInfo()
     {
         List<int> cardNumberList = MethodAllCards.InitCardList();
-        //List<Card> cardList = 
-        for (int i = 0; i < cardNumberList.Count; i++)
+
+
+        int count = 0;        
+        for (int i = 0; i < 7; i++)
         {
-            Card cardInfo = MethodAllCards.CreateCardInfo(cardNumberList[i]);
-            Manager.allCardList.Add(cardInfo);
-            Debug.Log("allCardList : " + cardNumberList[i]);
+            for (int j = 1; j <= i + 1; j++)
+            {
+                Card cardInfo = MethodAllCards.CreateCardInfo(cardNumberList[count], 2, i);
+                cardInfo.State = 0;               
+                count++;
+                Manager.allCardList.Add(cardInfo);
+                MethodhandCards.AddCard(i, cardNumberList[count], cardInfo.State);
+                Debug.Log("!!!!!");
+            }
         }
-        for (int i = 0; i < 32; i++)
+
+        int length = 0;
+        Manager.allCardList[length].State =1;
+        for (int i = 2; i <= 7; i++)
         {
-            Manager.player0.AllHandCards.Add(Manager.allCardList[i]);
-            Debug.Log("HandPokerList : " + Manager.player0.AllHandCards[i].Number);
+            length += i;
+            Manager.allCardList[length].State = 1;
         }
-        for (int i = 32; i < Manager.allCardList.Count; i++)
-        {
-            Manager.player0.ShufflePokerList.CardList.Add(Manager.allCardList[i]);
-            Debug.Log("shufflePokerList : " + Manager.player0.ShufflePokerList.CardList[i - 32].Number);
-        }
-    }  
+
+            for (int i = count - 1; i < 52; i++)
+            {
+                Card cardInfo = MethodAllCards.CreateCardInfo(cardNumberList[i], 1);
+                cardInfo.State = 1;
+                Manager.allCardList.Add(cardInfo);
+                MethodshuffleCards.AddCard(cardNumberList[i], 1);
+            }               
+    }
   
     public static void InitCardType(GameObject card, int type,int index = -1)
     {
@@ -223,5 +237,29 @@ public class MethodAllCards
             return false;
         else
             return true;
-    }    
+    }
+
+    public static void ResetColor()
+    {
+         //洗牌区颜色置零
+        Manager.shuffleCardBg.color = new Color(1, 1, 1);
+
+        //存牌区颜色置零
+        int count2 = Manager.completeCards.Count;
+        for (int i = 0; i < count2; i++)
+        {
+            Manager.completeCardBgs[i].color = new Color(1, 1, 1);
+        }
+
+        //移动区颜色置零
+        int count3 = Manager.handCardListBgs.Count;
+        for (int i = 0; i < count3; i++)
+        {
+            int count = Manager.handCardListBgs[i].Count;
+            for (int j = 0; j < count; j++)
+            {
+                Manager.handCardListBgs[i][j].color = new Color(1, 1, 1);
+            }
+        }
+    }
 }

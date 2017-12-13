@@ -15,12 +15,13 @@ public class Manager : MonoBehaviour
     void Start()
     {
         InitHandCards();
-        InitSignIn();
+        InitChooseModel();
     }
 
     public static http httpVar = null;
     public static PlayerInfo player0 = null;   
     public static List<Card> allCardList = new List<Card>();
+    public static UISprite shuffleCardBg;
     public static List<GameObject> shuffleCards = new List<GameObject>();
 
     public static List<GameObject> completeCards = new List<GameObject>();
@@ -54,13 +55,14 @@ public class Manager : MonoBehaviour
     public static Cards choosedCards = new Cards(-1);
     public static bool moveCardsHttp = false;    //用于http的移牌
 
-    public static void InitSignIn()
+    public void InitChooseModel()
     {
-        GameObject signInPrefab = Resources.Load("Prefabs/SignIn") as GameObject;
-        GameObject signInPanel = MonoBehaviour.Instantiate(signInPrefab) as GameObject;
-        signInPanel.transform.parent = GameObject.Find("Camera").transform;
-        signInPanel.transform.localScale = Vector3.one;
-    }
+        GameObject chooseModelPrefab = Resources.Load("Prefabs/ChooseModel") as GameObject;
+        GameObject chooseModelPanel = MonoBehaviour.Instantiate(chooseModelPrefab) as GameObject;
+        chooseModelPanel.transform.parent = GameObject.Find("Camera").transform;
+        chooseModelPanel.transform.localScale = Vector3.one;
+        chooseModelPanel.SetActive(true);
+    }    
 
     public static void InitLobby()
     {
@@ -79,7 +81,7 @@ public class Manager : MonoBehaviour
         windowPanel.transform.localScale = Vector3.one;
     }
     
-     void InitHandCards()
+     public static void InitHandCards()
     {
         handCardLists.Add(handCardList1);
         handCardLists.Add(handCardList2);
@@ -100,8 +102,44 @@ public class Manager : MonoBehaviour
 
     public static void ChoosedCardsReset()
      {
-         MethodhandCards.ResetColor();
+         MethodAllCards.ResetColor();
          Manager.choosed = false;
          Manager.choosedCards.Reset();
      }
+
+    public static void ResetCards()
+    {
+        player0 = null;
+        allCardList = new List<Card>();
+        shuffleCards = new List<GameObject>();
+
+        completeCards = new List<GameObject>();
+        completeCardBgs = new List<UISprite>();
+
+        handCards = new List<GameObject>();
+
+        handCardLists = new List<List<GameObject>>();
+        handCardList1 = new List<GameObject>();
+        handCardList2 = new List<GameObject>();
+        handCardList3 = new List<GameObject>();
+        handCardList4 = new List<GameObject>();
+        handCardList5 = new List<GameObject>();
+        handCardList6 = new List<GameObject>();
+        handCardList7 = new List<GameObject>();
+
+        handCardListBgs = new List<List<UISprite>>();
+        handCardListBg1 = new List<UISprite>();
+        handCardListBg2 = new List<UISprite>();
+        handCardListBg3 = new List<UISprite>();
+        handCardListBg4 = new List<UISprite>();
+        handCardListBg5 = new List<UISprite>();
+        handCardListBg6 = new List<UISprite>();
+        handCardListBg7 = new List<UISprite>();
+
+        InitHandCards();
+
+        choosed = false; //是否已经有牌被选中
+        choosedCards = new Cards(-1);
+        moveCardsHttp = false;    //用于http的移牌
+    }
 }

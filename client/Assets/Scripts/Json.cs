@@ -201,9 +201,9 @@ public class Pokers
 public class SendPokers{
 
     private string userId;
-    private int movepoker_Position;    
-    private string movepoker;
-    private string targetpoker;
+    private int movePoker_Position;
+    private string movePoker;
+    private string targetPoker;
     private int targetPoker_Position;
     private int submit_time;
     //private int pokerHome;    
@@ -233,15 +233,15 @@ public class SendPokers{
         }
     }
 
-    public int Movepoker_Position
+    public int MovePoker_Position
     {
         get
         {
-            return movepoker_Position;
+            return movePoker_Position;
         }
         set
         {
-            movepoker_Position = value;
+            movePoker_Position = value;
         }
     }
 
@@ -258,28 +258,28 @@ public class SendPokers{
     }
 
     //用户想要移动的牌
-    public string Movepoker
+    public string MovePoker
     {
         get
         {
-            return movepoker;
+            return movePoker;
         }
         set
         {
-            movepoker = value;
+            movePoker = value;
         }
     }
 
     //移动的卡牌要放置在哪张卡牌上，或哪个位置上
-    public string Targetpoker
+    public string TargetPoker
     {
         get
         {
-            return targetpoker;
+            return targetPoker;
         }
         set
         {
-            targetpoker = value;
+            targetPoker = value;
         }
     }
 

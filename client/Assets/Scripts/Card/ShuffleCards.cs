@@ -25,7 +25,8 @@ public class ShuffleCards : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-        count = Manager.player0.ShufflePokerList.CardList.Count - 1;
+        if(Manager.player0 != null)
+            count = Manager.player0.ShufflePokerList.CardList.Count - 1;
 	}
 
     public void ClickShuffleCards()
@@ -58,6 +59,7 @@ public class ShuffleCards : MonoBehaviour {
     void InitCards()
     {
         Manager.shuffleCards.Add(Card1);
+        Manager.shuffleCardBg = Card1.transform.GetComponentInChildren<UISprite>();
         MethodAllCards.InitCardType(Manager.shuffleCards[0], 1);
     }
 
