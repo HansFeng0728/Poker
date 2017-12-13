@@ -1,9 +1,12 @@
 package org.personal.db;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
+import org.personal.db.dao.Game;
+import org.personal.db.dao.GameMapper;
 import org.personal.db.dao.Poker;
 import org.personal.db.dao.PokerList;
 import org.personal.db.dao.PokerListMapper;
@@ -211,139 +214,123 @@ public class DBUtil {
 		}
 	}
 	
-	//--------------------------------------------------------------------游戏对局-------------------------------------------------
-//	public Game getGame(String userId)
-//	{
-//		User user = redisUtil.get(userId, User.class);
-//		if(user == null)
-//		{
-//			user = getUserByDB(userId);
-//			if(user != null)
-//			{
-//				redisUtil.set(user.getUserId(), user);
-//			}
-//		}
-//		return user;
-//	}
-//	
-//	public User getUserByDB(String userId)
-//	{
-//		User user = null;
-//		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
-//		try
-//		{
-//			UserMapper userMapper = session.getMapper(UserMapper.class);
-//			user = userMapper.selectByUserId(userId);
-//			session.commit();
-//		}
-//		catch (Exception e) {
-//			System.out.println("DBUtil:---"+e);;
-//		}
-//		finally
-//		{
-//			session.close();
-//		}
-//		return user;
-//	}
-//	
-//	public void saveUser(final User user)
-//	{	
-//		redisUtil.set(user.getUserId(), user);
-//		dbwork.produce(new TaskHandler()
-//		{
-//			@Override
-//			public void onEvent() 
-//			{
-//				saveUserByDB(user);
-//			}
-//		});
-//	}
-//	
-//	public void saveUserByDB(User user)
-//	{
-//		if(user == null)
-//		{
-//			logger.error("saveUserByDB user is null!");
-//			return ;
-//		}
-//
-//		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
-//		try
-//		{
-//			UserMapper userMapper = session.getMapper(UserMapper.class);
-//			userMapper.insert(user);
-//			session.commit();
-//		}
-//		catch (Exception e) {
-//			logger.error("DBUtil", e);
-//		}
-//		finally
-//		{
-//			session.close();
-//		}
-//	}
-//	
-//	public void updateUser(final User user)
-//	{
-//		redisUtil.set(user.getUserId(), user);
-//		dbwork.produce(new TaskHandler()
-//		{
-//			@Override
-//			public void onEvent() 
-//			{
-//				updateUserByDB(user);
-//			}
-//		});
-//	}
-//	
-//	public void updateUserByDB(User user)
-//	{
-//		if(user == null)
-//		{
-//			logger.error("updateUserToDB user is null!");
-//			return ;
-//		}
-//
-//		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
-//		try
-//		{
-//			UserMapper userMapper = session.getMapper(UserMapper.class);
-//			userMapper.updateByPrimaryKeySelective(user);
-//			session.commit();
-//		}
-//		catch (Exception e) {
-//			logger.error("DBUtil", e);
-//		}
-//		finally
-//		{
-//			session.close();
-//		}
-//	}
+//	//--------------------------------------------------------------------游戏对局-------------------------------------------------
+	public Game getGame(String userId,String pokersId)
+	{
+		 Game game = redisUtil.hashGet(RedisKeys.GAME + userId,pokersId,Game.class);
+		if(game == null)
+		{
+			game = getGameByUserIdAndPokersIdByDB(userId,pokersId);
+			if(game != null)
+			{
+				redisUtil.hashSet(RedisKeys.GAME + userId,pokersId,game);
+			}
+			
+		}
+		return game;
+	}
+	
+	public List<Game> getGameList(String userId) 
+	{
+		Map<String,Game> gameMap = redisUtil.hashGetAll(RedisKeys.GAME + userId, Game.class);
+		if(gameMap != null){
+			List<Game> gameList = new ArrayList<>(gameMap.values());
+			if(!gameList.isEmpty()){
+				return gameList;
+			}
+		}
+		List<Game> gameList = getGamesByDB(userId);
+		if(gameList.isEmpty()){
+			
+		}else{
+			for(Game g : gameList){
+				redisUtil.hashSet(RedisKeys.GAME + g.getUserId(), g.getPokersId(), g);
+			}
+		}
+		return gameList;
+	}
+	
+	public List<Game> updateGameList(String userId){
+		List<Game> gameList = getGamesByDB(userId);
+		if( gameList != null){
+			
+		}
+		for(Game g : gameList){
+			redisUtil.hashSet(RedisKeys.GAME + g.getUserId(), g.getPokersId(), g);
+		}
+		return gameList;
+	}
+	
+	public Game getGameByUserIdAndPokersIdByDB(String userId,String pokersId)
+	{	
+		Game game = null;
+		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+		try {
+			GameMapper gameMapper = session.getMapper(GameMapper.class);
+			game = gameMapper.selectByUserIdAndPokersId(userId, pokersId);
+			if(game == null){
+				logger.error("not exist friend in db");
+			}
+			session.commit();
+		} catch (Exception e) {
+			logger.error("DBUtil",e);
+		}
+		finally
+		{
+			session.close();
+		}
+		return game;
+	}
+	
+	public List<Game> getGamesByDB(String userId)
+	{
+		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+		try
+		{
+			GameMapper gameMapper = session.getMapper(GameMapper.class);
+			List<Game> gameList = gameMapper.selectByUserId(userId);
+			return gameList;
+		}
+		catch (Exception e) 
+		{
+			if(session != null)
+			{
+				session.rollback();
+			}
+			logger.error("DBUtil", e);
+		}
+		finally
+		{
+			session.close();
+		}
+		return null;
+	}
+	
 	
 
-//------------------------------------------------------牌库相关----------------------------------------------------------------------
-	public PokerList getPokerList(String pokerId)
+//----------------------------------------------------------牌库相关----------------------------------------------------------------------
+	public PokerList getPokerList(String pokersId)
 	{
-		PokerList pokerList = redisUtil.get(pokerId + RedisKeys.POKERLIST, PokerList.class);
+		PokerList pokerList = redisUtil.get(pokersId + RedisKeys.POKERLIST, PokerList.class);
 		if(pokerList == null)
 		{
-			pokerList = getPokerListByDB(pokerId);
+			pokerList = getPokerListByDB(pokersId);
 			if(pokerList != null)
 			{
-				redisUtil.set(pokerList.getPokerId(), pokerList);
+				redisUtil.set(pokerList.getPokersId(), pokerList);
 			}
 		}
 		return pokerList;
 	}
 	
-	public PokerList getPokerListByDB(String pokerId)
+	public PokerList getPokerListByDB(String pokersId)
 	{
 		PokerList pokerList = null;
 		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
 		try
 		{
 			PokerListMapper pokerListMapper = session.getMapper(PokerListMapper.class);
-			pokerList = pokerListMapper.selectByPokerId(pokerId);
+			pokerList = pokerListMapper.selectByPokerId(pokersId);
 			session.commit();
 		}
 		catch (Exception e) {
@@ -358,7 +345,7 @@ public class DBUtil {
 	
 	public void savePokerList(final PokerList pokerList)
 	{	
-		redisUtil.set(pokerList.getPokerId(), pokerList);
+		redisUtil.set(pokerList.getPokersId(), pokerList);
 		dbwork.produce(new TaskHandler()
 		{
 			@Override
@@ -395,7 +382,7 @@ public class DBUtil {
 	
 	public void updatePokerList(final PokerList pokerList)
 	{
-		redisUtil.set(pokerList.getPokerId(), pokerList);
+		redisUtil.set(pokerList.getPokersId(), pokerList);
 		dbwork.produce(new TaskHandler()
 		{
 			@Override
@@ -430,7 +417,7 @@ public class DBUtil {
 		}
 	}
 	
-//-------------------------------------------------------------------------牌----------------------------------------------------------------------------------
+//---------------------------------------------------------牌----------------------------------------------------------------------------------
 	public Map<String, Poker> getPokerMap(String userId)
 	{
 		return redisUtil.hashGetAll(RedisKeys.POKER + userId, Poker.class);
@@ -452,7 +439,7 @@ public class DBUtil {
 		redisUtil.hashDel(RedisKeys.POKER + userId, pokerId);
 	}
 	
-//--------------------------------------------七个移牌区的牌----------------------------------------------
+//-----------------------------------------------------七个移牌区的牌--------------------------------------------------------------------------
 	//--------------------------------------------------------room1
 	public void addPokerToRoom1(final String userId,final Poker poker)
 	{	
@@ -575,54 +562,53 @@ public class DBUtil {
 //---------------------------------------四个存牌区的牌--------------------------------------------
 	// --------------存牌区1
 	public void addPokerToHome1(final String userId, final Poker poker) {
-		redisUtil.listAdd(userId + RedisKeys.SHUFFLE, poker);
+		redisUtil.listAdd(userId + RedisKeys.ROOM_1, poker);
 	}
 
 	public List<Poker> getHome1List(String userId) {
-		return redisUtil.listGet(userId + RedisKeys.SHUFFLE, Poker.class);
+		return redisUtil.listGet(userId + RedisKeys.ROOM_1, Poker.class);
 	}
 
 	public void deletePokerFromHome1(String userId, Poker poker) {
-		redisUtil.listDel(userId + RedisKeys.SHUFFLE, poker);
+		redisUtil.listDel(userId + RedisKeys.ROOM_1, poker);
 	}
 
 	// --------------存牌区2
 	public void addPokerToHome2(final String userId, final Poker poker) {
-		redisUtil.listAdd(userId + RedisKeys.SHUFFLE, poker);
+		redisUtil.listAdd(userId + RedisKeys.ROOM_2, poker);
 	}
 
 	public List<Poker> getHome2List(String userId) {
-		return redisUtil.listGet(userId + RedisKeys.SHUFFLE, Poker.class);
+		return redisUtil.listGet(userId + RedisKeys.ROOM_2, Poker.class);
 	}
 
 	public void deletePokerFromHome2(String userId, Poker poker) {
-		redisUtil.listDel(userId + RedisKeys.SHUFFLE, poker);
+		redisUtil.listDel(userId + RedisKeys.ROOM_2, poker);
 	}
 
 	// --------------存牌区3
 	public void addPokerToHome3(final String userId, final Poker poker) {
-		redisUtil.listAdd(userId + RedisKeys.SHUFFLE, poker);
+		redisUtil.listAdd(userId + RedisKeys.ROOM_3, poker);
 	}
 
 	public List<Poker> getHome3List(String userId) {
-		return redisUtil.listGet(userId + RedisKeys.SHUFFLE, Poker.class);
+		return redisUtil.listGet(userId + RedisKeys.ROOM_3, Poker.class);
 	}
 
 	public void deletePokerFromHome3(String userId, Poker poker) {
-		redisUtil.listDel(userId + RedisKeys.SHUFFLE, poker);
+		redisUtil.listDel(userId + RedisKeys.ROOM_3, poker);
 	}
 
 	// --------------存牌区4
 	public void addPokerToHome4(final String userId, final Poker poker) {
-		redisUtil.listAdd(userId + RedisKeys.SHUFFLE, poker);
+		redisUtil.listAdd(userId + RedisKeys.ROOM_4, poker);
 	}
 
 	public List<Poker> getHome4List(String userId) {
-		return redisUtil.listGet(userId + RedisKeys.SHUFFLE, Poker.class);
+		return redisUtil.listGet(userId + RedisKeys.ROOM_4, Poker.class);
 	}
 
 	public void deletePokerFromHome4(String userId, Poker poker) {
-		redisUtil.listDel(userId + RedisKeys.SHUFFLE, poker);
+		redisUtil.listDel(userId + RedisKeys.ROOM_4, poker);
 	}
-	
 }

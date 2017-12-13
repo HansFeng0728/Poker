@@ -30,4 +30,13 @@ public class RedisKeys {
 	
 	//洗牌区
 	public static final String SHUFFLE = "_card_shuffle";
+	
+	//存牌区
+	public static final String ROOM_1 = "_Room1";
+	
+	public static final String ROOM_2 = "_Room2";
+	
+	public static final String ROOM_3 = "_Room3";
+	
+	public static final String ROOM_4 = "_Room4";
 }

@@ -5,13 +5,13 @@ import java.util.Date;
 public class PokerList {
     private Integer id;
     
-    private String pokerId;
-    
+    private String pokersId;
+
 	private String content;
     
     private int type;
-    
-    private Date shortestcompletetime;
+
+	private Date shortestCompleteTime;
 
     private Byte successrate;
 
@@ -23,14 +23,14 @@ public class PokerList {
         this.id = id;
     }
     
-    public String getPokerId() {
-		return pokerId;
+	public String getPokersId() {
+		return pokersId;
 	}
 
-	public void setPokerId(String pokerId) {
-		this.pokerId = pokerId;
+	public void setPokersId(String pokersId) {
+		this.pokersId = pokersId;
 	}
-
+    
 	public String getContent() {
 		return content;
 	}
@@ -46,15 +46,14 @@ public class PokerList {
 	public void setType(int type) {
 		this.type = type;
 	}
+    
+    public Date getShortestCompleteTime() {
+		return shortestCompleteTime;
+	}
 
-
-    public Date getShortestcompletetime() {
-        return shortestcompletetime;
-    }
-
-    public void setShortestcompletetime(Date shortestcompletetime) {
-        this.shortestcompletetime = shortestcompletetime;
-    }
+	public void setShortestCompleteTime(Date shortestCompleteTime) {
+		this.shortestCompleteTime = shortestCompleteTime;
+	}
 
     public Byte getSuccessrate() {
         return successrate;

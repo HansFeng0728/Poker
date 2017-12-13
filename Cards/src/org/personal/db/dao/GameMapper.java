@@ -1,5 +1,7 @@
 package org.personal.db.dao;
 
+import java.util.List;
+
 import org.personal.db.dao.Game;
 import org.personal.db.dao.GameWithBLOBs;
 
@@ -17,4 +19,8 @@ public interface GameMapper {
     int updateByPrimaryKeyWithBLOBs(GameWithBLOBs record);
 
     int updateByPrimaryKey(Game record);
+
+	List<Game> selectByUserId(String userId);
+
+	Game selectByUserIdAndPokersId(String userId, String pokersId);
 }

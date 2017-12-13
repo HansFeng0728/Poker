@@ -7,7 +7,7 @@
     <result column="successRate" property="successrate" jdbcType="TINYINT" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="org.personal.db.dao.PokerList" extends="BaseResultMap" >
-    <result column="pokersId" property="pokersid" jdbcType="LONGVARCHAR" />
+    <result column="pokersId" property="pokersId" jdbcType="LONGVARCHAR" />
     <result column="content" property="content" jdbcType="LONGVARCHAR" />
     <result column="type" property="type" jdbcType="LONGVARCHAR" />
   </resultMap>
@@ -34,7 +34,7 @@
       pokersId, content, type
       )
     values (#{id,jdbcType=INTEGER}, #{shortestCompleteTime,jdbcType=DATE}, #{successrate,jdbcType=TINYINT}, 
-      #{pokersid,jdbcType=LONGVARCHAR}, #{content,jdbcType=LONGVARCHAR}, #{type,jdbcType=LONGVARCHAR}
+      #{pokersId,jdbcType=LONGVARCHAR}, #{content,jdbcType=LONGVARCHAR}, #{type,jdbcType=LONGVARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="org.personal.db.dao.PokerList" >
@@ -49,7 +49,7 @@
       <if test="successrate != null" >
         successRate,
       </if>
-      <if test="pokersid != null" >
+      <if test="pokersId != null" >
         pokersId,
       </if>
       <if test="content != null" >
@@ -69,7 +69,7 @@
       <if test="successrate != null" >
         #{successRate,jdbcType=TINYINT},
       </if>
-      <if test="pokersid != null" >
+      <if test="pokersId != null" >
         #{pokersId,jdbcType=LONGVARCHAR},
       </if>
       <if test="content != null" >
@@ -89,7 +89,7 @@
       <if test="successrate != null" >
         successRate = #{successRate,jdbcType=TINYINT},
       </if>
-      <if test="pokersid != null" >
+      <if test="pokersId != null" >
         pokersId = #{pokersId,jdbcType=LONGVARCHAR},
       </if>
       <if test="content != null" >

@@ -4,6 +4,10 @@ import java.util.Date;
 
 public class Game {
     private Integer id;
+    
+    private String userId;
+
+	private String pokersId;
 
     private Date completetime;
 
@@ -18,6 +22,22 @@ public class Game {
     public void setId(Integer id) {
         this.id = id;
     }
+    
+    public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getPokersId() {
+		return pokersId;
+	}
+
+	public void setPokersId(String pokersId) {
+		this.pokersId = pokersId;
+	}
 
     public Date getCompletetime() {
         return completetime;

@@ -11,7 +11,6 @@ import java.util.TreeSet;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.personal.db.DBUtil;
 import org.personal.db.dao.Poker;
 import org.personal.db.dao.PokerList;
@@ -29,6 +28,13 @@ public class CardService extends BaseService{
 	static Logger logger = LoggerFactory.getLogger(CardService.class);
 	
 	//---------------------------------------------------------------洗牌发牌逻辑----------------------------------------------------------------------------
+	public Map<String,String> sendEasyPoker(String userId){
+		Map<String,Poker> newM = DBUtil.GetInstance().getPokerMap(userId);
+		List<Integer> newL = new ArrayList<>();
+		
+		return null;
+	}
+	
 	/**为登录的用户进行洗牌和发牌 **/ 
 	public Map<String, String> sendPoker(String userId)
 			throws JsonGenerationException, JsonMappingException, IOException {
@@ -62,12 +68,33 @@ public class CardService extends BaseService{
 		}
 		 for(int i = 0; i < hm.size();i++){
 		 DBUtil.GetInstance().savePoker(userId, hm.get(array.get(i)));
-//		 System.out.println("pokerId:"+hm.get(array.get(i)).getPokerId()+"--pokerNumber"+hm.get(array.get(i)).getNumber()+"--pokerColor"+hm.get(array.get(i)).getColor());
+		 System.out.println("pokerId:"+hm.get(array.get(i)).getPokerId()+"--pokerNumber"+hm.get(array.get(i)).getNumber()+"--pokerColor"+hm.get(array.get(i)).getColor());
 		 }
+		 
+//		 HashMap<Integer,Poker> newHm = hm; 
+//		 List<Integer> newArray = array;
+//		 for(int i = 0 ; i < 4 ; i++){
+//			 newHm.remove(i);
+//			 newArray.remove(i);
+//		 }
+//		 
+//		 for(int i = 4; i < newHm.size();i++){
+//			 System.out.println("---"+newArray.get(i));
+//			 System.out.println("pokerId:"+newHm.get(newArray.get(i)).getPokerId()+"--pokerNumber"+newHm.get(newArray.get(i)).getNumber()+"--pokerColor"+newHm.get(newArray.get(i)).getColor());
+//		 }
 		// 打乱编号，重新排序
 		Collections.shuffle(array);
 		DBUtil.GetInstance().init();
-
+//		for(int i=0 ; i < newArray.size();i++){
+//			System.out.println("*******"+uu);
+//			uu++;
+//			System.out.println("---new---array---size---"+newArray.size()+"--"+newArray.get(i));
+//			if(newArray.get(i) == 0 ||newArray.get(i) == 1||newArray.get(i) == 2||newArray.get(i) == 3){
+//				continue;
+//			}
+//			System.out.println("pokerId:"+newHm.get(newArray.get(i)).getPokerId()+"--pokerNumber"+newHm.get(newArray.get(i)).getNumber()+"--pokerColor"+newHm.get(newArray.get(i)).getColor());
+//		 }
+		
 		if (DBUtil.GetInstance().getShuffleList(userId).size() == 24 || DBUtil.GetInstance().getPokerRoom1List(userId).size() != 0) {
 			return getInitCards(userId);
 		}
@@ -76,25 +103,31 @@ public class CardService extends BaseService{
 
 		List<Poker> pokerFrontHandler = new ArrayList<Poker>();
 		List<Poker> pokerOppositeHandler = new ArrayList<Poker>();
-		// 分出洗牌区24和手牌区28的牌,并留出七张正面朝上的牌
+		
+		// 分出洗牌区和手牌区的牌,并留出七张正面朝上的牌
+		//区分难度，简单模式使用easyArray, 一般使用array
 		for (int i = 0; i < array.size(); i++) {
 			if (i < POKER_HANDLER) {
 				if (i >= POKER_HANDLER - 7) {
 					pokerFrontHandler.add(hm.get(array.get(i)));
-					// System.out.println(hm.get(array.get(i)).getNumber()+":"+hm.get(array.get(i)).getDirection()+":"+hm.get(array.get(i)).getColor());
 					pokerHandler.add(hm.get(array.get(i)).getPokerId() + ":" + hm.get(array.get(i)).getDirection());
 					continue;
 				}
 				pokerOppositeHandler.add(hm.get(array.get(i)));
 				hm.get(array.get(i)).setDirection("opposite");
 				pokerHandler.add(hm.get(array.get(i)).getPokerId() + ":" + hm.get(array.get(i)).getDirection());
-				// DBUtil.GetInstance().addPokerToRoom1(userId,
-				// hm.get(array.get(i)));
 			} else {
 				pokerShuffle.add(hm.get(array.get(i)).getPokerId() + ":" + hm.get(array.get(i)).getDirection());
 				DBUtil.GetInstance().addPokerToShuffle(userId, hm.get(array.get(i)));
 			}
 		}
+		
+//		//区分洗牌难度时用
+//		for(int a = 0; a < 3; a++){
+//			pokerShuffle.add(hm.get(easyArray.get(a)).getPokerId() + ":" + hm.get(easyArray.get(a)).getDirection());
+//			DBUtil.GetInstance().addPokerToShuffle(userId, hm.get(easyArray.get(a)));
+//		}
+		
 		// 把洗牌区的牌分为七份，存到redis中
 		List<String> pokerHandlerList1 = new ArrayList<String>();
 		List<String> pokerHandlerList2 = new ArrayList<String>();
@@ -162,8 +195,6 @@ public class CardService extends BaseService{
 
 		Gson gson = new Gson();
 		// 七个手牌区的数据
-		// String jsonPokerHandler = gson.toJson(pokerHandler);
-		// String jsonPokerHandler = pokerHandler.toString();
 		String h1 = pokerHandlerList1.toString();
 		String h2 = pokerHandlerList2.toString();
 		String h3 = pokerHandlerList3.toString();
@@ -174,8 +205,8 @@ public class CardService extends BaseService{
 
 		// 洗牌区的json数据
 		// String jsonPokerShuffle = gson.toJson(pokerShuffle);
-		String shuffle = pokerShuffle.toString();
 		Map<String, String> pokerJsonParam = new HashMap<String, String>();
+		String shuffle = pokerShuffle.toString();
 		pokerJsonParam.put("shufflePokerList", shuffle);
 		pokerJsonParam.put("handPokerList1", h1);
 		pokerJsonParam.put("handPokerList2", h2);
@@ -189,9 +220,6 @@ public class CardService extends BaseService{
 		// String pokerJson = mapper.writeValueAsString(pokerJsonParam);
 		// String pokerJson = pokerJsonParam.toString();
 		
-	    PokerList pp = new PokerList();
-	    pp.setContent(pokerJsonParam.toString());
-	    pp.setPokerId(userId+"_"+Math.random()*20);
 		return pokerJsonParam;
 		// //二人斗地主的发牌 弃用
 		// List<String> playerOne = new ArrayList<String>();
@@ -309,6 +337,15 @@ public class CardService extends BaseService{
 		  pokerJsonParam.put("handPokerList7", room7.toString());
 		  pokerJsonParam.put("userId", userId);
 		  pokerJsonParam.put("ErrorCode", "already init cards,if want to get another pair of deck,please finish the game or restart");
+		  
+		  PokerList pp = new PokerList();
+		  Map<String, String> dbpokerList = pokerJsonParam;
+		  dbpokerList.remove("ErrorCode");
+		  dbpokerList.remove("userId");
+		  pp.setContent(dbpokerList.toString());
+		  pp.setPokersId(userId + "_" + (int)(Math.random()*10));
+		  DBUtil.GetInstance().savePokerList(pp);
+		  
 		  return pokerJsonParam;
 	  }
 	  
@@ -318,27 +355,36 @@ public class CardService extends BaseService{
 	public Map<String, Object> moveCards(String userId,int pokerId, int targetPokerId, int move_position,int target_position) {
 		DBUtil.GetInstance().init();
 		Poker poker = DBUtil.GetInstance().getPoker(userId, pokerId);
-		Poker targetPoker = DBUtil.GetInstance().getPoker(userId, targetPokerId);
-		
+		Poker targetPoker = null;
 		HashMap<String,Object> result = new HashMap<>();
-		if ("opposite".equals(poker.getDirection()) || "opposite".equals(targetPoker.getDirection())) {
+		if(targetPokerId != 1000){
+			targetPoker = DBUtil.GetInstance().getPoker(userId, targetPokerId);
+			if("opposite".equals(targetPoker.getDirection())){
+				logger.error("can't move the opposite card");
+				result.put("ErrorCode", "opposite card can't move");
+				return result;
+			}
+		}
+		
+		if ("opposite".equals(poker.getDirection())) {
 			logger.error("can't move the opposite card");
 			result.put("ErrorCode", "opposite card can't move");
 			return result;
 		}
 		//移动牌到手牌区
 		if(target_position < 8){
-			return movePokerToRoom(userId, move_position,target_position, poker, targetPoker);
+			return movePokerToRoom(userId, move_position, target_position, poker, targetPoker);
 		}
 		//移动牌到存牌区
 		if(target_position >= 8){
-			return movePokerToHome(userId,move_position,target_position,   poker, targetPoker);
+			return movePokerToHome(userId, move_position, target_position, poker, targetPoker);
 		}
 		result.put("CanSendPokers", "0");
 		result.put("ErrorCode", "false target_position");
 		return result;
 	}
 	
+	//移动牌到七个手牌区
 	private Map<String,Object> movePokerToRoom(String userId, int move_position, int target_position, Poker poker,Poker targetPoker) {
 		Map<String,Object> mm = new HashMap<>();
 		switch (target_position) {
@@ -512,7 +558,7 @@ public class CardService extends BaseService{
 		return mm;
 	}
 
-	// 移动牌到存牌区
+	// 移动牌到四个存牌区
 	public Map<String,Object> movePokerToHome( String userId, int move_position, int target_position, Poker poker, Poker targetPoker){
 		Map<String,Object> mm = new HashMap<>();
 		switch (target_position) {
@@ -608,15 +654,7 @@ public class CardService extends BaseService{
 		mm.put("Errorcode", "false targetPosition");
 		return mm;
 	}
-	
-//	public static void main(String[] args){
-//		DBUtil.GetInstance().init();
-//		CardService cc = new CardService();
-//		Poker poker = DBUtil.GetInstance().getPoker("tt",19);
-//		
-//		cc.removeCardFromHandlerOrShuffle(poker,2,"tt");
-//	}
-	
+
 	private void removeCardFromHandlerOrShuffle(Poker poker, int move_position, String userId) {
 		switch (move_position) {
 		case 0:
@@ -704,7 +742,7 @@ public class CardService extends BaseService{
 
 	// 比较牌的大小和花色（存牌区）
 	public boolean comparePokerOfHome(Poker poker, Poker targetPoker) {
-		if (poker.getNumber() == targetPoker.getNumber() - 1 && poker.getColor() == targetPoker.getColor()) {
+		if (poker.getNumber() == targetPoker.getNumber() + 1 && poker.getColor() == targetPoker.getColor()) {
 			return true;
 		} else {
 			return false;
