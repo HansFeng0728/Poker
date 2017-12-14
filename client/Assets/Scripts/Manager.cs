@@ -15,12 +15,13 @@ public class Manager : MonoBehaviour
     void Start()
     {
         InitHandCards();
-        InitChooseModel();
+        InitPanel("ChooseModel");
     }
 
     public static http httpVar = null;
     public static PlayerInfo player0 = null;   
     public static List<Card> allCardList = new List<Card>();
+    public static List<int> firstOpenCards = new List<int>();
     public static UISprite shuffleCardBg;
     public static List<GameObject> shuffleCards = new List<GameObject>();
 
@@ -55,13 +56,14 @@ public class Manager : MonoBehaviour
     public static Cards choosedCards = new Cards(-1);
     public static bool moveCardsHttp = false;    //用于http的移牌
 
-    public void InitChooseModel()
+    public void InitPanel(string panelName)
     {
-        GameObject chooseModelPrefab = Resources.Load("Prefabs/ChooseModel") as GameObject;
-        GameObject chooseModelPanel = MonoBehaviour.Instantiate(chooseModelPrefab) as GameObject;
-        chooseModelPanel.transform.parent = GameObject.Find("Camera").transform;
-        chooseModelPanel.transform.localScale = Vector3.one;
-        chooseModelPanel.SetActive(true);
+        GameObject Prefab = Resources.Load("Prefabs/" + panelName) as GameObject;
+        GameObject Panel = MonoBehaviour.Instantiate(Prefab) as GameObject;
+        Panel.transform.parent = GameObject.Find("Camera").transform;
+        Panel.transform.localScale = Vector3.one;
+        Panel.transform.localScale = new Vector3(1.4f, 1.24f, 1);
+        Panel.SetActive(true);
     }    
 
     public static void InitLobby()
@@ -70,6 +72,7 @@ public class Manager : MonoBehaviour
         GameObject lobbypanel = MonoBehaviour.Instantiate(lobbyPrefab) as GameObject;
         lobbypanel.transform.parent = GameObject.Find("Camera").transform;
         lobbypanel.transform.localScale = Vector3.one;
+        lobbypanel.transform.localScale = new Vector3(1.4f, 1.24f, 1);
         lobbypanel.SetActive(true);
     }
 
@@ -79,8 +82,27 @@ public class Manager : MonoBehaviour
         GameObject windowPanel = MonoBehaviour.Instantiate(windowPrefab) as GameObject;
         windowPanel.transform.parent = GameObject.Find("Camera").transform;
         windowPanel.transform.localScale = Vector3.one;
+        windowPanel.transform.localScale = new Vector3(1.4f, 1.24f, 1);
     }
-    
+
+    public static void InitSolo()
+    {
+        GameObject soloPrefab = Resources.Load("Prefabs/Solo") as GameObject;
+        GameObject soloPanel = MonoBehaviour.Instantiate(soloPrefab) as GameObject;
+        soloPanel.transform.parent = GameObject.Find("Camera").transform;
+        soloPanel.transform.localScale = Vector3.one;
+        soloPanel.transform.localScale = new Vector3(1.4f, 1.24f, 1);
+    }
+
+    public static void InitNetSignIn()
+    {
+        GameObject netSignInPrefab = Resources.Load("Prefabs/NetSignIn") as GameObject;
+        GameObject netSignInPanel = MonoBehaviour.Instantiate(netSignInPrefab) as GameObject;
+        netSignInPanel.transform.parent = GameObject.Find("Camera").transform;
+        netSignInPanel.transform.localScale = Vector3.one;
+        netSignInPanel.transform.localScale = new Vector3(1.4f, 1.24f, 1);
+    }
+
      public static void InitHandCards()
     {
         handCardLists.Add(handCardList1);
@@ -112,7 +134,7 @@ public class Manager : MonoBehaviour
         player0 = null;
         allCardList = new List<Card>();
         shuffleCards = new List<GameObject>();
-
+            
         completeCards = new List<GameObject>();
         completeCardBgs = new List<UISprite>();
 

@@ -200,11 +200,22 @@ public class CardActivity : MonoBehaviour {
         sameColorType = MethodAllCards.SameColorType(previewNum, positionNum);
         compareNum = MethodAllCards.CompareNumIsLow(positionNum, previewNum);
         choosePosition = MethodhandCards.FindPosition(chooseIndex, previewNum);
+        movePoker = "";
 
-        movePoker = (previewNum - 1).ToString() + "-" + "1";
+        movePoker = "";
+        for (int i = chooseCount - 1; i >= 0; i--)
+        {
+            int num1 = Manager.choosedCards.CardList[i].Number;
+            if (movePoker == "")
+                movePoker = (num1 - 1).ToString() + "-" + "1";
+            else
+                movePoker = "," + (num1 - 1).ToString() + "-" + "1";
+        }
         positionIndex = MethodAllCards.FindPosition(positionNum);
         positionState = Manager.allCardList[positionIndex].State;
         targetPoker = (positionNum - 1).ToString() + "-" + positionState.ToString();
+
+        previewNum = Manager.choosedCards.CardList[0].Number;
 
         //联机版
         if (Manager.httpVar != null)
@@ -428,10 +439,10 @@ public class CardActivity : MonoBehaviour {
         choosePosition = MethodhandCards.FindPosition(chooseIndex, previewNum);
 
         int length = chooseCount + positionCount;
-        if (positionNum == previewNum)
+        int previewNum1 = Manager.choosedCards.CardList[0].Number;
+        if (positionNum == previewNum1)
         {
-            int num1 = Manager.choosedCards.CardList[0].Number;
-            MethodhandCards.DoubleClick(num1, index);
+            MethodhandCards.DoubleClick(previewNum1, index);
             return;
         }
         if (length >= 20)
@@ -452,7 +463,16 @@ public class CardActivity : MonoBehaviour {
             minusLength++;
         }
 
-        movePoker = (mPreviewNum - 1).ToString() + "-" + "1";
+        movePoker = "";
+        for (int i = chooseCount - 1; i >= 0; i--)
+        {
+            int num1 = Manager.choosedCards.CardList[i].Number;
+            if (movePoker == "")
+                movePoker = (num1 - 1).ToString() + "-" + "1";
+            else
+                movePoker = "," + (num1 - 1).ToString() + "-" + "1";
+        }
+
         positionIndex = MethodAllCards.FindPosition(positionNum);
         positionState = Manager.allCardList[positionIndex].State;
         targetPoker = (positionNum - 1).ToString() + "-" + positionState.ToString();

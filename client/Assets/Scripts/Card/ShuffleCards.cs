@@ -5,21 +5,21 @@ using System.Collections.Generic;
 public class ShuffleCards : MonoBehaviour {
 
     public GameObject Card1;
-    public GameObject Card2;
-    public GameObject Card3;
-    public GameObject card;
+    private GameObject card;
     public int sapce;
     
     private List<UISprite> cardsBg = new List<UISprite>();
 
-    private int count = Manager.player0.ShufflePokerList.CardList.Count - 1; 
+    private int count;
     
 	// Use this for initialization
     void Start()
     {
+        card = Resources.Load("Prefabs/Card") as GameObject;
         InitCards();
         RefreshCards();
         Manager.shuffleIndex = -1;
+        count = Manager.player0.ShufflePokerList.CardList.Count - 1; 
     }
 	
 	// Update is called once per frame
@@ -42,7 +42,8 @@ public class ShuffleCards : MonoBehaviour {
 
     void RefreshCards()
     {
-        Manager.shuffleCards[0].SetActive(false);
+        if (Manager.shuffleCards != null)
+            Manager.shuffleCards[0].SetActive(false);
     }
     
     void ShowCards()

@@ -115,7 +115,7 @@ public class MethodAllCards
     public static void InitSoloPlayerInfo()
     {
         List<int> cardNumberList = MethodAllCards.InitCardList();
-
+        Manager.firstOpenCards = new List<int>();
 
         int count = 0;        
         for (int i = 0; i < 7; i++)
@@ -133,10 +133,12 @@ public class MethodAllCards
 
         int length = 0;
         Manager.allCardList[length].State =1;
+        Manager.firstOpenCards.Add(Manager.allCardList[length].Number);
         for (int i = 2; i <= 7; i++)
         {
             length += i;
             Manager.allCardList[length].State = 1;
+            Manager.firstOpenCards.Add(Manager.allCardList[length].Number);
         }
 
             for (int i = count - 1; i < 52; i++)
@@ -164,7 +166,7 @@ public class MethodAllCards
     }
 
     public static void HttpInitPlayerInfo(JsonData jsondata)
-    {
+    {        
         //增加移动区数据
         for (int i = 0; i < 7; i++)
         {

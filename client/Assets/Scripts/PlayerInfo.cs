@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class PlayerInfo 
 {    
-    private string name = "";
+    private string name = "";   //玩家名字
     private int state = 0;  //用户登录状态
-    private int score = 0;
-    private int daojishiTime;
+    private int score = 0;  //分数
+    private int daojishiTime;   //倒计时时间
     private Cards shufflePokerList;     //洗牌牌堆里面的牌    
     private List<Card> allHandCards = new List<Card>(); //手牌区所有牌
     private List<Cards> handCardsList = new List<Cards>();        //手牌区里面的牌

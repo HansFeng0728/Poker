@@ -30,9 +30,14 @@ public class SignIn : MonoBehaviour {
         {
             Manager.player0 = new PlayerInfo();
             Manager.httpVar.ConnectRequest(inPutLabel.text);
-            
+            Destroy(this.gameObject);
             //MethodAllCards.InitPlayerInfo();   //单机版用   
             //Manager.InitLobby();
         }     
-    }    
+    }
+
+    public void Back()
+    {
+        Destroy(this.gameObject);
+    }
 }

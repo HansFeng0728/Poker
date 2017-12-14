@@ -110,14 +110,12 @@ public class MethodshuffleCards
                         MethodcompleteCards.AddCard(i, num);
 
                         Debug.Log("双击洗牌区");
-
                         Manager.ChoosedCardsReset();
                     });
                     return;
                 }                
             }
         }
-        Debug.Log("无法双击牌到存牌区");
     }
 
     public static void ChangeColor()

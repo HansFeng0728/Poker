@@ -106,7 +106,8 @@ public class HandCardList : MonoBehaviour
                             Manager.shuffleCards[0].SetActive(false);
 
                             Debug.Log(Manager.player0.AllHandCards.Count);
-                        }
+                       }
+                        Manager.ChoosedCardsReset();
                     });
                 }
             }
@@ -185,7 +186,15 @@ public class HandCardList : MonoBehaviour
                     Manager.ChoosedCardsReset();
                 }
 
-                movePoker = (previewNum - 1).ToString() + "-" + "1";
+                movePoker = "";
+                for (int i = chooseLength - 1; i >= 0; i--)
+                {
+                    int num1 = Manager.choosedCards.CardList[i].Number;
+                    if (movePoker == "")
+                        movePoker = (num1 - 1).ToString() + "-" + "1";
+                    else
+                        movePoker = "," + (num1 - 1).ToString() + "-" + "1";
+                }
 
                 //联机版
                 if (Manager.httpVar != null)
@@ -222,10 +231,10 @@ public class HandCardList : MonoBehaviour
                             MethodAllCards.ChangeState0(pPreviewNum);
                             Manager.handCardListBgs[chooseIndex][choosePosition - 1].spriteName = pPreviewNum.ToString();
                         }
+                        Manager.ChoosedCardsReset();
                     });
                 }
-            }
-            Manager.ChoosedCardsReset();
+            }            
         }
     }
 

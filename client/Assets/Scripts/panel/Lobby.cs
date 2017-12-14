@@ -14,12 +14,15 @@ public class Lobby : MonoBehaviour {
     private GameObject shuffleCardList; //洗牌堆显示已有的牌
     private Vector3 localMousePosition;
     private Vector3 mousePosition;
-    
 
+    private static string panelName;
 
     void Start()
     {
-        name.text = Manager.player0.Name;
+        if (Manager.player0 != null)
+        {
+            name.text = Manager.player0.Name;
+        }        
     }
 
     void Update()
@@ -32,15 +35,14 @@ public class Lobby : MonoBehaviour {
     {
         Destroy(this.gameObject);
         Manager.ResetCards();
+        if (Manager.httpVar != null)
+            Manager.InitNetSignIn();
+        else
+            Manager.InitSolo();        
     }
 
-    public void InitPanel()
+    public void Reset()
     {
-        //readyButton.SetActive(true);
-    }
-
-    void Destroy()
-    {
-        Debug.Log("11111111");
+        Manager.ChoosedCardsReset();
     }
 }

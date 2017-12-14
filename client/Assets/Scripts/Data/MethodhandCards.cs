@@ -86,7 +86,10 @@ public class MethodhandCards : MonoBehaviour {
                             int length = Manager.player0.HandCardsList[index].CardList.Count;
                             Manager.handCardLists[index][length - 1].SetActive(false);
 
-                            if (choosePosition >= 1)
+                            int previewNum = Manager.player0.HandCardsList[index].CardList[choosePosition - 1].Number;
+                            int pIndex = MethodAllCards.FindPosition(previewNum);
+                            int state = Manager.allCardList[pIndex].State;                            
+                            if (choosePosition >= 1 && state == 0)
                             {
                                 int pPreviewNum = Manager.player0.HandCardsList[index].CardList[choosePosition - 1].Number;
                                 MethodAllCards.ChangeState0(pPreviewNum);

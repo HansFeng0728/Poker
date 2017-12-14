@@ -9,6 +9,7 @@ public class Card
     private int num;       //     值
     private int type;
     private int index;
+
     //卡牌的状态:正反面    1正0反
     //正反通过allcards里的state来判断
     private int state;

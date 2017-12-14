@@ -59,11 +59,12 @@ public class HandCards : MonoBehaviour {
             for (int j = 0; j < length; j++)
             {
                 Manager.handCardLists[i][j].SetActive(true);
-                int num = Manager.player0.HandCardsList[i].CardList[j].Number;
+                int num = Manager.player0.HandCardsList[i].CardList[j].Number;                
                 int index = MethodAllCards.FindPosition(num);
                 int state = Manager.allCardList[index].State;
                 string spriteName = Manager.allCardList[index].Number.ToString();
                 Manager.handCardListBgs[i][j].spriteName = (state == 1) ? spriteName : "0";
+                //Manager.handCardListBgs[i][j].spriteName = Manager.firstOpenCards.Contains(num) ? spriteName : "0";
             }
         }
     }
