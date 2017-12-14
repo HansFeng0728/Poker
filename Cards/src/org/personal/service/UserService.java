@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import org.personal.db.DBUtil;
+import org.personal.db.dao.Game;
 import org.personal.db.dao.User;
 import org.personal.util.DButil;
 import org.slf4j.Logger;
@@ -65,6 +66,18 @@ public class UserService extends BaseService{
 		}
 	}
 	
+	public boolean isEnterGame(String userId){
+		DBUtil.GetInstance().init();
+		if(userId != null){
+			Game game = new Game();
+			game.setUserId(userId);
+			game.setEntertime(new Date());
+			DBUtil.GetInstance().saveGame(game);
+			return true;
+		}else{
+			return false;
+		}
+	}
 	public void gameOver(String userId){
 		
 	}
@@ -73,6 +86,7 @@ public class UserService extends BaseService{
 		UserService uu = new UserService();
 		String a = "1002";
 		uu.isLoginCards(a);
+		uu.isEnterGame(a);
 	}
 	
 }

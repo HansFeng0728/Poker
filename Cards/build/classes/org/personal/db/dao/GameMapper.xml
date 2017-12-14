@@ -3,16 +3,17 @@
 <mapper namespace="org.personal.db.dao.GameMapper" >
   <resultMap id="BaseResultMap" type="org.personal.db.dao.Game" >
     <id column="Id" property="id" jdbcType="INTEGER" />
-    <result column="completeTime" property="completetime" jdbcType="DATE" />
+    <result column="enterTime" property="entertime" jdbcType="DATE" />
     <result column="result" property="result" jdbcType="TINYINT" />
     <result column="moveSteps" property="movesteps" jdbcType="INTEGER" />
+    <result column="completeTime" property="completetime" jdbcType="DATE" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="org.personal.db.dao.GameWithBLOBs" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="org.personal.db.dao.Game" extends="BaseResultMap" >
     <result column="userId" property="userid" jdbcType="LONGVARCHAR" />
     <result column="pokersId" property="pokersid" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    Id, completeTime, result, moveSteps
+    Id, enterTime, result, moveSteps, completeTime
   </sql>
   <sql id="Blob_Column_List" >
     userId, pokersId
@@ -30,12 +31,12 @@
     where Id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="org.personal.db.dao.GameWithBLOBs" >
-    insert into game (Id, completeTime, result, 
-      moveSteps, userId, pokersId
-      )
-    values (#{id,jdbcType=INTEGER}, #{completetime,jdbcType=DATE}, #{result,jdbcType=TINYINT}, 
-      #{movesteps,jdbcType=INTEGER}, #{userid,jdbcType=LONGVARCHAR}, #{pokersid,jdbcType=LONGVARCHAR}
-      )
+    insert into game (Id, enterTime, result, 
+      moveSteps, completeTime, userId, 
+      pokersId)
+    values (#{id,jdbcType=INTEGER}, #{entertime,jdbcType=DATE}, #{result,jdbcType=TINYINT}, 
+      #{movesteps,jdbcType=INTEGER}, #{completetime,jdbcType=DATE}, #{userid,jdbcType=LONGVARCHAR}, 
+      #{pokersid,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="org.personal.db.dao.GameWithBLOBs" >
     insert into game
@@ -43,14 +44,17 @@
       <if test="id != null" >
         Id,
       </if>
-      <if test="completetime != null" >
-        completeTime,
+      <if test="entertime != null" >
+        enterTime,
       </if>
       <if test="result != null" >
         result,
       </if>
       <if test="movesteps != null" >
         moveSteps,
+      </if>
+      <if test="completetime != null" >
+        completeTime,
       </if>
       <if test="userid != null" >
         userId,
@@ -63,14 +67,17 @@
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="completetime != null" >
-        #{completetime,jdbcType=DATE},
+      <if test="entertime != null" >
+        #{entertime,jdbcType=DATE},
       </if>
       <if test="result != null" >
         #{result,jdbcType=TINYINT},
       </if>
       <if test="movesteps != null" >
         #{movesteps,jdbcType=INTEGER},
+      </if>
+      <if test="completetime != null" >
+        #{completetime,jdbcType=DATE},
       </if>
       <if test="userid != null" >
         #{userid,jdbcType=LONGVARCHAR},
@@ -83,14 +90,17 @@
   <update id="updateByPrimaryKeySelective" parameterType="org.personal.db.dao.GameWithBLOBs" >
     update game
     <set >
-      <if test="completetime != null" >
-        completeTime = #{completetime,jdbcType=DATE},
+      <if test="entertime != null" >
+        enterTime = #{entertime,jdbcType=DATE},
       </if>
       <if test="result != null" >
         result = #{result,jdbcType=TINYINT},
       </if>
       <if test="movesteps != null" >
         moveSteps = #{movesteps,jdbcType=INTEGER},
+      </if>
+      <if test="completetime != null" >
+        completeTime = #{completetime,jdbcType=DATE},
       </if>
       <if test="userid != null" >
         userId = #{userid,jdbcType=LONGVARCHAR},
@@ -103,18 +113,20 @@
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.personal.db.dao.GameWithBLOBs" >
     update game
-    set completeTime = #{completetime,jdbcType=DATE},
+    set enterTime = #{entertime,jdbcType=DATE},
       result = #{result,jdbcType=TINYINT},
       moveSteps = #{movesteps,jdbcType=INTEGER},
+      completeTime = #{completetime,jdbcType=DATE},
       userId = #{userid,jdbcType=LONGVARCHAR},
       pokersId = #{pokersid,jdbcType=LONGVARCHAR}
     where Id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="org.personal.db.dao.Game" >
     update game
-    set completeTime = #{completetime,jdbcType=DATE},
+    set enterTime = #{entertime,jdbcType=DATE},
       result = #{result,jdbcType=TINYINT},
-      moveSteps = #{movesteps,jdbcType=INTEGER}
+      moveSteps = #{movesteps,jdbcType=INTEGER},
+      completeTime = #{completetime,jdbcType=DATE}
     where Id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

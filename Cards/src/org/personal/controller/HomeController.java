@@ -3,8 +3,10 @@ package org.personal.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.personal.db.DBUtil;
 import org.personal.service.CardService;
 import org.personal.service.UserService;
+import org.personal.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -75,7 +78,6 @@ public class HomeController {
         JsonObject json = (JsonObject)parse.parse(requestStr);
 
         String userId = json.get("UserId").getAsString();
-		
         Map<String, String> params = new HashMap<String, String>();
         if(DBUtil.GetInstance().getUser(userId) == null){
         	PrintWriter writer = response.getWriter();
@@ -96,6 +98,7 @@ public class HomeController {
         	Map<String, String> pokerJsonParam = new HashMap<String,String>();
         	pokerJsonParam.put("userId", userId);
 //			发牌在cardService里面
+
         	pokerJsonParam.put("completeCardList", "0");
 //        	String pokerJson = JsonUtil.encodeJson(pokerJsonParam);
         	String pokerJson = pokerJsonParam.toString();
@@ -148,8 +151,19 @@ public class HomeController {
 		int movepoker_Position = json.get("MovePoker_Position").getAsInt();
 		int targetPoker_Position = json.get("TargetPoker_Position").getAsInt();
 		
-		String[] mp = movePoker.split("-");
-		int pokerId = Integer.valueOf(mp[0]);
+		List<Integer> pokerIds = new ArrayList<>();;
+		String[] init_mp = movePoker.split(",");
+		int pokerId = 1000;
+		if(init_mp.length > 1){
+			for(int i = 0; i < init_mp.length;i++){
+			    String[] pokerInfo = init_mp[i].split("-");
+			    int pokerid = Integer.valueOf(pokerInfo[0]);
+			    pokerIds.add(pokerid);
+			}
+		}else{
+			String[] mp = movePoker.split("-");
+			pokerId = Integer.valueOf(mp[0]);
+		}
 		
 		if(movepoker_Position < 0 || movepoker_Position > 7){
 			logger.error("illegal move_position");
@@ -175,8 +189,9 @@ public class HomeController {
 				pw.close();
 			}
 		}
-		Map<String, Object> moveResult = cardService.moveCards(userId, pokerId, targetPokerId, movepoker_Position, targetPoker_Position);
+		Map<String, Object> moveResult = cardService.moveCards(userId, pokerId, targetPokerId, movepoker_Position, targetPoker_Position,pokerIds);
 		String jsonStr = mapper.writeValueAsString(moveResult);
+		
 		pw.write(jsonStr); 
 		pw.flush();
 		pw.close();

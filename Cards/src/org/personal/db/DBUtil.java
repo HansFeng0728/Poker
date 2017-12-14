@@ -67,7 +67,7 @@ public class DBUtil {
 //		loadPayer();
 
 		dbwork = new FastConsumeTask();
-		dbwork.start(3);
+		dbwork.start(2);
 	}
 	
 	public int taskCount()
@@ -214,99 +214,114 @@ public class DBUtil {
 		}
 	}
 	
-//	//--------------------------------------------------------------------游戏对局-------------------------------------------------
-	public Game getGame(String userId,String pokersId)
+	//--------------------------------------------------------------------游戏对局-------------------------------------------------
+	public void saveGame(final Game game)
+	{	
+		redisUtil.set(game.getUserId(), game);
+		dbwork.produce(new TaskHandler()
+		{
+			@Override
+			public void onEvent() 
+			{
+				saveGameByDB(game);
+			}
+		});
+	}
+	
+	public void saveGameByDB(Game game)
 	{
-		 Game game = redisUtil.hashGet(RedisKeys.GAME + userId,pokersId,Game.class);
 		if(game == null)
 		{
-			game = getGameByUserIdAndPokersIdByDB(userId,pokersId);
-			if(game != null)
-			{
-				redisUtil.hashSet(RedisKeys.GAME + userId,pokersId,game);
-			}
-			
+			logger.error("saveGameByDB game is null!");
+			return ;
 		}
-		return game;
-	}
-	
-	public List<Game> getGameList(String userId) 
-	{
-		Map<String,Game> gameMap = redisUtil.hashGetAll(RedisKeys.GAME + userId, Game.class);
-		if(gameMap != null){
-			List<Game> gameList = new ArrayList<>(gameMap.values());
-			if(!gameList.isEmpty()){
-				return gameList;
-			}
-		}
-		List<Game> gameList = getGamesByDB(userId);
-		if(gameList.isEmpty()){
-			
-		}else{
-			for(Game g : gameList){
-				redisUtil.hashSet(RedisKeys.GAME + g.getUserId(), g.getPokersId(), g);
-			}
-		}
-		return gameList;
-	}
-	
-	public List<Game> updateGameList(String userId){
-		List<Game> gameList = getGamesByDB(userId);
-		if( gameList != null){
-			
-		}
-		for(Game g : gameList){
-			redisUtil.hashSet(RedisKeys.GAME + g.getUserId(), g.getPokersId(), g);
-		}
-		return gameList;
-	}
-	
-	public Game getGameByUserIdAndPokersIdByDB(String userId,String pokersId)
-	{	
-		Game game = null;
-		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
-		try {
-			GameMapper gameMapper = session.getMapper(GameMapper.class);
-			game = gameMapper.selectByUserIdAndPokersId(userId, pokersId);
-			if(game == null){
-				logger.error("not exist friend in db");
-			}
-			session.commit();
-		} catch (Exception e) {
-			logger.error("DBUtil",e);
-		}
-		finally
-		{
-			session.close();
-		}
-		return game;
-	}
-	
-	public List<Game> getGamesByDB(String userId)
-	{
+
 		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
 		try
 		{
 			GameMapper gameMapper = session.getMapper(GameMapper.class);
-			List<Game> gameList = gameMapper.selectByUserId(userId);
-			return gameList;
+			gameMapper.insert(game);
+			session.commit();
 		}
-		catch (Exception e) 
-		{
-			if(session != null)
-			{
-				session.rollback();
-			}
+		catch (Exception e) {
 			logger.error("DBUtil", e);
 		}
 		finally
 		{
 			session.close();
 		}
-		return null;
 	}
 	
+	public Game getGame(String userId)
+	{
+		Game game = redisUtil.get(userId, Game.class);
+		if(game == null)
+		{
+			game = getGameByDB(userId);
+			if(game != null)
+			{
+				redisUtil.set(game.getUserId(), game);
+			}
+		}
+		return game;
+	}
 	
+	public Game getGameByDB(String userId)
+	{
+		Game game = null;
+		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+		try
+		{
+			GameMapper gameMapper = session.getMapper(GameMapper.class);
+			game = gameMapper.selectByUserId(userId);
+			session.commit();
+		}
+		catch (Exception e) {
+			System.out.println("DBUtil:---"+e);;
+		}
+		finally
+		{
+			session.close();
+		}
+		return game;
+	}
+	
+	public void updateGame(final Game game)
+	{
+		redisUtil.set(game.getUserId(), game);
+		dbwork.produce(new TaskHandler()
+		{
+			@Override
+			public void onEvent() 
+			{
+				updateGameByDB(game);
+			}
+		});
+	}
+	
+	public void updateGameByDB(Game game)
+	{
+		if(game == null)
+		{
+			logger.error("updateGameToDB game is null!");
+			return ;
+		}
+
+		SqlSession session = DBEnvironment.DB_CHAT.getDB().getSession();
+		try
+		{
+			GameMapper gameMapper = session.getMapper(GameMapper.class);
+			gameMapper.updateByPrimaryKeySelective(game);
+			session.commit();
+		}
+		catch (Exception e) {
+			logger.error("DBUtil", e);
+		}
+		finally
+		{
+			session.close();
+		}
+	}
 
 //----------------------------------------------------------牌库相关----------------------------------------------------------------------
 	public PokerList getPokerList(String pokersId)

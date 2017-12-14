@@ -9,11 +9,13 @@ public class Game {
 
 	private String pokersId;
 
-    private Date completetime;
+    private Date entertime;
 
     private Byte result;
 
     private Integer movesteps;
+
+    private Date completetime;
 
     public Integer getId() {
         return id;
@@ -39,12 +41,12 @@ public class Game {
 		this.pokersId = pokersId;
 	}
 
-    public Date getCompletetime() {
-        return completetime;
+    public Date getEntertime() {
+        return entertime;
     }
 
-    public void setCompletetime(Date completetime) {
-        this.completetime = completetime;
+    public void setEntertime(Date entertime) {
+        this.entertime = entertime;
     }
 
     public Byte getResult() {
@@ -61,5 +63,13 @@ public class Game {
 
     public void setMovesteps(Integer movesteps) {
         this.movesteps = movesteps;
+    }
+
+    public Date getCompletetime() {
+        return completetime;
+    }
+
+    public void setCompletetime(Date completetime) {
+        this.completetime = completetime;
     }
 }
