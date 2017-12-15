@@ -124,9 +124,10 @@ public class MethodAllCards
             {
                 Card cardInfo = MethodAllCards.CreateCardInfo(cardNumberList[count], 2, i);
                 cardInfo.State = 0;               
-                count++;
+                
                 Manager.allCardList.Add(cardInfo);
                 MethodhandCards.AddCard(i, cardNumberList[count], cardInfo.State);
+                count++;
                 Debug.Log("!!!!!");
             }
         }

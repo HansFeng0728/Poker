@@ -53,18 +53,8 @@ public class MethodshuffleCards
                                 Manager.ChoosedCardsReset();  
                                 return;
                             }
-                            //表现层
-                            Manager.shuffleCards[0].SetActive(false);
-                            Manager.completeCards[i].SetActive(true);
-                            Manager.completeCardBgs[i].spriteName = num.ToString();
 
-                            //数据层
-                            MethodshuffleCards.RemoveCard(num);
-                            MethodcompleteCards.AddCard(i, num);
-
-                            Debug.Log("双击洗牌区");
-
-                            Manager.ChoosedCardsReset();
+                            DoubleClickACardDefine(i, num);
                         });
                         
                         return;   
@@ -101,22 +91,60 @@ public class MethodshuffleCards
                             return;
                         }
 
-                        //表现层
-                        Manager.shuffleCards[0].SetActive(false);
-                        Manager.completeCardBgs[i].spriteName = num.ToString();
-
-                        //数据层
-                        MethodshuffleCards.RemoveCard(num);
-                        MethodcompleteCards.AddCard(i, num);
-
-                        Debug.Log("双击洗牌区");
-                        Manager.ChoosedCardsReset();
+                        DoubleClickCardDefine(i, num);
                     });
                     return;
                 }                
             }
         }
     }
+
+     public static void DoubleClickACardDefine(int index,int num)
+    {
+        //表现层        
+        Manager.completeCards[index].SetActive(true);
+        Manager.completeCardBgs[index].spriteName = num.ToString();
+
+        //数据层
+        MethodshuffleCards.RemoveCard(num);
+        MethodcompleteCards.AddCard(index, num);
+
+        //额外表现层
+        if (Manager.shuffleIndex >= Manager.player0.ShufflePokerList.CardList.Count - 1)
+        {
+            Manager.shuffleIndex = 0;
+            Manager.shuffleCards[0].SetActive(false);
+        }
+        Manager.shuffleCards[0].SetActive(true);
+        Manager.shuffleCardBg.spriteName = Manager.player0.ShufflePokerList.CardList[Manager.shuffleIndex].Number.ToString();
+
+        Debug.Log("双击洗牌区");
+
+        Manager.ChoosedCardsReset();
+    }
+
+    public static void DoubleClickCardDefine(int index,int num)
+     {
+         //表现层
+         Manager.shuffleCards[0].SetActive(false);
+         Manager.completeCardBgs[index].spriteName = num.ToString();
+
+         //数据层
+         MethodshuffleCards.RemoveCard(num);
+         MethodcompleteCards.AddCard(index, num);
+
+         //额外表现层
+         if (Manager.shuffleIndex >= Manager.player0.ShufflePokerList.CardList.Count - 1)
+         {
+             Manager.shuffleIndex = 0;
+             Manager.shuffleCards[0].SetActive(false);
+         }
+         Manager.shuffleCards[0].SetActive(true);
+         Manager.shuffleCardBg.spriteName = Manager.player0.ShufflePokerList.CardList[Manager.shuffleIndex].Number.ToString();
+
+         Debug.Log("双击洗牌区");
+         Manager.ChoosedCardsReset();
+     }
 
     public static void ChangeColor()
     {

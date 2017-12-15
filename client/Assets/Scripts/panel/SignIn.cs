@@ -24,13 +24,13 @@ public class SignIn : MonoBehaviour {
     {
         if (inPutLabel.text == "")
         {
+            Manager.windowLabel = "请输入玩家姓名";
             Manager.InitWindow();
         }
         else
         {
             Manager.player0 = new PlayerInfo();
-            Manager.httpVar.ConnectRequest(inPutLabel.text);
-            Destroy(this.gameObject);
+            Manager.httpVar.ConnectRequest(inPutLabel.text);            
             //MethodAllCards.InitPlayerInfo();   //单机版用   
             //Manager.InitLobby();
         }     

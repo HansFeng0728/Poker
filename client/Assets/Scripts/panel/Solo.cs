@@ -24,6 +24,7 @@ public class Solo : MonoBehaviour {
     {
         if (inPutLabel.text == "")
         {
+            Manager.windowLabel = "请输入玩家姓名";
             Manager.InitWindow();
         }
         else

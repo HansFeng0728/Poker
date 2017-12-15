@@ -193,7 +193,7 @@ public class HandCardList : MonoBehaviour
                     if (movePoker == "")
                         movePoker = (num1 - 1).ToString() + "-" + "1";
                     else
-                        movePoker = "," + (num1 - 1).ToString() + "-" + "1";
+                        movePoker = movePoker + "," + (num1 - 1).ToString() + "-" + "1";
                 }
 
                 //联机版

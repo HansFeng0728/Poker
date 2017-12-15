@@ -56,6 +56,8 @@ public class Manager : MonoBehaviour
     public static Cards choosedCards = new Cards(-1);
     public static bool moveCardsHttp = false;    //用于http的移牌
 
+    public static string windowLabel = "";
+
     public void InitPanel(string panelName)
     {
         GameObject Prefab = Resources.Load("Prefabs/" + panelName) as GameObject;
