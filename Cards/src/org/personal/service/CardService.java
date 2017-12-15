@@ -75,8 +75,7 @@ public class CardService extends BaseService{
 		Collections.shuffle(array);
 		DBUtil.GetInstance().init();
 
-		if (DBUtil.GetInstance().getShuffleList(userId).size() == 24
-				&& DBUtil.GetInstance().getPokerRoom1List(userId).size() != 0) {
+		if (DBUtil.GetInstance().getShuffleList(userId).size() != 0 && DBUtil.GetInstance().getPokerRoom1List(userId).size() != 0) {
 			return getInitCards(userId);
 		}
 		List<String> pokerShuffle = new ArrayList<>();
@@ -393,7 +392,7 @@ public class CardService extends BaseService{
 		case 1:
 			if(movePokers.size() > 1){
 				Poker onePoker = movePokers.get(0);
-				if(DBUtil.GetInstance().getPokerRoom1List(userId) == null|| DBUtil.GetInstance().getPokerRoom1List(userId).size() == 0){
+				if(DBUtil.GetInstance().getPokerRoom1List(userId) == null || DBUtil.GetInstance().getPokerRoom1List(userId).size() == 0){
 					if(onePoker.getNumber() == 13){
 						for(Poker p : movePokers){
 							removeCardFromHandlerOrShuffle(p, move_position, userId);
@@ -451,6 +450,7 @@ public class CardService extends BaseService{
 				Poker onePoker = movePokers.get(0);
 				if (DBUtil.GetInstance().getPokerRoom2List(userId) == null
 						|| DBUtil.GetInstance().getPokerRoom2List(userId).size() == 0) {
+					System.out.println(DBUtil.GetInstance().getPokerRoom2List(userId));
 					if (onePoker.getNumber() == 13) {
 						for (Poker p : movePokers) {
 							removeCardFromHandlerOrShuffle(p, move_position, userId);
@@ -460,9 +460,9 @@ public class CardService extends BaseService{
 						logger.info("move to room1 successfully");
 						return mm;
 					}
-					logger.error("----can't put the card except 13 to the room1");
+					logger.error("----can't put the card except 13 to the room2");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room1");
+					mm.put("Errorcode", "can't put the card except 13 to the room2");
 					return mm;
 				}
 				if (comparePokerOfHandle(onePoker, targetPoker)) {
@@ -471,7 +471,7 @@ public class CardService extends BaseService{
 						DBUtil.GetInstance().addPokerToRoom2(userId, p);
 						mm.put("CanSendPokers", "2");
 					}
-					logger.info("move to room1 successfully");
+					logger.info("move to room2 successfully");
 					return mm;
 				}
 				logger.error("----can't put the card except 13 to the room2");

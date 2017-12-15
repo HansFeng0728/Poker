@@ -32,7 +32,7 @@
   <insert id="insert" parameterType="org.personal.db.dao.User" >
     insert into user (Id, lastLoginTime, lastLogoutTime, 
       score, userId)
-    values (#{id,jdbcType=INTEGER}, #{lastLoginTime,jdbcType=DATE}, #{lastLogoutTime,jdbcType=DATE}, 
+    values (#{id,jdbcType=INTEGER}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{lastLogoutTime,jdbcType=TIMESTAMP}, 
       #{score,jdbcType=INTEGER}, #{userId,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="org.personal.db.dao.User" >
