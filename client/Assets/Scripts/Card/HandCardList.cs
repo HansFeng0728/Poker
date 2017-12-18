@@ -35,20 +35,6 @@ public class HandCardList : MonoBehaviour
     {
     }
 
-    //void InitCards()
-    //{
-    //    CardActivity[] trans = cardList.GetComponentsInChildren<CardActivity>();
-    //    GameObject obj = null;
-    //    UISprite bg = null;
-    //    for (int i = 0; i < trans.Length; i++)
-    //    {
-    //        obj = trans[i].gameObject;
-    //        bg = obj.GetComponentInChildren<UISprite>();
-    //        Manager.handCardLists[i].Add(obj);
-    //        Manager.handCardListBgs[i].Add(bg);
-    //    }
-    //}
-
     void RefreshCards()
     {
         for (int i = 0; i < Manager.handCardLists[index].Count; i++)

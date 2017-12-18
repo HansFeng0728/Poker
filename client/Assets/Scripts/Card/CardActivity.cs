@@ -9,8 +9,8 @@ public delegate void Callback<T, U, V>(T arg1, U arg2, V arg3);
 public class CardActivity : MonoBehaviour {
 
     public int type;
-
     public int index;
+    public int subIndex;
 
     private int previewCount;
     private int positionCount;
@@ -323,15 +323,8 @@ public class CardActivity : MonoBehaviour {
         Card card = MethodAllCards.CreateCardInfo(positionNum, type, index);
         MethodhandCards.ChangeColor(index, positionCount - 1, "choose");
         Manager.choosedCards.CardList.Add(card);
-        Debug.Log("!!!!!" + positionNum);
-        ////判断是否反面
-        //if (CheckState1(positionNum) == 1)
-        //{
-        //    Manager.handCardListBgs[index][positionCount - 1].spriteName = positionNum.ToString();
-        //    Manager.ChoosedCardsReset(); 
-        //    return;
-        //}
-            
+        //Debug.Log("!!!!!" + positionNum);
+        Debug.Log("subIndex : " + subIndex);
 
         for (int i = positionCount - 1; i >= 1 && positionCount > 1; i--)
         {

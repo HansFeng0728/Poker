@@ -23,7 +23,7 @@ public class http : MonoBehaviour {
         user.UserId = name;
         user.UserState = 0;
         string userJson = JsonMapper.ToJson(user);
-        string url = "http://192.168.80.15:8081/Cards/index/loginTest?requestStr=" + userJson;
+        string url = "http://192.168.90.126:8080/Cards/index/loginTest?requestStr=" + userJson;
         StartCoroutine(GetPlayerInfo(url));
 
     }
@@ -55,7 +55,7 @@ public class http : MonoBehaviour {
         Pokers pokers = new Pokers();
         pokers.UserId = name;
         string pokersJson = JsonMapper.ToJson(pokers);
-        string url = "http://192.168.80.15:8081/Cards/index/initCards?requestStr=" + pokersJson;
+        string url = "http://192.168.90.126:8080/Cards/index/initCards?requestStr=" + pokersJson;
 
         WWW getAllCards = new WWW(url);
         yield return getAllCards;
@@ -93,7 +93,7 @@ public class http : MonoBehaviour {
         Manager.moveCardsHttp = false;
         string sendPokersJson = JsonMapper.ToJson(sendPokers);
         Debug.Log(sendPokersJson);
-        string url = "http://192.168.80.15:8081/Cards/index/moveCards?requestStr=" + sendPokersJson;
+        string url = "http://192.168.90.126:8080/Cards/index/moveCards?requestStr=" + sendPokersJson;
         StartCoroutine(SendCards(url, callback));
         if (Manager.moveCardsHttp)
             return true;

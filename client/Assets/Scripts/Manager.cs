@@ -31,24 +31,7 @@ public class Manager : MonoBehaviour
     public static List<GameObject> handCards = new List<GameObject>();
 
     public static List<List<GameObject>> handCardLists = new List<List<GameObject>>();
-    public static List<GameObject> handCardList1 = new List<GameObject>();
-    public static List<GameObject> handCardList2 = new List<GameObject>();
-    public static List<GameObject> handCardList3 = new List<GameObject>();
-    public static List<GameObject> handCardList4 = new List<GameObject>();
-    public static List<GameObject> handCardList5 = new List<GameObject>();
-    public static List<GameObject> handCardList6 = new List<GameObject>();
-    public static List<GameObject> handCardList7 = new List<GameObject>();
-
     public static List<List<UISprite>> handCardListBgs = new List<List<UISprite>>();
-    public static List<UISprite> handCardListBg1 = new List<UISprite>();
-    public static List<UISprite> handCardListBg2 = new List<UISprite>();
-    public static List<UISprite> handCardListBg3 = new List<UISprite>();
-    public static List<UISprite> handCardListBg4 = new List<UISprite>();
-    public static List<UISprite> handCardListBg5 = new List<UISprite>();
-    public static List<UISprite> handCardListBg6 = new List<UISprite>();
-    public static List<UISprite> handCardListBg7 = new List<UISprite>();
-
-
 
     public static int shuffleIndex;
     public static int shuffleLevel; //洗牌区显示第几张牌,0为最底下,2为最上层
@@ -107,21 +90,8 @@ public class Manager : MonoBehaviour
 
      public static void InitHandCards()
     {
-        handCardLists.Add(handCardList1);
-        handCardLists.Add(handCardList2);
-        handCardLists.Add(handCardList3);
-        handCardLists.Add(handCardList4);
-        handCardLists.Add(handCardList5);
-        handCardLists.Add(handCardList6);
-        handCardLists.Add(handCardList7);
-
-        handCardListBgs.Add(handCardListBg1);
-        handCardListBgs.Add(handCardListBg2);
-        handCardListBgs.Add(handCardListBg3);
-        handCardListBgs.Add(handCardListBg4);
-        handCardListBgs.Add(handCardListBg5);
-        handCardListBgs.Add(handCardListBg6);
-        handCardListBgs.Add(handCardListBg7);
+        InitHandCardLists();
+        InitHandCardListBgs();
     }
 
     public static void ChoosedCardsReset()
@@ -141,29 +111,33 @@ public class Manager : MonoBehaviour
         completeCardBgs = new List<UISprite>();
 
         handCards = new List<GameObject>();
-
         handCardLists = new List<List<GameObject>>();
-        handCardList1 = new List<GameObject>();
-        handCardList2 = new List<GameObject>();
-        handCardList3 = new List<GameObject>();
-        handCardList4 = new List<GameObject>();
-        handCardList5 = new List<GameObject>();
-        handCardList6 = new List<GameObject>();
-        handCardList7 = new List<GameObject>();
-
         handCardListBgs = new List<List<UISprite>>();
-        handCardListBg1 = new List<UISprite>();
-        handCardListBg2 = new List<UISprite>();
-        handCardListBg3 = new List<UISprite>();
-        handCardListBg4 = new List<UISprite>();
-        handCardListBg5 = new List<UISprite>();
-        handCardListBg6 = new List<UISprite>();
-        handCardListBg7 = new List<UISprite>();
 
         InitHandCards();
 
         choosed = false; //是否已经有牌被选中
         choosedCards = new Cards(-1);
         moveCardsHttp = false;    //用于http的移牌
+    }
+
+    public static void InitHandCardLists()
+    {
+        
+        for (int i = 0; i < 7; i++)
+        {
+            List<GameObject> handCardList = new List<GameObject>();
+            handCardLists.Add(handCardList);
+        }
+    }
+
+    public static void InitHandCardListBgs()
+    {
+        
+        for (int i = 0; i < 7; i++)
+        {
+            List<UISprite> handCardListBg = new List<UISprite>();
+            handCardListBgs.Add(handCardListBg);
+        }
     }
 }

@@ -3,13 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class HandCards : MonoBehaviour {
-    public GameObject cards1;
-    public GameObject cards2;
-    public GameObject cards3;
-    public GameObject cards4;
-    public GameObject cards5;
-    public GameObject cards6;
-    public GameObject cards7;
+
+    public GameObject[] cards;
     
     void Start()
     {
@@ -19,13 +14,7 @@ public class HandCards : MonoBehaviour {
 
     void InitCards()
     {
-        Manager.handCards.Add(cards1);
-        Manager.handCards.Add(cards2);
-        Manager.handCards.Add(cards3);
-        Manager.handCards.Add(cards4);
-        Manager.handCards.Add(cards5);
-        Manager.handCards.Add(cards6);
-        Manager.handCards.Add(cards7);
+        InitHandCards();
 
         GameObject obj = null;
         UISprite bg = null;
@@ -46,9 +35,10 @@ public class HandCards : MonoBehaviour {
                 Manager.handCardListBgs[i].Add(bg);
                 trans[j].type = 3;
                 trans[j].index = i;
+                trans[j].subIndex = j;
                 Manager.handCardLists[i][j].SetActive(false);
             }
-        }        
+        }
     }
 
     void InitHasCards()
@@ -66,6 +56,15 @@ public class HandCards : MonoBehaviour {
                 Manager.handCardListBgs[i][j].spriteName = (state == 1) ? spriteName : "0";
                 //Manager.handCardListBgs[i][j].spriteName = Manager.firstOpenCards.Contains(num) ? spriteName : "0";
             }
+        }
+    }
+
+    protected void InitHandCards()
+    {
+
+        for (int i = 0; i < cards.Length; i++)
+        {
+            Manager.handCards.Add(cards[i]);
         }
     }
 }
