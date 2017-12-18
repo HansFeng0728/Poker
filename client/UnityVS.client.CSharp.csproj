@@ -228,6 +228,7 @@
     <Compile Include="Assets\Scripts\common\Singleton.cs" />
     <Compile Include="Assets\Scripts\http\http.cs" />
     <Compile Include="Assets\Scripts\panel\ChooseModel.cs" />
+    <Compile Include="Assets\Scripts\panel\End.cs" />
     <Compile Include="Assets\Scripts\panel\Lobby.cs" />
     <Compile Include="Assets\Scripts\panel\SignIn.cs" />
     <Compile Include="Assets\Scripts\panel\Solo.cs" />

@@ -164,8 +164,9 @@ public class MethodAllCards
         int handCount = Manager.player0.AllHandCards.Count;
         if (shuffleCount == 0 && handCount == 0)
         {
-            Manager.InitWindow();
-            Manager.windowLabel = "恭喜你通关";
+            //Manager.InitWindow();
+            //Manager.windowLabel = "恭喜你通关";
+            Manager.InitEnd();
         }
     }
 

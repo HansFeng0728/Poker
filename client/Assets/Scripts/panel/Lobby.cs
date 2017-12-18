@@ -22,7 +22,7 @@ public class Lobby : MonoBehaviour {
         if (Manager.player0 != null)
         {
             name.text = Manager.player0.Name;
-        }        
+        }
     }
 
     void Update()

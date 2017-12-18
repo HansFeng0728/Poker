@@ -18,6 +18,8 @@ public class Manager : MonoBehaviour
         InitPanel("ChooseModel");
     }
 
+    public static string level = "";
+
     public static bool openSolo = false;
     public static bool quit = false;
     public static http httpVar = null;
@@ -88,6 +90,15 @@ public class Manager : MonoBehaviour
         netSignInPanel.transform.parent = GameObject.Find("Camera").transform;
         netSignInPanel.transform.localScale = Vector3.one;
         netSignInPanel.transform.localScale = new Vector3(1.4f, 1.24f, 1);
+    }
+
+    public static void InitEnd()
+    {
+        GameObject endPrefab = Resources.Load("Prefabs/End") as GameObject;
+        GameObject endPanel = MonoBehaviour.Instantiate(endPrefab) as GameObject;
+        endPanel.transform.parent = GameObject.Find("Camera").transform;
+        endPanel.transform.localScale = Vector3.one;
+        endPanel.transform.localScale = new Vector3(1.4f, 1.24f, 1);
     }
 
      public static void InitHandCards()

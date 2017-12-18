@@ -55,7 +55,7 @@ public class http : MonoBehaviour {
         Pokers pokers = new Pokers();
         pokers.UserId = name;
         string pokersJson = JsonMapper.ToJson(pokers);
-        string url = "http://192.168.90.126:8080/Cards/index/initCards?requestStr=" + pokersJson;
+        string url = "http://192.168.90.126:8080/Cards/index/" + Manager.level + "?requestStr=" + pokersJson;
 
         WWW getAllCards = new WWW(url);
         yield return getAllCards;

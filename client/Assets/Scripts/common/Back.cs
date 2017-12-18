@@ -11,5 +11,6 @@ public class Back : MonoBehaviour {
 	public void backView()
     {
         panel.alpha = 0;
+        Manager.windowLabel = "";
     }
 }

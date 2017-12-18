@@ -6,9 +6,11 @@ using System.Collections.Generic;
 public class SignIn : MonoBehaviour {
 
     public UILabel inPutLabel;
+    public GameObject selectLevel;
 
     void Start()
     {
+        selectLevel.SetActive(false);
         //SendPokers sendPokers = new SendPokers();
         //sendPokers.UserId = "abc";
         //sendPokers.MovePoker_Position = 0;
@@ -20,7 +22,7 @@ public class SignIn : MonoBehaviour {
     }
 
     public void Sign()
-    {
+    {        
         if (inPutLabel.text == "")
         {
             Manager.windowLabel = "请输入玩家姓名";
@@ -28,8 +30,7 @@ public class SignIn : MonoBehaviour {
         }
         else
         {
-            Manager.player0 = new PlayerInfo();
-            Manager.httpVar.ConnectRequest(inPutLabel.text);            
+            selectLevel.SetActive(true);                       
             //MethodAllCards.InitPlayerInfo();   //单机版用   
             //Manager.InitLobby();
         }     
@@ -38,5 +39,29 @@ public class SignIn : MonoBehaviour {
     public void Back()
     {
         Destroy(this.gameObject);
+    }
+
+    public void Easy()
+    {
+        Manager.level = "initEasyCards";
+        Manager.player0 = new PlayerInfo();
+        Manager.httpVar.ConnectRequest(inPutLabel.text);
+        selectLevel.SetActive(false);
+    }
+
+    public void Normal()
+    {
+        Manager.level = "initNormalCards";
+        Manager.player0 = new PlayerInfo();
+        Manager.httpVar.ConnectRequest(inPutLabel.text);
+        selectLevel.SetActive(false);
+    }
+
+    public void Hard()
+    {
+        Manager.level = "initHardCards";
+        Manager.player0 = new PlayerInfo();
+        Manager.httpVar.ConnectRequest(inPutLabel.text);
+        selectLevel.SetActive(false);
     }
 }
