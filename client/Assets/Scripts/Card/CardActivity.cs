@@ -176,8 +176,15 @@ public class CardActivity : MonoBehaviour {
                 Manager.shuffleIndex = 0;
                 Manager.shuffleCards[0].SetActive(false);
             }
-            Manager.shuffleCards[0].SetActive(true);
-            Manager.shuffleCardBg.spriteName = Manager.player0.ShufflePokerList.CardList[Manager.shuffleIndex].Number.ToString();
+            if (Manager.player0.ShufflePokerList.CardList.Count != 0)
+            {
+                Manager.shuffleCards[0].SetActive(true);
+                Manager.shuffleCardBg.spriteName = Manager.player0.ShufflePokerList.CardList[Manager.shuffleIndex].Number.ToString();
+            }
+            else
+            {
+                Manager.shuffleCards[0].SetActive(false);
+            }
         }
         else
         {
@@ -422,8 +429,16 @@ public class CardActivity : MonoBehaviour {
                 Manager.shuffleIndex = 0;
                 Manager.shuffleCards[0].SetActive(false);
             }
-            Manager.shuffleCards[0].SetActive(true);
-            Manager.shuffleCardBg.spriteName = Manager.player0.ShufflePokerList.CardList[Manager.shuffleIndex].Number.ToString();
+            if (Manager.player0.ShufflePokerList.CardList.Count != 0)
+            {
+                Manager.shuffleCards[0].SetActive(true);
+                Manager.shuffleCardBg.spriteName = Manager.player0.ShufflePokerList.CardList[Manager.shuffleIndex].Number.ToString();
+            }
+            else
+            {
+                Manager.shuffleCards[0].SetActive(false);
+            }
+            
 
 
             if (positionCount < 13)
