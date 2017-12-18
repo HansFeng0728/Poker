@@ -142,13 +142,13 @@ public class MethodAllCards
             Manager.firstOpenCards.Add(Manager.allCardList[length].Number);
         }
 
-            for (int i = count - 1; i < 52; i++)
-            {
-                Card cardInfo = MethodAllCards.CreateCardInfo(cardNumberList[i], 1);
-                cardInfo.State = 1;
-                Manager.allCardList.Add(cardInfo);
-                MethodshuffleCards.AddCard(cardNumberList[i], 1);
-            }               
+        for (int i = count; i < 52; i++)
+        {
+            Card cardInfo = MethodAllCards.CreateCardInfo(cardNumberList[i], 1);
+            cardInfo.State = 1;
+            Manager.allCardList.Add(cardInfo);
+            MethodshuffleCards.AddCard(cardNumberList[i], 1);
+        }               
     }
   
     public static void InitCardType(GameObject card, int type,int index = -1)

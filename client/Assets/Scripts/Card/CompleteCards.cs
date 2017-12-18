@@ -14,6 +14,7 @@ public class CompleteCards : MonoBehaviour {
     private int previewNum;
     private int chooseIndex;
     private int chooseType;
+    private int choosePosition;
 
     private string movePoker;
 
@@ -77,7 +78,7 @@ public class CompleteCards : MonoBehaviour {
         movePoker = (num - 1).ToString() + "-" + "1";
 
         //联机版
-        if (Manager.httpVar != null)
+        if (!Manager.openSolo)
         {
             Manager.httpVar.SendCardsRequset(movePoker, "", 0, 8 + index, delegate()
             {
@@ -88,16 +89,26 @@ public class CompleteCards : MonoBehaviour {
                     return;
                 }
 
-                //表现层
-                Manager.shuffleCards[0].SetActive(false);
-
-                //数据层
-                MethodshuffleCards.RemoveCard(num);
-                MethodcompleteCards.AddCard(index, num);
-
-                Manager.ChoosedCardsReset();
+                ClickCardsType1Define();
             });
-        }       
+        }
+        //单人版
+        else
+        {
+            ClickCardsType1Define();
+        }
+    }
+
+    public void ClickCardsType1Define()
+    {
+        //表现层
+        Manager.shuffleCards[0].SetActive(false);
+
+        //数据层
+        MethodshuffleCards.RemoveCard(num);
+        MethodcompleteCards.AddCard(index, num);
+
+        Manager.ChoosedCardsReset();
     }
 
     public void ClickCardsType2()
@@ -111,7 +122,7 @@ public class CompleteCards : MonoBehaviour {
         movePoker = (num - 1).ToString() + "-" + "1";
 
         //联机版
-        if (Manager.httpVar != null)
+        if (!Manager.openSolo)
         {
             Manager.httpVar.SendCardsRequset(movePoker, "", 8 + chooseIndex, 8 + index, delegate()
             {
@@ -122,25 +133,36 @@ public class CompleteCards : MonoBehaviour {
                     return;
                 }
 
-                //数据层
-                MethodcompleteCards.RemoveCard(chooseIndex, num);
-                MethodcompleteCards.AddCard(index, num);
-
-                //表现层
-                length = Manager.player0.CompleteCardList[chooseIndex].CardList.Count;
-                if (length >= 1)
-                {
-                    previewNum = Manager.player0.CompleteCardList[chooseIndex].CardList[length - 1].Number;
-                    Manager.completeCardBgs[chooseIndex].spriteName = previewNum.ToString();
-                }
-                else
-                {
-                    Manager.completeCards[chooseIndex].SetActive(false);
-                }
-
-                Manager.ChoosedCardsReset();
+                ClickCardsType2Define();
             });
-        }        
+        }
+        //单人版
+        else
+        {
+            ClickCardsType2Define();
+        }
+    }
+
+
+    public void ClickCardsType2Define()
+    {
+        //数据层
+        MethodcompleteCards.RemoveCard(chooseIndex, num);
+        MethodcompleteCards.AddCard(index, num);
+
+        //表现层
+        length = Manager.player0.CompleteCardList[chooseIndex].CardList.Count;
+        if (length >= 1)
+        {
+            previewNum = Manager.player0.CompleteCardList[chooseIndex].CardList[length - 1].Number;
+            Manager.completeCardBgs[chooseIndex].spriteName = previewNum.ToString();
+        }
+        else
+        {
+            Manager.completeCards[chooseIndex].SetActive(false);
+        }
+
+        Manager.ChoosedCardsReset();
     }
 
     public void ClickCardsType3()
@@ -151,12 +173,12 @@ public class CompleteCards : MonoBehaviour {
         chooseIndex = Manager.choosedCards.Index;
         chooseType = Manager.choosedCards.Type;
         previewNum = Manager.choosedCards.CardList[0].Number;
-        int choosePosition = MethodhandCards.FindPosition(chooseIndex, previewNum);
+        choosePosition = MethodhandCards.FindPosition(chooseIndex, previewNum);
 
         movePoker = (num - 1).ToString() + "-" + "1";
 
         //联机版
-        if (Manager.httpVar != null)
+        if (!Manager.openSolo)
         {
             Manager.httpVar.SendCardsRequset(movePoker, "", chooseIndex+1, 8 + index, delegate()
             {
@@ -167,23 +189,33 @@ public class CompleteCards : MonoBehaviour {
                     return;
                 }
 
-                if (choosePosition >= 1)
-                {
-                    int pPreviewNum = Manager.player0.HandCardsList[chooseIndex].CardList[choosePosition - 1].Number;
-                    MethodAllCards.ChangeState0(pPreviewNum);
-                    Manager.handCardListBgs[chooseIndex][choosePosition - 1].spriteName = pPreviewNum.ToString();
-                }
-
-                //表现层
-                length = Manager.player0.HandCardsList[chooseIndex].CardList.Count;
-                Manager.handCardLists[chooseIndex][length - 1].SetActive(false);
-
-                //数据层
-                MethodhandCards.RemoveCard(chooseIndex, num);
-                MethodcompleteCards.AddCard(index, num);
-
-                Manager.ChoosedCardsReset();
+                ClickCardsType3Define();
             });
-        }         
+        }
+        //单人版
+        else
+        {
+            ClickCardsType3Define();
+        }
+    }
+
+    public void ClickCardsType3Define()
+    {
+        if (choosePosition >= 1)
+        {
+            int pPreviewNum = Manager.player0.HandCardsList[chooseIndex].CardList[choosePosition - 1].Number;
+            MethodAllCards.ChangeState0(pPreviewNum);
+            Manager.handCardListBgs[chooseIndex][choosePosition - 1].spriteName = pPreviewNum.ToString();
+        }
+
+        //表现层
+        length = Manager.player0.HandCardsList[chooseIndex].CardList.Count;
+        Manager.handCardLists[chooseIndex][length - 1].SetActive(false);
+
+        //数据层
+        MethodhandCards.RemoveCard(chooseIndex, num);
+        MethodcompleteCards.AddCard(index, num);
+
+        Manager.ChoosedCardsReset();
     }
 }

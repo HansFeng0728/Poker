@@ -18,6 +18,8 @@ public class Manager : MonoBehaviour
         InitPanel("ChooseModel");
     }
 
+    public static bool openSolo = false;
+    public static bool quit = false;
     public static http httpVar = null;
     public static PlayerInfo player0 = null;   
     public static List<Card> allCardList = new List<Card>();

@@ -76,13 +76,18 @@ public class MethodhandCards : MonoBehaviour {
                     string movePoker = (num - 1).ToString() + "-" + "1";
 
                     //联机版
-                    if (Manager.httpVar != null)
+                    if (!Manager.openSolo)
                     {
                         Manager.httpVar.SendCardsRequset(movePoker, "", index + 1, 8 + i, delegate()
                         {
                             DoubleClickOneCardDefine(i, index, num, choosePosition);
                         });
                         return;
+                    }
+                    //单人版
+                    else
+                    {
+                        DoubleClickOneCardDefine(i, index, num, choosePosition);
                     }
                 }
             }            
@@ -109,14 +114,27 @@ public class MethodhandCards : MonoBehaviour {
             int positionState = Manager.allCardList[positionIndex].State;
             string targetPoker = (number - 1).ToString() + "-" + positionState.ToString();
 
-            if (Manager.httpVar != null)
+            if (!Manager.openSolo)
             {
                 int temp = i;
                 Manager.httpVar.SendCardsRequset(movePoker, targetPoker, index + 1, 8 + temp, delegate()
                 {
+                    if (!Manager.moveCardsHttp)
+                    {
+                        Debug.Log("无法双击牌到存牌区");
+                        Manager.ChoosedCardsReset();
+                        return;
+                    }
+
                     DoubleClickCardDefine(num, index, choosePosition, temp);
                     Manager.ChoosedCardsReset();
                 });
+            }
+            //单人版
+            else
+            {
+                DoubleClickCardDefine(num, index, choosePosition, i);
+                Manager.ChoosedCardsReset();
             }
         }        
     }
@@ -153,13 +171,7 @@ public class MethodhandCards : MonoBehaviour {
     }
 
     public static void DoubleClickCardDefine(int num, int index, int choosePosition, int mIndex)
-    {
-        if (!Manager.moveCardsHttp)
-        {
-            Debug.Log("无法双击牌到存牌区");
-            Manager.ChoosedCardsReset();
-            return;
-        }
+    {        
         //表现层
         Manager.completeCardBgs[mIndex].spriteName = num.ToString();
 

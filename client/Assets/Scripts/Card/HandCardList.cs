@@ -67,7 +67,7 @@ public class HandCardList : MonoBehaviour
                 movePoker = (num - 1).ToString() + "-" + "1";
 
                 //联机版
-                if (Manager.httpVar != null)
+                if (!Manager.openSolo)
                 {
                     Manager.httpVar.SendCardsRequset(movePoker, "", 0, 1 + index, delegate()
                     {
@@ -77,24 +77,14 @@ public class HandCardList : MonoBehaviour
                             Manager.ChoosedCardsReset();  
                             return;
                         }
-                        //移动区表现层
-                        Manager.handCardLists[index][nextIndex].SetActive(true);
-                        Manager.handCardListBgs[index][nextIndex].spriteName = num.ToString();
 
-                        //从洗牌堆传来的牌
-                        if (Manager.choosedCards.Type == 1)
-                        {
-                            //数据层
-                            MethodshuffleCards.RemoveCard(num);
-                            MethodhandCards.AddCard(index, num);
-
-                            //洗牌区表现层
-                            Manager.shuffleCards[0].SetActive(false);
-
-                            Debug.Log(Manager.player0.AllHandCards.Count);
-                       }
-                        Manager.ChoosedCardsReset();
+                        ClickHandCardsType1();
                     });
+                }
+                //单人版
+                else
+                {
+                    ClickHandCardsType1();
                 }
             }
 
@@ -118,7 +108,7 @@ public class HandCardList : MonoBehaviour
             //    movePoker = (num - 1).ToString() + "-" + "1";                
 
             //    //联机版
-            //    if(Manager.httpVar!= null)
+            //    if (!Manager.openSolo)
             //    {
             //        Manager.httpVar.SendCardsRequset(movePoker, "",chooseIndex+1, 8+index, delegate()
             //        {
@@ -183,7 +173,7 @@ public class HandCardList : MonoBehaviour
                 }
 
                 //联机版
-                if (Manager.httpVar != null)
+                if (!Manager.openSolo)
                 {
                     Manager.httpVar.SendCardsRequset(movePoker, "", chooseIndex + 1, index+1, delegate()
                     {
@@ -194,31 +184,13 @@ public class HandCardList : MonoBehaviour
                             return;
                         }
 
-                        for (int i = chooseLength - 1; i >= 0; i--)
-                        {
-                            nextIndex = Manager.player0.HandCardsList[index].CardList.Count;
-                            previewNum = Manager.choosedCards.CardList[i].Number;
-                            card = MethodAllCards.CreateCardInfo(previewNum, type, index);
-
-                            //被移动区表现层
-                            Manager.handCardLists[index][nextIndex].SetActive(true);
-                            Manager.handCardListBgs[index][nextIndex].spriteName = previewNum.ToString();
-
-                            //主动移动区表现层
-                            Manager.handCardLists[chooseIndex][choosePosition + i].SetActive(false);
-
-                            //数据层
-                            MethodhandCards.RemoveCard(chooseIndex, previewNum);
-                            MethodhandCards.AddCard(index, previewNum);
-                        }
-                        if (choosePosition >= 1)
-                        {
-                            int pPreviewNum = Manager.player0.HandCardsList[chooseIndex].CardList[choosePosition - 1].Number;
-                            MethodAllCards.ChangeState0(pPreviewNum);
-                            Manager.handCardListBgs[chooseIndex][choosePosition - 1].spriteName = pPreviewNum.ToString();
-                        }
-                        Manager.ChoosedCardsReset();
+                        ClickHandCardsType3();
                     });
+                }
+                //单人版
+                else
+                {
+                    ClickHandCardsType3();
                 }
             }            
         }
@@ -226,7 +198,23 @@ public class HandCardList : MonoBehaviour
 
     public void ClickHandCardsType1()
     {
+        //移动区表现层
+        Manager.handCardLists[index][nextIndex].SetActive(true);
+        Manager.handCardListBgs[index][nextIndex].spriteName = num.ToString();
 
+        //从洗牌堆传来的牌
+        if (Manager.choosedCards.Type == 1)
+        {
+            //数据层
+            MethodshuffleCards.RemoveCard(num);
+            MethodhandCards.AddCard(index, num);
+
+            //洗牌区表现层
+            Manager.shuffleCards[0].SetActive(false);
+
+            Debug.Log(Manager.player0.AllHandCards.Count);
+        }
+        Manager.ChoosedCardsReset();
     }
 
     public void ClickHandCardsType2()
@@ -236,6 +224,29 @@ public class HandCardList : MonoBehaviour
 
     public void ClickHandCardsType3()
     {
+        for (int i = chooseLength - 1; i >= 0; i--)
+        {
+            nextIndex = Manager.player0.HandCardsList[index].CardList.Count;
+            previewNum = Manager.choosedCards.CardList[i].Number;
+            card = MethodAllCards.CreateCardInfo(previewNum, type, index);
 
+            //被移动区表现层
+            Manager.handCardLists[index][nextIndex].SetActive(true);
+            Manager.handCardListBgs[index][nextIndex].spriteName = previewNum.ToString();
+
+            //主动移动区表现层
+            Manager.handCardLists[chooseIndex][choosePosition + i].SetActive(false);
+
+            //数据层
+            MethodhandCards.RemoveCard(chooseIndex, previewNum);
+            MethodhandCards.AddCard(index, previewNum);
+        }
+        if (choosePosition >= 1)
+        {
+            int pPreviewNum = Manager.player0.HandCardsList[chooseIndex].CardList[choosePosition - 1].Number;
+            MethodAllCards.ChangeState0(pPreviewNum);
+            Manager.handCardListBgs[chooseIndex][choosePosition - 1].spriteName = pPreviewNum.ToString();
+        }
+        Manager.ChoosedCardsReset();
     }
 }

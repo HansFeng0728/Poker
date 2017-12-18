@@ -75,7 +75,7 @@ public class CardActivity : MonoBehaviour {
         if (!Manager.choosed)
         {
             //因为在存牌区点击卡牌表示一定有牌,所以不做count大于0的判断
-            ClickCompleteCardNoChoose();            
+            //ClickCompleteCardNoChoose();            
         }
         else
         {
@@ -132,7 +132,7 @@ public class CardActivity : MonoBehaviour {
         targetPoker = (positionNum - 1).ToString() + "-" + positionState.ToString();
 
         //联机版
-        if(Manager.httpVar!= null)
+        if (!Manager.openSolo)
         {
             Manager.httpVar.SendCardsRequset(movePoker, targetPoker,0, 8+index, delegate()
             {
@@ -145,6 +145,11 @@ public class CardActivity : MonoBehaviour {
 
                 ClickCompleteCardType1Define();
             });
+        }
+        //单人版
+        else
+        {
+            ClickCompleteCardType1Define();
         }
         
     }
@@ -166,7 +171,7 @@ public class CardActivity : MonoBehaviour {
             MethodcompleteCards.AddCard(index, previewNum);
 
             //额外表现层
-            if (Manager.shuffleIndex >= Manager.player0.ShufflePokerList.CardList.Count - 1)
+            if (Manager.shuffleIndex > Manager.player0.ShufflePokerList.CardList.Count - 1)
             {
                 Manager.shuffleIndex = 0;
                 Manager.shuffleCards[0].SetActive(false);
@@ -253,7 +258,7 @@ public class CardActivity : MonoBehaviour {
         previewNum = Manager.choosedCards.CardList[0].Number;
 
         //联机版
-        if (Manager.httpVar != null)
+        if (!Manager.openSolo)
         {
             Manager.httpVar.SendCardsRequset(movePoker, targetPoker,chooseIndex+1, 8 + index, delegate()
             {
@@ -266,7 +271,12 @@ public class CardActivity : MonoBehaviour {
 
                 ClickCompleteCardType3Define();                
             });
-        }        
+        }
+        //单人版
+        else
+        {
+            ClickCompleteCardType3Define();   
+        }
     }
 
     public void ClickCompleteCardType3Define()
@@ -374,7 +384,7 @@ public class CardActivity : MonoBehaviour {
         targetPoker = (positionNum-1).ToString() + "-"+positionState.ToString();
 
         //联机版
-        if (Manager.httpVar != null)
+        if (!Manager.openSolo)
         {
             Manager.httpVar.SendCardsRequset(movePoker, targetPoker, 0, index + 1, delegate()
             {
@@ -387,7 +397,12 @@ public class CardActivity : MonoBehaviour {
 
                 ClickHandCardType1Define();
             });
-        }        
+        }
+        //单人版
+        else
+        {
+            ClickHandCardType1Define();
+        }
     }
 
     public void ClickHandCardType1Define()
@@ -402,7 +417,7 @@ public class CardActivity : MonoBehaviour {
             Manager.shuffleCards[0].SetActive(false);    //洗牌区
 
             //额外表现层
-            if (Manager.shuffleIndex >= Manager.player0.ShufflePokerList.CardList.Count - 1)
+            if (Manager.shuffleIndex > Manager.player0.ShufflePokerList.CardList.Count - 1)
             {
                 Manager.shuffleIndex = 0;
                 Manager.shuffleCards[0].SetActive(false);
@@ -421,6 +436,9 @@ public class CardActivity : MonoBehaviour {
                 Debug.Log("移动区超长了!!!!!!!");
             }
         }
+        else
+            Debug.Log("移牌请求未通过");
+
         Manager.ChoosedCardsReset();
     }
 
@@ -489,19 +507,6 @@ public class CardActivity : MonoBehaviour {
             return;
         }
 
-        //minusLength = 1;
-        //for (int i = chooseCount - 1; i >= 0; i--)
-        //{
-        //    mPreviewNum = Manager.choosedCards.CardList[i].Number;
-        //    sameColor = MethodAllCards.SameColor(mPreviewNum, positionNum);
-        //    compareNum = MethodAllCards.CompareNumIsLow(mPreviewNum, positionNum);
-        //    if (!sameColor && compareNum)
-        //    {                
-        //        break;
-        //    }
-        //    minusLength++;
-        //}
-
         movePoker = "";
         for (int i = chooseCount - 1; i >= 0; i--)
         {
@@ -517,7 +522,7 @@ public class CardActivity : MonoBehaviour {
         targetPoker = (positionNum - 1).ToString() + "-" + positionState.ToString();
 
         //联机版
-        if (Manager.httpVar != null)
+        if (!Manager.openSolo)
         {
             Manager.httpVar.SendCardsRequset(movePoker, targetPoker, chooseIndex+1, index + 1, delegate()
             {
@@ -530,6 +535,18 @@ public class CardActivity : MonoBehaviour {
 
                 ClickHandCardType3Define();
             });
+        }
+        //单人版
+        else
+        {
+            if (!sameColor && compareNum)
+                ClickHandCardType3Define();
+            else
+            {
+                Debug.Log("移牌请求未通过");
+                Manager.ChoosedCardsReset();
+            }
+                
         }
                                 
     }

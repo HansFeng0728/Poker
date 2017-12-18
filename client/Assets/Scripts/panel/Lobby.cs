@@ -34,11 +34,22 @@ public class Lobby : MonoBehaviour {
 	public void BackView()
     {
         Destroy(this.gameObject);
-        Manager.ResetCards();
-        if (Manager.httpVar != null)
-            Manager.InitNetSignIn();
+
+        if (!Manager.openSolo)
+        {
+            Manager.httpVar.QuitGameRequest(Manager.player0.Name, delegate()
+            {
+                Manager.InitNetSignIn();
+            });
+        }
         else
-            Manager.InitSolo();        
+        {
+            Manager.InitSolo();
+            Manager.openSolo = false;
+        }
+
+        Manager.ResetCards();
+                   
     }
 
     public void Reset()

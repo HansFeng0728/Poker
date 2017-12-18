@@ -32,7 +32,7 @@ public class ShuffleCards : MonoBehaviour {
     public void ClickShuffleCards()
     {     
         RefreshCards();
-        if (count > 0)
+        if (count >= 0)
         {
             Manager.ChoosedCardsReset();
             Manager.shuffleIndex++;
@@ -48,7 +48,7 @@ public class ShuffleCards : MonoBehaviour {
     
     void ShowCards()
     {
-        if (Manager.shuffleIndex >= count)
+        if (Manager.shuffleIndex > count)
             Manager.shuffleIndex = 0;
 
         Manager.shuffleCards[0].SetActive(true);

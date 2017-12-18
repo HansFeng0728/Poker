@@ -29,6 +29,7 @@ public class Solo : MonoBehaviour {
         }
         else
         {
+            Manager.openSolo = true;
             Manager.player0 = new PlayerInfo();
             Manager.player0.Name = inPutLabel.text;
             MethodAllCards.InitSoloPlayerInfo();   //单机版用  

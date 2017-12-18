@@ -122,6 +122,35 @@ public class http : MonoBehaviour {
         }
     }
 
+    public void QuitGameRequest(string name, Callback callback)
+    {
+        User user = new User();
+        user.UserId = name;
+        user.UserState = 0;
+        string userJson = JsonMapper.ToJson(user);
+        string url = "http://192.168.90.126:8080/Cards/index/GameClose?requestStr=" + userJson;
+        StartCoroutine(QuitGame(url, callback));
+
+    }
+
+    IEnumerator QuitGame(string _url, Callback callback)
+    {
+        WWW quitgame = new WWW(_url);
+        yield return quitgame;
+        if (quitgame.error != null)
+        {
+            Debug.Log("http:QuitGame error: " + quitgame.error);
+            Manager.InitWindow();
+            Manager.windowLabel = "服务器异常";
+        }
+        else
+        {
+            Debug.Log("http:QuitGame success: " + quitgame.text);
+            Manager.quit = true;
+
+            callback();
+        }
+    }
 
     public string ReplaceStr(string str)
     {

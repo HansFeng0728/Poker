@@ -43,7 +43,7 @@ public class MethodshuffleCards
                 if (listCount == 0)
                 {
                     //联机版
-                    if (Manager.httpVar != null)
+                    if (!Manager.openSolo)
                     {
                         Manager.httpVar.SendCardsRequset(movePoker, "", 0, 8 + i, delegate()
                         {
@@ -58,7 +58,13 @@ public class MethodshuffleCards
                         });
                         
                         return;   
-                    }                                                       
+                    }
+                    //单人版
+                    else
+                    {
+                        DoubleClickACardDefine(i, num);
+                        return;
+                    }       
                 }
             }            
         }
@@ -83,7 +89,7 @@ public class MethodshuffleCards
             string targetPoker = (number - 1).ToString() + "-" + positionState.ToString();
 
             //联机版
-            if (Manager.httpVar != null)
+            if (!Manager.openSolo)
             {
                 Manager.httpVar.SendCardsRequset(movePoker, targetPoker, 0, 8 + i, delegate()
                 {
@@ -97,6 +103,13 @@ public class MethodshuffleCards
                     DoubleClickCardDefine(i, num);
                     Manager.ChoosedCardsReset();
                 });
+                return;
+            }
+            //单人版
+            else
+            {
+                DoubleClickCardDefine(i, num);
+                Manager.ChoosedCardsReset();
                 return;
             }
         }
@@ -113,7 +126,7 @@ public class MethodshuffleCards
         MethodcompleteCards.AddCard(index, num);
 
         //额外表现层
-        if (Manager.shuffleIndex >= Manager.player0.ShufflePokerList.CardList.Count - 1)
+        if (Manager.shuffleIndex > Manager.player0.ShufflePokerList.CardList.Count - 1)
         {
             Manager.shuffleIndex = 0;
             Manager.shuffleCards[0].SetActive(false);
@@ -137,7 +150,7 @@ public class MethodshuffleCards
          MethodcompleteCards.AddCard(index, num);
 
          //额外表现层
-         if (Manager.shuffleIndex >= Manager.player0.ShufflePokerList.CardList.Count - 1)
+         if (Manager.shuffleIndex > Manager.player0.ShufflePokerList.CardList.Count - 1)
          {
              Manager.shuffleIndex = 0;
              Manager.shuffleCards[0].SetActive(false);
