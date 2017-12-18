@@ -185,6 +185,8 @@ public class CardActivity : MonoBehaviour {
             {
                 Manager.shuffleCards[0].SetActive(false);
             }
+
+            MethodAllCards.CheckCompleteOneList();
         }
         else
         {
@@ -307,6 +309,8 @@ public class CardActivity : MonoBehaviour {
             //数据层
             MethodhandCards.RemoveCard(chooseIndex, previewNum);
             MethodcompleteCards.AddCard(index, previewNum);
+
+            MethodAllCards.CheckCompleteOneList();
         }
         else
         {

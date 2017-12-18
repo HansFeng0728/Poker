@@ -160,9 +160,12 @@ public class MethodAllCards
 
     public static void CheckCompleteOneList()
     {
-        for (int i = 0; i < 4; i++)
+        int shuffleCount = Manager.player0.ShufflePokerList.CardList.Count;
+        int handCount = Manager.player0.AllHandCards.Count;
+        if (shuffleCount == 0 && handCount == 0)
         {
-
+            Manager.InitWindow();
+            Manager.windowLabel = "恭喜你通关";
         }
     }
 

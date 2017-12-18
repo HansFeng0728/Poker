@@ -172,6 +172,8 @@ public class MethodshuffleCards
              Manager.shuffleCards[0].SetActive(false);
          }
 
+         MethodAllCards.CheckCompleteOneList();
+
          Debug.Log("双击洗牌区");
          Manager.ChoosedCardsReset();
      }

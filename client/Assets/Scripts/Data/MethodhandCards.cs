@@ -167,6 +167,8 @@ public class MethodhandCards : MonoBehaviour {
 
         Debug.Log("双击移动区");
 
+        MethodAllCards.CheckCompleteOneList();
+
         Manager.ChoosedCardsReset();
     }
 
@@ -188,6 +190,8 @@ public class MethodhandCards : MonoBehaviour {
         //数据层
         MethodhandCards.RemoveCard(index, num);
         MethodcompleteCards.AddCard(mIndex, num);
+
+        MethodAllCards.CheckCompleteOneList();
 
         Debug.Log("双击移动区");
     }
