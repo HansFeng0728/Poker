@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import org.personal.db.DBUtil;
 import org.personal.db.dao.Game;
+import org.personal.db.dao.Poker;
 import org.personal.db.dao.User;
 import org.personal.util.DButil;
 import org.slf4j.Logger;
@@ -66,6 +68,16 @@ public class UserService extends BaseService{
 		}
 	}
 	
+	public boolean isLoginUser(String userId){
+		DBUtil.GetInstance().init();
+		if(userId == null){
+			logger.error("null of userName,{}",userId);
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
 	public boolean isEnterGame(String userId){
 		DBUtil.GetInstance().init();
 		if(userId != null){
@@ -77,16 +89,6 @@ public class UserService extends BaseService{
 		}else{
 			return false;
 		}
-	}
-	public void gameOver(String userId){
-		
-	}
-	
-	public static void main(String[] args){
-		UserService uu = new UserService();
-		String a = "1002";
-		uu.isLoginCards(a);
-		uu.isEnterGame(a);
 	}
 	
 }

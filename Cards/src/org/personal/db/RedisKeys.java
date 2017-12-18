@@ -14,29 +14,29 @@ public class RedisKeys {
 	public static final String POKER = "poker_";
 	
 	//七个存牌区
-	public static final String POKERHOME_1 = "_pokerHome_1";
+	public static final String POKERHOME_1 = "_pokerRoom_1";
 	
-	public static final String POKERHOME_2 = "_pokerHome_2";
+	public static final String POKERHOME_2 = "_pokerRoom_2";
 	
-	public static final String POKERHOME_3 = "_pokerHome_3";
+	public static final String POKERHOME_3 = "_pokerRoom_3";
 	
-	public static final String POKERHOME_4 = "_pokerHome_4";
+	public static final String POKERHOME_4 = "_pokerRoom_4";
 	
-	public static final String POKERHOME_5 = "_pokerHome_5";
+	public static final String POKERHOME_5 = "_pokerRoom_5";
 	
-	public static final String POKERHOME_6 = "_pokerHome_6";
+	public static final String POKERHOME_6 = "_pokerRoom_6";
 	
-	public static final String POKERHOME_7 = "_pokerHome_7";
+	public static final String POKERHOME_7 = "_pokerRoom_7";
 	
 	//洗牌区
 	public static final String SHUFFLE = "_card_shuffle";
 	
 	//存牌区
-	public static final String ROOM_1 = "_Room1";
+	public static final String ROOM_1 = "_Home1";
 	
-	public static final String ROOM_2 = "_Room2";
+	public static final String ROOM_2 = "_Home2";
 	
-	public static final String ROOM_3 = "_Room3";
+	public static final String ROOM_3 = "_Home3";
 	
-	public static final String ROOM_4 = "_Room4";
+	public static final String ROOM_4 = "_Home4";
 }
