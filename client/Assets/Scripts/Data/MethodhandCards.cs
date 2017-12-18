@@ -73,7 +73,7 @@ public class MethodhandCards : MonoBehaviour {
                 listCount = Manager.player0.CompleteCardList[i].CardList.Count;
                 if (listCount == 0)
                 {
-                    string movePoker = (typeList[1] - 1).ToString() + "-" + "1";
+                    string movePoker = (num - 1).ToString() + "-" + "1";
 
                     //联机版
                     if (Manager.httpVar != null)
@@ -97,16 +97,25 @@ public class MethodhandCards : MonoBehaviour {
             sameColorType = MethodAllCards.SameColorType(number, num);
             compareNumIsLow = MethodAllCards.CompareNumIsLow(number, num);
 
-            string movePoker = (typeList[1] - 1).ToString() + "-" + "1";
+            
+
+            if (!sameColorType || !compareNumIsLow)
+            {
+                continue;
+            }
+
+            string movePoker = (num - 1).ToString() + "-" + "1";
             int positionIndex = MethodAllCards.FindPosition(number);
             int positionState = Manager.allCardList[positionIndex].State;
             string targetPoker = (number - 1).ToString() + "-" + positionState.ToString();
 
             if (Manager.httpVar != null)
             {
-                Manager.httpVar.SendCardsRequset(movePoker, targetPoker, index + 1, 8 + i, delegate()
+                int temp = i;
+                Manager.httpVar.SendCardsRequset(movePoker, targetPoker, index + 1, 8 + temp, delegate()
                 {
-                    DoubleClickCardDefine(num, index, choosePosition, i);
+                    DoubleClickCardDefine(num, index, choosePosition, temp);
+                    Manager.ChoosedCardsReset();
                 });
             }
         }        
@@ -121,10 +130,43 @@ public class MethodhandCards : MonoBehaviour {
         int length = Manager.player0.HandCardsList[index].CardList.Count;
         Manager.handCardLists[index][length - 1].SetActive(false);
 
-        int previewNum = Manager.player0.HandCardsList[index].CardList[choosePosition - 1].Number;
-        int pIndex = MethodAllCards.FindPosition(previewNum);
-        int state = Manager.allCardList[pIndex].State;
-        if (choosePosition >= 1 && state == 0)
+        if (choosePosition >= 1)
+        {
+            int previewNum = Manager.player0.HandCardsList[index].CardList[choosePosition - 1].Number;
+            int pIndex = MethodAllCards.FindPosition(previewNum);
+            int state = Manager.allCardList[pIndex].State;
+            if (state == 0)
+            {
+                MethodAllCards.ChangeState0(previewNum);
+                Manager.handCardListBgs[index][choosePosition - 1].spriteName = previewNum.ToString();
+            }
+        }
+        
+
+        //数据层
+        MethodhandCards.RemoveCard(index, num);
+        MethodcompleteCards.AddCard(mIndex, num);
+
+        Debug.Log("双击移动区");
+
+        Manager.ChoosedCardsReset();
+    }
+
+    public static void DoubleClickCardDefine(int num, int index, int choosePosition, int mIndex)
+    {
+        if (!Manager.moveCardsHttp)
+        {
+            Debug.Log("无法双击牌到存牌区");
+            Manager.ChoosedCardsReset();
+            return;
+        }
+        //表现层
+        Manager.completeCardBgs[mIndex].spriteName = num.ToString();
+
+        int length = Manager.player0.HandCardsList[index].CardList.Count;
+        Manager.handCardLists[index][length - 1].SetActive(false);
+
+        if (choosePosition >= 1)
         {
             int pPreviewNum = Manager.player0.HandCardsList[index].CardList[choosePosition - 1].Number;
             MethodAllCards.ChangeState0(pPreviewNum);
@@ -136,38 +178,5 @@ public class MethodhandCards : MonoBehaviour {
         MethodcompleteCards.AddCard(mIndex, num);
 
         Debug.Log("双击移动区");
-
-        Manager.ChoosedCardsReset();
-    }
-
-     public static void DoubleClickCardDefine(int num,int index,int choosePosition,int mIndex)
-    {
-        if (sameColorType && compareNumIsLow)
-        {
-            if (Manager.moveCardsHttp)
-            {
-                Debug.Log("无法双击牌到存牌区");
-                Manager.ChoosedCardsReset();
-                return;
-            }
-            //表现层
-            Manager.completeCardBgs[mIndex].spriteName = num.ToString();
-
-            int length = Manager.player0.HandCardsList[index].CardList.Count;
-            Manager.handCardLists[index][length - 1].SetActive(false);
-
-            if (choosePosition >= 1)
-            {
-                int pPreviewNum = Manager.player0.HandCardsList[index].CardList[choosePosition - 1].Number;
-                MethodAllCards.ChangeState0(pPreviewNum);
-                Manager.handCardListBgs[index][choosePosition - 1].spriteName = pPreviewNum.ToString();
-            }
-
-            //数据层
-            MethodhandCards.RemoveCard(index, num);
-            MethodcompleteCards.AddCard(mIndex, num);
-
-            Debug.Log("双击移动区");
-        }
     }
 }

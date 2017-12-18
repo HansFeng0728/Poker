@@ -242,6 +242,12 @@ public class MethodAllCards
             return true;
     }
 
+    public static int CheckState3(int num)
+    {
+        int index = MethodAllCards.FindPosition(num);
+        return Manager.allCardList[index].State;
+    }
+
     public static void ResetColor()
     {
          //洗牌区颜色置零

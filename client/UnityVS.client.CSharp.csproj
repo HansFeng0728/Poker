@@ -215,10 +215,6 @@
     <Compile Include="Assets\Scripts\Drag\MyFirstDragDropItem.cs" />
     <Compile Include="Assets\Scripts\Drag\NDragDropSurface.cs" />
     <Compile Include="Assets\Scripts\Drag\NUIDragDropItem.cs" />
-    <Compile Include="Assets\Scripts\Json.cs" />
-    <Compile Include="Assets\Scripts\Manager.cs" />
-    <Compile Include="Assets\Scripts\PlayerInfo.cs" />
-    <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\Socket\SocketClient.cs" />
     <Compile Include="Assets\Scripts\Struct\Card.cs" />
     <Compile Include="Assets\Scripts\Struct\Cards.cs" />
@@ -226,6 +222,10 @@
     <Compile Include="Assets\Scripts\common\Back.cs" />
     <Compile Include="Assets\Scripts\common\ClickCard.cs" />
     <Compile Include="Assets\Scripts\common\EnterScale.cs" />
+    <Compile Include="Assets\Scripts\common\Json.cs" />
+    <Compile Include="Assets\Scripts\common\Manager.cs" />
+    <Compile Include="Assets\Scripts\common\PlayerInfo.cs" />
+    <Compile Include="Assets\Scripts\common\Singleton.cs" />
     <Compile Include="Assets\Scripts\http\http.cs" />
     <Compile Include="Assets\Scripts\panel\ChooseModel.cs" />
     <Compile Include="Assets\Scripts\panel\Lobby.cs" />

@@ -69,32 +69,35 @@ public class MethodshuffleCards
             if (listCount == 0)
                 continue;
             number = Manager.player0.CompleteCardList[i].CardList[listCount - 1].Number;
-            sameColorType =MethodAllCards.SameColorType(number, num);
-            compareNumIsLow =MethodAllCards.CompareNumIsLow(number, num);
+            sameColorType = MethodAllCards.SameColorType(number, num);
+            compareNumIsLow = MethodAllCards.CompareNumIsLow(number, num);
+
+            if (!sameColorType || !compareNumIsLow)
+            {
+                continue;
+            }
 
             string movePoker = (num - 1).ToString() + "-" + "1";
             int positionIndex = MethodAllCards.FindPosition(number);
             int positionState = Manager.allCardList[positionIndex].State;
             string targetPoker = (number - 1).ToString() + "-" + positionState.ToString();
 
-            if (sameColorType && compareNumIsLow)
+            //联机版
+            if (Manager.httpVar != null)
             {
-                //联机版
-                if (Manager.httpVar != null)
+                Manager.httpVar.SendCardsRequset(movePoker, targetPoker, 0, 8 + i, delegate()
                 {
-                    Manager.httpVar.SendCardsRequset(movePoker, targetPoker, 0, 8 + i, delegate()
+                    if (!Manager.moveCardsHttp)
                     {
-                        if (!Manager.moveCardsHttp)
-                        {
-                            Debug.Log("不能移牌");
-                            Manager.ChoosedCardsReset();  
-                            return;
-                        }
+                        Debug.Log("不能移牌");
+                        Manager.ChoosedCardsReset();
+                        return;
+                    }
 
-                        DoubleClickCardDefine(i, num);
-                    });
-                    return;
-                }                
+                    DoubleClickCardDefine(i, num);
+                    Manager.ChoosedCardsReset();
+                });
+                return;
             }
         }
     }
