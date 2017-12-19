@@ -83,7 +83,6 @@ public class HomeController {
         	PrintWriter writer = response.getWriter();
         	params.put("userId", userId);
         	params.put("ErrorCode", "1");
-
         	String jsonStr = params.toString();
     		writer.write(jsonStr); 
     		writer.flush();
@@ -96,13 +95,11 @@ public class HomeController {
         	Map<String, String> pokerJsonParam = new HashMap<String,String>();
         	pokerJsonParam.put("userId", userId);
         	pokerJsonParam.put("completeCardList", "0");
-
         	String pokerJson = pokerJsonParam.toString();
         	
         	Map<String, String> body = new HashMap<String, String>();
         	body.put("user", userJson);
         	body.put("pokers", pokerJson);
-
          	String jsoncontent = mapper.writeValueAsString(cardService.sendEasyPoker(userId));
         	
         	PrintWriter pw = response.getWriter();
@@ -139,19 +136,16 @@ public class HomeController {
         	params.put("userId", userId);
         	params.put("score", "0");
         	params.put("daojishiTime", new Date().toString());
-
         	String userJson = params.toString();
         	
         	Map<String, String> pokerJsonParam = new HashMap<String,String>();
         	pokerJsonParam.put("userId", userId);
         	pokerJsonParam.put("completeCardList", "0");
-
         	String pokerJson = pokerJsonParam.toString();
         	
         	Map<String, String> body = new HashMap<String, String>();
         	body.put("user", userJson);
         	body.put("pokers", pokerJson);
-
          	String jsoncontent = mapper.writeValueAsString(cardService.sendPoker(userId));
         	
         	PrintWriter pw = response.getWriter();
@@ -187,19 +181,16 @@ public class HomeController {
         	params.put("userId", userId);
         	params.put("score", "0");
         	params.put("daojishiTime", new Date().toString());
-
         	String userJson = params.toString();
         	
         	Map<String, String> pokerJsonParam = new HashMap<String,String>();
         	pokerJsonParam.put("userId", userId);
         	pokerJsonParam.put("completeCardList", "0");
-
         	String pokerJson = pokerJsonParam.toString();
         	
         	Map<String, String> body = new HashMap<String, String>();
         	body.put("user", userJson);
         	body.put("pokers", pokerJson);
-
          	String jsoncontent = mapper.writeValueAsString(cardService.sendHardPoker(userId));
         	
         	PrintWriter pw = response.getWriter();
