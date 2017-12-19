@@ -292,8 +292,7 @@ public class HomeController {
 	
 	@RequestMapping(value="/loginTest", method = RequestMethod.GET)
 	public void recieveRequest(HttpServletRequest request, HttpServletResponse response,String requestStr) throws Exception {
-		response.setContentType("text/html");
-	    response.setCharacterEncoding("UTF-8");      //解决中文乱码问题
+		request.setCharacterEncoding("UTF-8");      //解决中文乱码问题
 		JsonParser parse = new JsonParser();
 		JsonObject json = (JsonObject) parse.parse(requestStr); 
 		String userId = json.get("UserId").getAsString();
