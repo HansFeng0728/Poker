@@ -312,8 +312,6 @@ public class HomeController {
 			return;
 		}
 		System.out.println("userId is:" + userId);
-		response.setContentType("text/html;charset=utf-8");
-        response.setCharacterEncoding("UTF-8");      //解决中文乱码问题
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		if(userService.isLoginCards(userId)){

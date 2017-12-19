@@ -68,30 +68,14 @@ public class TestPost {
         }  
         return response;  
       }  
-  
-  
         public static void main(String[] args) {  
         try {  
-        //  String data = "{'username':'shihuan', 'password':123456}";  
-        //TestPost.postBody("http://localhost:8009/wechatyeexun/loginTest.do", data);  
              String url = "http://localhost:8009/wechatyeexun/loginTest.do";  
                 JSONObject params = new JSONObject();  
                 params.put("username", "wsf");  
                 params.put("password", "123");  
                 String ret = doPost(url, params).toString();  
                 System.out.println(ret);  
-               /* final String APPLICATION_JSON = "application/json"; 
-                 
-                final String CONTENT_TYPE_TEXT_JSON = "text/json"; 
-                DefaultHttpClient httpClient = new DefaultHttpClient(); 
-                HttpPost httpPost = new HttpPost(url); 
-                httpPost.addHeader(HTTP.CONTENT_TYPE, APPLICATION_JSON); 
-                 
-                StringEntity se = new StringEntity(params.toString()); 
-                se.setContentType(APPLICATION_JSON); 
-                se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, APPLICATION_JSON)); 
-                httpPost.setEntity(se); 
-                httpClient.execute(httpPost);*/  
         } catch (Exception e) {  
         e.printStackTrace();  
         }  
