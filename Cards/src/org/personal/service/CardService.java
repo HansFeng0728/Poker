@@ -14,10 +14,9 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.personal.db.DBUtil;
 import org.personal.db.dao.Poker;
 import org.personal.db.dao.PokerList;
+import org.personal.util.ConfigurationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.gson.Gson;
 
 public class CardService extends BaseService{
 	
@@ -39,7 +38,6 @@ public class CardService extends BaseService{
 		int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
 		// 定义扑克牌的状态
 		String[] state = { "front", "opposite" };
-
 		int index = 8;
 		// 定义编号
 		for (int number : numbers) {
@@ -100,7 +98,6 @@ public class CardService extends BaseService{
 		for(int i=0;i<array.size();i++){
 			System.out.println("----pokerId"+hm.get(array.get(i)).getPokerId()+"----PokerNumber"+hm.get(array.get(i)).getNumber()+"-----pokerColor"+hm.get(array.get(i)).getColor());
 		}
-		
 		
 		List<String> pokerShuffle = new ArrayList<>();
 		List<String> pokerHandler = new ArrayList<>();
@@ -197,8 +194,6 @@ public class CardService extends BaseService{
 				DBUtil.GetInstance().addPokerToRoom2(userId, pokerOppositeHandler.get(i));
 			}
 		}
-
-		Gson gson = new Gson();
 		// 七个手牌区的数据
 		String h1 = pokerHandlerList1.toString();
 		String h2 = pokerHandlerList2.toString();
@@ -232,8 +227,6 @@ public class CardService extends BaseService{
 		int[] colors = { 1, 2, 3, 4 };
 		// 定义数组存储牌值
 		int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
-		// 定义扑克牌的状态
-		String[] state = { "front", "opposite" };
 
 		int index = 0;
 		// 定义编号
@@ -274,7 +267,6 @@ public class CardService extends BaseService{
 			DBUtil.GetInstance().savePoker(userId, poker);
 			cc++;
 		}
-	
 		
 		// 打乱编号，重新排序
 		Collections.shuffle(array);
@@ -283,7 +275,6 @@ public class CardService extends BaseService{
 		for(int i=0;i<array.size();i++){
 			System.out.println("----pokerId"+hm.get(array.get(i)).getPokerId()+"----PokerNumber"+hm.get(array.get(i)).getNumber()+"-----pokerColor"+hm.get(array.get(i)).getColor());
 		}
-		
 		
 		List<String> pokerShuffle = new ArrayList<>();
 		List<String> pokerHandler = new ArrayList<>();
@@ -381,7 +372,6 @@ public class CardService extends BaseService{
 			}
 		}
 
-		Gson gson = new Gson();
 		// 七个手牌区的数据
 		String h1 = pokerHandlerList1.toString();
 		String h2 = pokerHandlerList2.toString();
@@ -416,8 +406,6 @@ public class CardService extends BaseService{
 		int[] colors = { 1, 2, 3, 4 };
 		// 定义数组存储牌值
 		int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
-		// 定义扑克牌的状态
-		String[] state = { "front", "opposite" };
 
 		int index = 0;
 		// 定义编号
@@ -441,7 +429,6 @@ public class CardService extends BaseService{
 			System.out.println("pokerId:" + hm.get(array.get(i)).getPokerId() + "--pokerNumber"
 					+ hm.get(array.get(i)).getNumber() + "--pokerColor" + hm.get(array.get(i)).getColor());
 		}
-
 		// 打乱编号，重新排序
 		Collections.shuffle(array);
 		DBUtil.GetInstance().init();
@@ -472,15 +459,6 @@ public class CardService extends BaseService{
 				DBUtil.GetInstance().addPokerToShuffle(userId, hm.get(array.get(i)));
 			}
 		}
-
-		// //区分洗牌难度时用
-		// for(int a = 0; a < 3; a++){
-		// pokerShuffle.add(hm.get(easyArray.get(a)).getPokerId() + ":" +
-		// hm.get(easyArray.get(a)).getDirection());
-		// DBUtil.GetInstance().addPokerToShuffle(userId,
-		// hm.get(easyArray.get(a)));
-		// }
-
 		// 把洗牌区的牌分为七份，存到redis中
 		List<String> pokerHandlerList1 = new ArrayList<String>();
 		List<String> pokerHandlerList2 = new ArrayList<String>();
@@ -551,8 +529,6 @@ public class CardService extends BaseService{
 				DBUtil.GetInstance().addPokerToRoom2(userId, pokerOppositeHandler.get(i));
 			}
 		}
-
-		Gson gson = new Gson();
 		// 七个手牌区的数据
 		String h1 = pokerHandlerList1.toString();
 		String h2 = pokerHandlerList2.toString();
@@ -574,67 +550,8 @@ public class CardService extends BaseService{
 		pokerJsonParam.put("handPokerList6", h6);
 		pokerJsonParam.put("handPokerList7", h7);
 		pokerJsonParam.put("userId", userId);
-		// String pokerJson = JsonUtil.encodeJson(pokerJsonParam);
-		// String pokerJson = mapper.writeValueAsString(pokerJsonParam);
-		// String pokerJson = pokerJsonParam.toString();
 
 		return pokerJsonParam;
-		// //二人斗地主的发牌 弃用
-		// List<String> playerOne = new ArrayList<String>();
-		// List<String> playerTwo = new ArrayList<String>();
-		// List<String> dipai = new ArrayList<String>();
-		// for(int x = 0; x < array.size(); x++){
-		// if(x >= array.size() - 7){
-		// dipai.add(hm.get(array.get(x)));
-		// }else if( x % 2 == 0){
-		// playerOne.add(hm.get(array.get(x)));
-		// }else if(x % 2 == 1){
-		// playerTwo.add(hm.get(array.get(x)));
-		// }
-		// }
-		// //list转成json
-		// String json1 =JSONArray.fromObject(playerOne).toString();
-		//
-		// String json2 = JSONArray.fromObject(playerTwo).toString();
-		//
-		// String json3 = JSONArray.fromObject(dipai).toString();
-		//
-		// String str = json1 + json2 + json3;
-		// return str;
-
-		// 之前的socket 时传byte[]的方法 弃用
-		// //调用Collections集合的shuffle()方法，将array中存储的编号进行随机的置换，即打乱顺序
-		// /* * 定义TreeSet集合的变量用于存储底牌编号以及玩家的牌的编号 *
-		// 采用TreeSet集合是因为TreeSet集合可以实现自然排序 */
-		// TreeSet<Integer> playerOne = new TreeSet<Integer>();
-		// TreeSet<Integer> PlayerTwo = new TreeSet<Integer>();
-		// TreeSet<Integer> dipai = new TreeSet<Integer>();
-		// //遍历编号的集合，实现发牌
-		// for(int x = 0; x < array.size(); x++){
-		// if(x >= array.size() - 6){
-		// dipai.add(array.get(x));
-		// }else if( x % 2 == 0){
-		// playerOne.add(array.get(x));
-		// }else if(x % 2 == 1){
-		// PlayerTwo.add(array.get(x));
-		// }
-		// }
-		// //把结果存在String内
-		// StringBuilder buf = new StringBuilder();
-		// buf.append('[');
-		//// buf.append(array.get(0));
-		//
-		// //把所有的卡牌放在String字符串里面
-		// for(int i=0; i<array.size();i++){
-		// buf.append(array.get(i));
-		// buf.append(",");
-		// if( i == array.size()-1){
-		// buf.append(array.get(i));
-		// }
-		// System.out.println("----"+array.get(i)+"--第："+i+"个");
-		// }
-		// buf.append("]");
-		// return buf.toString().getBytes();
 	}
 
 	/** * 遍历每个玩家的牌以及底牌 **/
@@ -739,7 +656,6 @@ public class CardService extends BaseService{
 				return result;
 			}
 		}
-		
 		// 移动牌到手牌区
 		if (target_position < 8) {
 			return movePokerToRoom(userId, move_position, target_position, poker, targetPoker,movePokers);
@@ -773,7 +689,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room1");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room1");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				}
 				if(comparePokerOfHandle(onePoker, targetPoker)){
@@ -787,7 +703,7 @@ public class CardService extends BaseService{
 				}
 				logger.error("----can't put the card except 13 to the room1");
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card except 13 to the room1");
+				mm.put("Errorcode",  ConfigurationUtil.ONLY_K_LIMIT);
 				return mm;
 			}else{
 				if (DBUtil.GetInstance().getPokerRoom1List(userId) == null|| DBUtil.GetInstance().getPokerRoom1List(userId).size() == 0) {
@@ -799,7 +715,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room1");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room1");
+					mm.put("Errorcode",  ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				} else {
 					if (comparePokerOfHandle(poker, targetPoker)) {
@@ -811,7 +727,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't move to the room1 because of the uncorrect number or color");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card with false number or color");
+					mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 					return mm;
 				}
 			}
@@ -832,7 +748,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room2");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room2");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				}
 				if (comparePokerOfHandle(onePoker, targetPoker)) {
@@ -846,7 +762,7 @@ public class CardService extends BaseService{
 				}
 				logger.error("----can't put the card except 13 to the room2");
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card except 13 to the room2");
+				mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 				return mm;
 			} else {
 				if (DBUtil.GetInstance().getPokerRoom2List(userId).size() == 0) {
@@ -858,7 +774,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room2");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room2");
+					mm.put("Errorcode",  ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				} else {
 					if (comparePokerOfHandle(poker, targetPoker)) {
@@ -869,7 +785,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't move to the room2 because of the uncorrect number or color");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card with false number or color");
+					mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 					return mm;
 				}
 			}
@@ -888,7 +804,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room3");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room3");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				}
 				if (comparePokerOfHandle(onePoker, targetPoker)) {
@@ -902,7 +818,7 @@ public class CardService extends BaseService{
 				}
 				logger.error("----can't put the card except 13 to the room3");
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card except 13 to the room3");
+				mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 				return mm;
 			} else {
 				if (DBUtil.GetInstance().getPokerRoom3List(userId).size() == 0) {
@@ -914,7 +830,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room3");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room3");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				} else {
 					if (comparePokerOfHandle(poker, targetPoker)) {
@@ -925,7 +841,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't move to the room3 because of the uncorrect number or color");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card with false number or color");
+					mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 					return mm;
 				}
 			}
@@ -944,7 +860,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room4");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room4");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				}
 				if(comparePokerOfHandle(onePoker, targetPoker)){
@@ -958,7 +874,7 @@ public class CardService extends BaseService{
 				}
 				logger.error("----can't put the card except 13 to the room4");
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card except 13 to the room4");
+				mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 				return mm;
 			}else{
 			if (DBUtil.GetInstance().getPokerRoom4List(userId).size() == 0) {
@@ -970,7 +886,7 @@ public class CardService extends BaseService{
 				}
 				logger.error("----can't put the card except 13 to the room4");
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card except 13 to the room4");
+				mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 				return mm;
 			} else {
 				if (comparePokerOfHandle(poker, targetPoker)) {
@@ -982,7 +898,7 @@ public class CardService extends BaseService{
 				}
 				logger.error("----can't move  to the room4 because of the uncorrect number or color");
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card with false number or color");
+				mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 				return mm;
 			}}
 		case 5:
@@ -1000,7 +916,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room5");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room5");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				}
 				if(comparePokerOfHandle(onePoker, targetPoker)){
@@ -1014,7 +930,7 @@ public class CardService extends BaseService{
 				}
 				logger.error("----can't put the card with wrong number or color to the room5");
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card with wrong number or color to the room5");
+				mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 				return mm;
 			}else{
 			if (DBUtil.GetInstance().getPokerRoom5List(userId).size() == 0) {
@@ -1026,7 +942,7 @@ public class CardService extends BaseService{
 				}
 				logger.error("----can't put the card except 13 to the room5");
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card except 13 to the room5");
+				mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 				return mm;
 			} else {
 				if (comparePokerOfHandle(poker, targetPoker)) {
@@ -1037,7 +953,7 @@ public class CardService extends BaseService{
 				}
 				logger.error("----can't move  to the room5 because of the uncorrect number or color");
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card with false number or color");
+				mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 				return mm;
 			}}
 		case 6:
@@ -1055,7 +971,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room6");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room6");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				}
 				if(comparePokerOfHandle(onePoker, targetPoker)){
@@ -1069,7 +985,7 @@ public class CardService extends BaseService{
 				}
 				logger.error("----can't put the card with wrong number or color to the room6");
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card with wrong number or color to the room6");
+				mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 				return mm;
 			} else {
 				if (DBUtil.GetInstance().getPokerRoom6List(userId).size() == 0) {
@@ -1081,7 +997,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room6");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room6");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				} else {
 					if (comparePokerOfHandle(poker, targetPoker)) {
@@ -1092,7 +1008,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't move to the room6 because of the uncorrect number or color");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card with false number or color");
+					mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 					return mm;
 				}
 			}
@@ -1111,7 +1027,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room7");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room7");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				}
 				if(comparePokerOfHandle(onePoker, targetPoker)){
@@ -1125,7 +1041,7 @@ public class CardService extends BaseService{
 				}
 				logger.error("----can't put the card except 13 to the room7");
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card except 13 to the room7");
+				mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 				return mm;
 			} else {
 				if (DBUtil.GetInstance().getPokerRoom7List(userId).size() == 0) {
@@ -1137,7 +1053,7 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't put the card except 13 to the room7");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except 13 to the room7");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_K_LIMIT);
 					return mm;
 				} else {
 					if (comparePokerOfHandle(poker, targetPoker)) {
@@ -1148,13 +1064,13 @@ public class CardService extends BaseService{
 					}
 					logger.error("----can't move to the room7 because of the uncorrect number or color");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card with false number or color");
+					mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 					return mm;
 				}
 			}
 		}
 		mm.put("CanSendPokers", "0");
-		mm.put("Errorcode", "can't put the card with false number or color");
+		mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 		return mm;
 	}
 
@@ -1168,7 +1084,7 @@ public class CardService extends BaseService{
 				if (poker.getNumber() != 1) {
 					logger.error("----can't put the card except A in the empty PokerHome1");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except A in the empty PokerHome1");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_A_LIMIT);
 					return mm;
 				}
 				removeCardFromHandlerOrShuffle(poker, move_position, userId);
@@ -1190,7 +1106,7 @@ public class CardService extends BaseService{
 				if (poker.getNumber() != 1) {
 					logger.error("----can't put the card except A in the empty PokerHome2");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except A in the empty PokerHome2");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_A_LIMIT);
 					return mm;
 				}
 				DBUtil.GetInstance().addPokerToHome2(userId, poker);
@@ -1205,7 +1121,7 @@ public class CardService extends BaseService{
 					return mm;
 				}
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card with false number or color");
+				mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 				return mm;
 			}
 		case 10:
@@ -1213,7 +1129,7 @@ public class CardService extends BaseService{
 				if (poker.getNumber() != 1) {
 					logger.error("----can't put the card except A in the empty PokerHome3");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except A in the empty PokerHome3");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_A_LIMIT);
 					return mm;
 				}
 				DBUtil.GetInstance().addPokerToHome3(userId, poker);
@@ -1228,7 +1144,7 @@ public class CardService extends BaseService{
 					return mm;
 				}
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card with false number or color");
+				mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 				return mm;
 			}
 		case 11:
@@ -1236,7 +1152,7 @@ public class CardService extends BaseService{
 				if (poker.getNumber() != 1) {
 					logger.error("----can't put the card except A in the empty PokerHome4");
 					mm.put("CanSendPokers", "0");
-					mm.put("Errorcode", "can't put the card except A in the empty PokerHome4");
+					mm.put("Errorcode", ConfigurationUtil.ONLY_A_LIMIT);
 					return mm;
 				}
 				DBUtil.GetInstance().addPokerToHome4(userId, poker);
@@ -1251,7 +1167,7 @@ public class CardService extends BaseService{
 					return mm;
 				}
 				mm.put("CanSendPokers", "0");
-				mm.put("Errorcode", "can't put the card with false number or color");
+				mm.put("Errorcode", ConfigurationUtil.POKER_COLOR_NUMBER_DISCORRECT);
 				return mm;
 			}
 		}
@@ -1406,8 +1322,6 @@ public class CardService extends BaseService{
 		int[] colors = { 0, 1, 2, 3 };
 		// 定义数组存储牌值
 		int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
-		// 定义扑克牌的状态
-		String[] state = { "front", "opposite" };
 
 		int index = 0;
 		// 定义编号

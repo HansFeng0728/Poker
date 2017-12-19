@@ -52,4 +52,9 @@ public class ConfigurationUtil {
 	public static final boolean CARD_REDIS_PWD_OPEN = config.getBoolean("card.redis.pwd.open", false);
 	
 	public static final String ZONE_CHATSERVER_URL = config.getString("card.web");
+	
+	public static final int POKER_COLOR_NUMBER_DISCORRECT = config.getInt("false.color.and.number", 2);
+	public static final int ONLY_A_LIMIT = config.getInt("null.poker.room.limit",3);
+	public static final int ONLY_K_LIMIT= config.getInt("null.poker.home.limit",4);
+	public static final int ILLEGAL_USERID= config.getInt("illegal.user.name",5);
 }

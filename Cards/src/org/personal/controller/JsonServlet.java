@@ -1,4 +1,4 @@
-package org.personal.servlet;
+package org.personal.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;

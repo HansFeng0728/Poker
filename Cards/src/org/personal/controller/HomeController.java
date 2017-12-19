@@ -65,56 +65,7 @@ public class HomeController {
 		ModelAndView mav = new ModelAndView("home");
 		return mav;
 	}
-	@RequestMapping("/initHardCards")
-	public void initHardCards(HttpServletRequest request, HttpServletResponse response,String requestStr) throws UnsupportedEncodingException, IOException{
-		DBUtil.GetInstance().init();
-        JsonParser parse = new JsonParser();
-        logger.info("--------requestStr"+requestStr);
-        if("".equals(requestStr) || requestStr == null){
-        	logger.error("error,{}",requestStr);
-        	
-        }
-        JsonObject json = (JsonObject)parse.parse(requestStr);
-
-        String userId = json.get("UserId").getAsString();
-        Map<String, String> params = new HashMap<String, String>();
-        if(DBUtil.GetInstance().getUser(userId) == null){
-        	PrintWriter writer = response.getWriter();
-        	params.put("userId", userId);
-        	params.put("ErrorCode", "1");
-
-        	String jsonStr = params.toString();
-    		writer.write(jsonStr); 
-    		writer.flush();
-        }else{
-        	params.put("userId", userId);//内容字符串
-        	params.put("score", "0");
-        	params.put("daojishiTime", new Date().toString());
-
-        	String userJson = params.toString();
-        	
-        	Map<String, String> pokerJsonParam = new HashMap<String,String>();
-        	pokerJsonParam.put("userId", userId);
-//			发牌在cardService里面
-
-        	pokerJsonParam.put("completeCardList", "0");
-
-        	String pokerJson = pokerJsonParam.toString();
-        	
-        	Map<String, String> body = new HashMap<String, String>();
-        	body.put("user", userJson);
-        	body.put("pokers", pokerJson);
-
-         	String jsoncontent = mapper.writeValueAsString(cardService.sendHardPoker(userId));
-        	
-        	PrintWriter pw = response.getWriter();
-        	pw.write(jsoncontent);
-        	pw.flush();
-    		pw.close();
-    		logger.info("initCards response success--------------{}",jsoncontent);
-        	pw.println(jsoncontent);
-        }
-	}
+	
 	@RequestMapping("/initEasyCards")
 	public void initEasyCards(HttpServletRequest request, HttpServletResponse response,String requestStr) throws UnsupportedEncodingException, IOException{
 		DBUtil.GetInstance().init();
@@ -142,11 +93,8 @@ public class HomeController {
         	params.put("daojishiTime", new Date().toString());
 
         	String userJson = params.toString();
-        	
         	Map<String, String> pokerJsonParam = new HashMap<String,String>();
         	pokerJsonParam.put("userId", userId);
-//			发牌在cardService里面
-
         	pokerJsonParam.put("completeCardList", "0");
 
         	String pokerJson = pokerJsonParam.toString();
@@ -188,7 +136,7 @@ public class HomeController {
     		writer.write(jsonStr); 
     		writer.flush();
         }else{
-        	params.put("userId", userId);//内容字符串
+        	params.put("userId", userId);
         	params.put("score", "0");
         	params.put("daojishiTime", new Date().toString());
 
@@ -196,8 +144,6 @@ public class HomeController {
         	
         	Map<String, String> pokerJsonParam = new HashMap<String,String>();
         	pokerJsonParam.put("userId", userId);
-//			发牌在cardService里面
-
         	pokerJsonParam.put("completeCardList", "0");
 
         	String pokerJson = pokerJsonParam.toString();
@@ -213,6 +159,54 @@ public class HomeController {
         	pw.flush();
     		pw.close();
     		logger.info("initCards response success--------------{}",jsoncontent);
+        	pw.println(jsoncontent);
+        }
+	}
+	
+	@RequestMapping("/initHardCards")
+	public void initHardCards(HttpServletRequest request, HttpServletResponse response,String requestStr) throws UnsupportedEncodingException, IOException{
+		DBUtil.GetInstance().init();
+        JsonParser parse = new JsonParser();
+        logger.info("--------requestStr"+requestStr);
+        if("".equals(requestStr) || requestStr == null){
+        	logger.error("error,{}",requestStr);
+        }
+        JsonObject json = (JsonObject)parse.parse(requestStr);
+
+        String userId = json.get("UserId").getAsString();
+        Map<String, String> params = new HashMap<String, String>();
+        if(DBUtil.GetInstance().getUser(userId) == null){
+        	PrintWriter writer = response.getWriter();
+        	params.put("userId", userId);
+        	params.put("ErrorCode", "1");
+
+        	String jsonStr = params.toString();
+    		writer.write(jsonStr); 
+    		writer.flush();
+        }else{
+        	params.put("userId", userId);
+        	params.put("score", "0");
+        	params.put("daojishiTime", new Date().toString());
+
+        	String userJson = params.toString();
+        	
+        	Map<String, String> pokerJsonParam = new HashMap<String,String>();
+        	pokerJsonParam.put("userId", userId);
+        	pokerJsonParam.put("completeCardList", "0");
+
+        	String pokerJson = pokerJsonParam.toString();
+        	
+        	Map<String, String> body = new HashMap<String, String>();
+        	body.put("user", userJson);
+        	body.put("pokers", pokerJson);
+
+         	String jsoncontent = mapper.writeValueAsString(cardService.sendHardPoker(userId));
+        	
+        	PrintWriter pw = response.getWriter();
+        	pw.write(jsoncontent);
+        	pw.flush();
+    		pw.close();
+    		logger.info("initCards response success-------{}",jsoncontent);
         	pw.println(jsoncontent);
         }
 	}
@@ -234,7 +228,6 @@ public class HomeController {
 		logger.info("-----request moveCards:{}",requestStr);
 		JsonParser parse = new JsonParser();
 		JsonObject json = (JsonObject) parse.parse(requestStr); 
-//		JsonObject json = parse.parse(requestStr).getAsJsonObject();
 		String userId = json.get("UserId").getAsString();
 		if(userId == null || DBUtil.GetInstance().getUser(userId) == null){
 			logger.error("illegal userId of moveCards");
@@ -320,6 +313,7 @@ public class HomeController {
 		}
 		System.out.println("userId is:" + userId);
 		response.setContentType("text/html;charset=utf-8");
+        response.setCharacterEncoding("UTF-8");      //解决中文乱码问题
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		if(userService.isLoginCards(userId)){
@@ -354,7 +348,6 @@ public class HomeController {
 		}
 		System.out.println("userId is:" + userId);
 		response.setContentType("text/html;charset=utf-8");
-		
 		
 		if(userService.isLoginUser(userId)){
 			cardService.gameOver(userId);
